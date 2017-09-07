@@ -1,5 +1,5 @@
 package entities;
 
-public enum PersonnelRole {
+public enum DeveloperRole {
 	Developer, Tester
 }

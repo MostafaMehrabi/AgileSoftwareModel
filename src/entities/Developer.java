@@ -8,20 +8,30 @@ public class Developer {
 	private String firstName;
 	private String lastName;
 	private int completedStoryPoints;
-	private Map<SkillAreas, Integer> expertiseMap;
+	private Map<SkillAreas, Integer> expertiseInSkillAreas;
+	private DeveloperRole role;
 	
-	public Developer(long id, String firstName, String lastName){
+	public Developer(long id, String firstName, String lastName, DeveloperRole role){
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.role = role;
 		this.completedStoryPoints = 0;
-		expertiseMap = new HashMap<>();
-		expertiseMap.put(SkillAreas.BackEnd, 0);
-		expertiseMap.put(SkillAreas.FrontEnd, 0);
-		expertiseMap.put(SkillAreas.Design, 0);
+		expertiseInSkillAreas = new HashMap<>();
+		expertiseInSkillAreas.put(SkillAreas.BackEnd, 0);
+		expertiseInSkillAreas.put(SkillAreas.FrontEnd, 0);
+		expertiseInSkillAreas.put(SkillAreas.Design, 0);
 	}
 	
 	public void startWorking(){
 		
+	}
+	
+	public Map<SkillAreas, Integer> getExpertiseInSkillAreas(){
+		return this.expertiseInSkillAreas;
+	}
+	
+	private double getMotivation(){
+		return 0d;
 	}
 }

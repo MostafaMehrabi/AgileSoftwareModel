@@ -2,6 +2,8 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,5 +31,21 @@ public class TaskBoard {
 		}
 	}
 	
+	public Task pollTask(Developer developer){
+		taskLock.lock();
+		Task chosenTask = null;
+		double sai = 0d;
+		for(Task task : tasksToBeDone){
+			//calculate self assignment index for each task. 
+			sai = calculateSAI(task, developer);
+		}
+		taskLock.unlock();
+		return null;
+	}
 	
+	private double calculateSAI(Task task, Developer developer){
+		Set<SkillAreas> taskRequiredSkillAreas = task.getRequiredSkillAreas();
+		Map<SkillAreas, Integer> expertiseInSkillAreas = developer.getExpertiseInSkillAreas();
+		return 0d;
+	}
 }
