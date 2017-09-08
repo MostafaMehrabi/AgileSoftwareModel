@@ -8,21 +8,25 @@ public class Team {
 	private TaskAllocationStrategy taskAllocationStrategy;
 	private List<Developer> teamDevelopers;
 	private TaskBoard taskBoard;
-	private double storyPointCoefficient;
-	private int lowExpertiseLowerBoundary, lowExpertiseHigherBoundary;
-	private int mediumExpertiseLowerBoundary, mediumExpertiseHigherBoundary;
-	private int highExpertiseLowerBoundary, highExpertiseHigherBoundary;
+	private int storyPointCoefficient;
+	private double progressPerStoryPoint;
+	private double lowExpertiseLowerBoundary, lowExpertiseHigherBoundary;
+	private double mediumExpertiseLowerBoundary, mediumExpertiseHigherBoundary;
+	private double highExpertiseLowerBoundary, highExpertiseHigherBoundary;
+	private int lowExpertiseCoefficient, mediumExpertiseCoefficient, highExpertiseCoefficient;
 	private static Team team = null;	
 	
 	private Team(){
 		this.taskAllocationStrategy = TaskAllocationStrategy.ExpertiseBased;
 		teamDevelopers = new ArrayList<>();
 		taskBoard = new TaskBoard();
-		//default value for story point coefficient is 0.3
-		storyPointCoefficient = 0.3d;
+		//setting default values for team properties, these values can be customized later.
+		storyPointCoefficient = 8;
+		progressPerStoryPoint = 0.3d;
 		lowExpertiseLowerBoundary = 0; lowExpertiseHigherBoundary = 5;
 		mediumExpertiseLowerBoundary = 6; mediumExpertiseHigherBoundary = 20;
 		highExpertiseLowerBoundary = 21; highExpertiseHigherBoundary = 30;
+		lowExpertiseCoefficient = 1; mediumExpertiseCoefficient = 3; highExpertiseCoefficient = 5;
 	}
 	
 	public static Team getTeam(){
@@ -37,7 +41,7 @@ public class Team {
 		teamDevelopers.add(newDeveloper);
 	}
 	
-	public void addNewTask(Set<SkillAreas> requiredSkillAreas, int storyPoints) throws IllegalArgumentException{
+	public void addNewTask(Set<SkillArea> requiredSkillAreas, int storyPoints) throws IllegalArgumentException{
 		if(storyPoints < 1 || storyPoints > 10){
 			throw new IllegalArgumentException("The value provided as story points for the"
 					+ " new task, can only be between 0 and 10, inclusive!");
@@ -50,23 +54,69 @@ public class Team {
 		return this.taskAllocationStrategy;
 	}
 	
-	public void setStoryPointCoefficient(double value){
+	public void setStoryPointCoefficient(int value){
 		this.storyPointCoefficient = value;
 	}
 	
-	public double getStoryPointCoefficient(){
+	public int getStoryPointCoefficient(){
 		return this.storyPointCoefficient;
 	}
 	
-	public int getLowExpertiseLowerBoundary(){
+	public void setLowExpertiseCoefficient(int coef){
+		this.lowExpertiseCoefficient = coef;
+	}
+	
+	public void setMediumExpertiseCoefficient(int coef){
+		this.mediumExpertiseCoefficient = coef;
+	}
+	
+	public void setHighExpertiseCoefficient(int coef){
+		this.highExpertiseCoefficient = coef;
+	}
+	
+	public int getLowExpertiseCoefficient(){
+		return this.lowExpertiseCoefficient;
+	}
+	
+	public int getMediumExpertiseCoefficient(){
+		return this.mediumExpertiseCoefficient;
+	}
+	
+	public int getHighExpertiseCofficient(){
+		return this.highExpertiseCoefficient;
+	}
+	
+	public void setProgressPerStoryPoint(double value){
+		this.progressPerStoryPoint = value;
+	}
+	
+	public double getProgressPerStoryPoint(){
+		return this.progressPerStoryPoint;
+	}
+	
+	public double getLowExpertiseLowerBoundary(){
 		return lowExpertiseLowerBoundary;
 	}
 	
-	public int getLowExpertiseHigherBoundary(){
+	public double getLowExpertiseHigherBoundary(){
 		return lowExpertiseHigherBoundary;
 	}
 	
-	//public 
+	public double getMediumExpertiseLowerBoundary(){
+		return mediumExpertiseLowerBoundary;
+	}
+	
+	public double getMediumExpertiseHigherBoundary(){
+		return mediumExpertiseHigherBoundary;
+	}
+	
+	public double getHighExpertiseLowerBoundary(){
+		return highExpertiseLowerBoundary;
+	}
+	
+	public double getHighExpertiseHigherBoundary(){
+		return highExpertiseHigherBoundary;
+	}
 	
 	public void setLowExpertiseBoundaries(int low, int high){
 		if(low > high)

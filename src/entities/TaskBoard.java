@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class TaskBoard {
 	private List<Task> tasksToBeDone;
+	private List<Task> tasksBeingPerformed;
 	private List<Task> performedTasks;
 	private Lock taskLock;
 	private Lock submitPerformedTaskLock;
@@ -16,6 +17,7 @@ public class TaskBoard {
 	public TaskBoard(){
 		this.tasksToBeDone = new ArrayList<>();
 		this.performedTasks = new ArrayList<>();
+		this.tasksBeingPerformed = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
 		this.submitPerformedTaskLock = new ReentrantLock();
 	}
@@ -37,15 +39,15 @@ public class TaskBoard {
 		double sai = 0d;
 		for(Task task : tasksToBeDone){
 			//calculate self assignment index for each task. 
-			sai = calculateSAI(task, developer);
+			double tempSAI = calculateSAI(task, developer);
 		}
 		taskLock.unlock();
 		return null;
 	}
 	
 	private double calculateSAI(Task task, Developer developer){
-		Set<SkillAreas> taskRequiredSkillAreas = task.getRequiredSkillAreas();
-		Map<SkillAreas, Integer> expertiseInSkillAreas = developer.getExpertiseInSkillAreas();
+		double motivationLevel = developer.getMotivation(task);
+		double tct = developer.getTaskCompletionTime(task);
 		return 0d;
 	}
 }

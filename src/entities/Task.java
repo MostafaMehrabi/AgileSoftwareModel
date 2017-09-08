@@ -4,10 +4,10 @@ import java.util.Set;
 
 public class Task {
 	private int storyPoints;
-	private Set<SkillAreas> requiredSkillAreas;
+	private Set<SkillArea> requiredSkillAreas;
 	private long performerID;
 	
-	public Task(int storyPoints, Set<SkillAreas> requiredSkillAreas){
+	public Task(int storyPoints, Set<SkillArea> requiredSkillAreas){
 		this.storyPoints = storyPoints;
 		this.requiredSkillAreas = requiredSkillAreas;
 	}
@@ -16,7 +16,7 @@ public class Task {
 		return this.storyPoints;
 	}
 	
-	public Set<SkillAreas> getRequiredSkillAreas(){
+	public Set<SkillArea> getRequiredSkillAreas(){
 		return this.requiredSkillAreas;
 	}
 	

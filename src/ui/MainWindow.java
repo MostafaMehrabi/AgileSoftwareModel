@@ -75,7 +75,7 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 471, 418);
+		frame.setBounds(100, 100, 604, 445);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -94,12 +94,12 @@ public class MainWindow {
 		panel.add(firstNameLabel);
 		
 		firstNameTextField = new JTextField();
-		firstNameTextField.setBounds(106, 15, 309, 20);
+		firstNameTextField.setBounds(125, 15, 425, 20);
 		panel.add(firstNameTextField);
 		firstNameTextField.setColumns(10);
 		
 		lastNameTextField = new JTextField();
-		lastNameTextField.setBounds(106, 51, 309, 20);
+		lastNameTextField.setBounds(125, 53, 425, 20);
 		lastNameTextField.setColumns(10);
 		panel.add(lastNameTextField);
 		
@@ -116,7 +116,7 @@ public class MainWindow {
 		panel.add(roleLabel);
 		
 		JRadioButton developerRadioButton = new JRadioButton("Developer");
-		developerRadioButton.setBounds(106, 99, 109, 23);
+		developerRadioButton.setBounds(200, 99, 109, 23);
 		radioButtonGroup.add(developerRadioButton);
 		developerRadioButton.setSelected(true);
 		panel.add(developerRadioButton);
@@ -128,7 +128,7 @@ public class MainWindow {
 		});
 		
 		JRadioButton testerRadioButton = new JRadioButton("Tester");
-		testerRadioButton.setBounds(256, 99, 109, 23);
+		testerRadioButton.setBounds(346, 99, 109, 23);
 		radioButtonGroup.add(testerRadioButton);
 		panel.add(testerRadioButton);
 		
@@ -139,21 +139,21 @@ public class MainWindow {
 		panel.add(expertiseLabel);
 		
 		JButton addNewDeveloperButton = new JButton("Add New Developer");
-		addNewDeveloperButton.setBounds(134, 304, 175, 33);
+		addNewDeveloperButton.setBounds(202, 313, 175, 33);
 		panel.add(addNewDeveloperButton);
 		
 		txtFrontEnd = new JTextField();
 		txtFrontEnd.setEditable(false);
 		txtFrontEnd.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		txtFrontEnd.setText("Front End");
-		txtFrontEnd.setBounds(106, 172, 136, 33);
+		txtFrontEnd.setBounds(202, 172, 136, 33);
 		panel.add(txtFrontEnd);
 		txtFrontEnd.setColumns(10);
 		
 		textField_1 = new JTextField();
 		textField_1.setToolTipText("0 lowest, 30 highest");
 		textField_1.setColumns(10);
-		textField_1.setBounds(244, 172, 136, 33);
+		textField_1.setBounds(340, 172, 136, 33);
 		panel.add(textField_1);
 		
 		txtBackEnd = new JTextField();
@@ -161,13 +161,13 @@ public class MainWindow {
 		txtBackEnd.setEditable(false);
 		txtBackEnd.setText("Back End");
 		txtBackEnd.setColumns(10);
-		txtBackEnd.setBounds(106, 208, 136, 33);
+		txtBackEnd.setBounds(202, 208, 136, 33);
 		panel.add(txtBackEnd);
 		
 		textField_3 = new JTextField();
 		textField_3.setToolTipText("0 lowest, 30 highest");
 		textField_3.setColumns(10);
-		textField_3.setBounds(244, 208, 136, 33);
+		textField_3.setBounds(340, 208, 136, 33);
 		panel.add(textField_3);
 		
 		txtDesign = new JTextField();
@@ -175,13 +175,13 @@ public class MainWindow {
 		txtDesign.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		txtDesign.setText("Design");
 		txtDesign.setColumns(10);
-		txtDesign.setBounds(106, 245, 136, 33);
+		txtDesign.setBounds(202, 245, 136, 33);
 		panel.add(txtDesign);
 		
 		textField_5 = new JTextField();
 		textField_5.setToolTipText("0 lowest, 30 highest");
 		textField_5.setColumns(10);
-		textField_5.setBounds(244, 245, 136, 33);
+		textField_5.setBounds(340, 245, 136, 33);
 		panel.add(textField_5);
 		testerRadioButton.addActionListener(new ActionListener() {			
 			@Override
@@ -205,7 +205,7 @@ public class MainWindow {
 		panel_1.add(taskNameLabel);
 		
 		textField = new JTextField();
-		textField.setBounds(103, 14, 300, 25);
+		textField.setBounds(135, 14, 409, 25);
 		panel_1.add(textField);
 		textField.setColumns(10);
 		
@@ -229,28 +229,28 @@ public class MainWindow {
 		JLabel skillAreasLabel = new JLabel("Required Skill Areas");
 		skillAreasLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		skillAreasLabel.setEnabled(false);
-		skillAreasLabel.setBounds(197, 58, 129, 29);
+		skillAreasLabel.setBounds(300, 60, 129, 29);
 		panel_1.add(skillAreasLabel);
 		
 		frontEndCheckBox = new JCheckBox("Front End");
 		frontEndCheckBox.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		frontEndCheckBox.setBounds(123, 94, 83, 34);
+		frontEndCheckBox.setBounds(135, 99, 83, 34);
 		panel_1.add(frontEndCheckBox);
 		
 		
 		backEndCheckBox = new JCheckBox("Back End");
 		backEndCheckBox.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		backEndCheckBox.setBounds(300, 94, 79, 34);
+		backEndCheckBox.setBounds(363, 99, 79, 34);
 		panel_1.add(backEndCheckBox);
 		
 		designCheckBox = new JCheckBox("Design");
 		designCheckBox.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		designCheckBox.setBounds(123, 123, 65, 34);
+		designCheckBox.setBounds(261, 99, 65, 34);
 		panel_1.add(designCheckBox);
 		
 		testingCheckBox = new JCheckBox("Testing");
 		testingCheckBox.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		testingCheckBox.setBounds(300, 123, 73, 34);
+		testingCheckBox.setBounds(471, 99, 73, 34);
 		panel_1.add(testingCheckBox);
 		
 		
@@ -296,7 +296,7 @@ public class MainWindow {
 		
 		JTextPane textPane = new JTextPane();
 		textPane.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		textPane.setBounds(20, 196, 383, 99);
+		textPane.setBounds(20, 196, 524, 99);
 		panel_1.add(textPane);
 		
 		JLabel taskDescriptionLabel = new JLabel("Task Description");
@@ -310,7 +310,7 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		addNewTaskButton.setBounds(135, 314, 151, 37);
+		addNewTaskButton.setBounds(219, 311, 151, 37);
 		panel_1.add(addNewTaskButton);
 		
 		Panel panel_2 = new Panel();
@@ -328,11 +328,15 @@ public class MainWindow {
 				"ID", "First Name", "Last Name", "Exp. in Front End", "Exp. in Back End"
 			}
 		));
-		table.setBounds(10, 27, 435, 315);
+		table.setBounds(10, 35, 566, 315);
 		panel_2.add(table);
 		
 		Panel panel_3 = new Panel();
 		tabbedPane.addTab("Display Task Board", null, panel_3, null);
 		panel_3.setLayout(null);
+		
+		JPanel panel_4 = new JPanel();
+		tabbedPane.addTab("Team Admin", null, panel_4, null);
+		panel_4.setLayout(null);
 	}
 }

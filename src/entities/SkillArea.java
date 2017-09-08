@@ -1,5 +1,5 @@
 package entities;
 
-public enum SkillAreas {
+public enum SkillArea {
 	FrontEnd, BackEnd, Design
 }
