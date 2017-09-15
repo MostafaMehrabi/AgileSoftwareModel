@@ -137,6 +137,7 @@ public class SystemLoader {
 					member.setExpertiseAtSkillArea(SkillArea.FrontEnd, expertiseInFrontEnd);
 					member.setExpertiseAtSkillArea(SkillArea.Design, expertiseInDesign);
 					personnel.add(member);
+					line = fileReader.readLine();
 				}
 				fileReader.close();
 			}catch(Exception e){
