@@ -2,8 +2,6 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -40,14 +38,58 @@ public class TaskBoard {
 		for(Task task : tasksToBeDone){
 			//calculate self assignment index for each task. 
 			double tempSAI = calculateSAI(task, developer);
+			if (tempSAI > sai){
+				sai = tempSAI;
+				chosenTask = task;
+			}
 		}
+		tasksToBeDone.remove(chosenTask);
+		tasksBeingPerformed.add(chosenTask);
 		taskLock.unlock();
-		return null;
+		return chosenTask;
 	}
 	
 	private double calculateSAI(Task task, Developer developer){
 		double motivationLevel = developer.getMotivation(task);
 		double tct = developer.getTaskCompletionTime(task);
-		return 0d;
+		return motivationLevel/tct;
+	}	
+	
+	
+	public void submitPerformedTaskToBoard(Task task){
+		submitPerformedTaskLock.lock();
+		tasksBeingPerformed.remove(task);
+		performedTasks.add(task);
+		submitPerformedTaskLock.unlock();
+	}
+	
+	public void removeTask(int taskIndex){
+		//removes a task, only if the team is not working!
+		taskLock.lock();
+		Team team = Team.getTeam();
+		if(!team.getTeamWorking()){
+			tasksToBeDone.remove(taskIndex);
+		}		
+		taskLock.unlock();
+	}
+	
+	public void setTasksToBeDone(List<Task> tasks){
+		taskLock.lock();
+		this.tasksToBeDone = tasks;
+		taskLock.unlock();
+	}
+	
+	public void setFinishedTasks(List<Task> tasks){
+		submitPerformedTaskLock.lock();
+		this.performedTasks = tasks;
+		submitPerformedTaskLock.unlock();
+	}
+	
+	public List<Task> getTasksToBeDone(){
+		return this.tasksToBeDone;
+	}
+	
+	public List<Task> getPerformedTasks(){
+		return this.performedTasks;
 	}
 }

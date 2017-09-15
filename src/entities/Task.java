@@ -3,13 +3,17 @@ package entities;
 import java.util.Set;
 
 public class Task {
+	private int taskId;
 	private int storyPoints;
 	private Set<SkillArea> requiredSkillAreas;
 	private long performerID;
+	private String taskDescription;
 	
-	public Task(int storyPoints, Set<SkillArea> requiredSkillAreas){
+	public Task(int taskId, int storyPoints, Set<SkillArea> requiredSkillAreas){
+		this.taskId = taskId;
 		this.storyPoints = storyPoints;
 		this.requiredSkillAreas = requiredSkillAreas;
+		this.taskDescription = "";
 	}
 	
 	public int getStoryPoints(){
@@ -22,6 +26,10 @@ public class Task {
 	
 	public void setPerformerID(long performerID){
 		this.performerID = performerID;
+	}
+	
+	public void setTaskDescription(String description){
+		this.taskDescription = description;
 	}
 	
 	public long getPerformerID(){

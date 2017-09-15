@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import java.awt.EventQueue;
 
@@ -12,9 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
-
-import entities.DeveloperRole;
-
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JTable;
@@ -29,6 +26,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
 import javax.swing.table.DefaultTableModel;
+
+import core.DeveloperRole;
+
+import javax.swing.ListSelectionModel;
 
 public class MainWindow {
 
@@ -316,20 +317,20 @@ public class MainWindow {
 		Panel panel_2 = new Panel();
 		tabbedPane.addTab("Display Developers", null, panel_2, null);
 		panel_2.setLayout(null);
+		String[] tableColumns = {"ID", "First Name", "Last Name", "Exp. in Front End", "Exp. in Back End"};
+		String[] contentRow1 = {"", "", "", ""};
+		DefaultTableModel tableModel = new DefaultTableModel();
+		tableModel.setColumnIdentifiers(tableColumns);
+		tableModel.setRowCount(2);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 35, 566, 315);
+		panel_2.add(scrollPane);
 		
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"ID", "First Name", "Last Name", "Exp. in Front End", "Exp. in Back End"
-			}
-		));
-		table.setBounds(10, 35, 566, 315);
-		panel_2.add(table);
+		scrollPane.setViewportView(table);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setModel(tableModel);
 		
 		Panel panel_3 = new Panel();
 		tabbedPane.addTab("Display Task Board", null, panel_3, null);

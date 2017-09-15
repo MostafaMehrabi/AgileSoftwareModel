@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import core.DeveloperRole;
+import core.TaskAllocationStrategy;
+
 public class Developer {
 	private long id;
 	private String firstName;
@@ -47,11 +50,11 @@ public class Developer {
 		double highestExpertiseLevel = team.getHighExpertiseHigherBoundary();
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
 		for(SkillArea skillArea : requiredSkillAreas){
-			double expertiseInSkillArea = expertiseInSkillAreas.get(skillArea);
-			if(expertiseInSkillArea < highestExpertiseLevel){
+			double expertiseInThisSkillArea = expertiseInSkillAreas.get(skillArea);
+			if(expertiseInThisSkillArea < highestExpertiseLevel){
 				double potentialProgressInThisSkill = storyPoints * progressPerStoryPoint;
-				if ((expertiseInSkillArea + potentialProgressInThisSkill) > highestExpertiseLevel){
-					potentialProgressInThisSkill = highestExpertiseLevel - expertiseInSkillArea;
+				if ((expertiseInThisSkillArea + potentialProgressInThisSkill) > highestExpertiseLevel){
+					potentialProgressInThisSkill = highestExpertiseLevel - expertiseInThisSkillArea;
 				}
 				potentialLearning += potentialProgressInThisSkill; 
 			}

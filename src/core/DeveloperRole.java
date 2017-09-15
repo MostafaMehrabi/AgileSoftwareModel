@@ -1,4 +1,4 @@
-package entities;
+package core;
 
 public enum DeveloperRole {
 	Developer, Tester
