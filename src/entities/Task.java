@@ -5,13 +5,15 @@ import java.util.Set;
 import enums.SkillArea;
 
 public class Task {
+	private String taskName;
 	private int taskId;
 	private int storyPoints;
 	private Set<SkillArea> requiredSkillAreas;
 	private int performerID;
 	private String taskDescription;
 	
-	public Task(int taskId, int storyPoints, Set<SkillArea> requiredSkillAreas){
+	public Task(int taskId, String taskName, int storyPoints, Set<SkillArea> requiredSkillAreas){
+		this.taskName = taskName;
 		this.taskId = taskId;
 		this.storyPoints = storyPoints;
 		this.requiredSkillAreas = requiredSkillAreas;
@@ -25,6 +27,10 @@ public class Task {
 	
 	public Set<SkillArea> getRequiredSkillAreas(){
 		return this.requiredSkillAreas;
+	}
+	
+	public void setRequiredSkill(Set<SkillArea> requiredSkillAreas){
+		this.requiredSkillAreas = requiredSkillAreas;
 	}
 	
 	public void setPerformerID(int performerID){
@@ -51,5 +57,13 @@ public class Task {
 		Team team = Team.getTeam();
 		double lp = requiredSkillAreas.size() * team.getStoryPointCoefficient();
 		return lp;
+	}
+	
+	public String getTaskName(){
+		return this.taskName;
+	}
+	
+	public void setTaskName(String name){
+		this.taskName = name;
 	}
 }

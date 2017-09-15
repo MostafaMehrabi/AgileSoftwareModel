@@ -9,36 +9,36 @@ import java.util.concurrent.locks.ReentrantLock;
 import enums.SkillArea;
 
 public class TaskBoard {
-	private List<Task> tasksToBeDone;
-	private List<Task> tasksBeingPerformed;
+	private List<Task> toDoTasks;
+	private List<Task> tasksInProgress;
 	private List<Task> performedTasks;
 	private Lock taskLock;
 	private Lock submitPerformedTaskLock;
 	private int lastTaskID;
 	
 	public TaskBoard(){
-		this.tasksToBeDone = new ArrayList<>();
+		this.toDoTasks = new ArrayList<>();
 		this.performedTasks = new ArrayList<>();
-		this.tasksBeingPerformed = new ArrayList<>();
+		this.tasksInProgress = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
 		this.submitPerformedTaskLock = new ReentrantLock();
 		this.lastTaskID = 0;
 	}
 	
-	public void addNewTask(Set<SkillArea> requiredSkillAreas, int storyPoints) throws IllegalArgumentException{
+	public void addNewTask(String name, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
 		if(storyPoints < 1 || storyPoints > 10){
 			throw new IllegalArgumentException("The value provided as story points for the"
 					+ " new task, can only be between 0 and 10, inclusive!");
 		}
 		int taskID = ++lastTaskID;
-		Task newTask = new Task(taskID, storyPoints, requiredSkillAreas);
+		Task newTask = new Task(taskID, name, storyPoints, requiredSkillAreas);
 		addTask(newTask);
 	}
 	
 	private void addTask(Task task){
 		try{
 			taskLock.lock();
-			tasksToBeDone.add(task);
+			toDoTasks.add(task);
 			taskLock.unlock();
 		}catch(Exception e){
 			System.err.println("An error occurred while trying to add a new task to the task board");
@@ -50,7 +50,7 @@ public class TaskBoard {
 		taskLock.lock();
 		Task chosenTask = null;
 		double sai = 0d;
-		for(Task task : tasksToBeDone){
+		for(Task task : toDoTasks){
 			//calculate self assignment index for each task. 
 			double tempSAI = calculateSAI(task, developer);
 			if (tempSAI > sai){
@@ -58,8 +58,8 @@ public class TaskBoard {
 				chosenTask = task;
 			}
 		}
-		tasksToBeDone.remove(chosenTask);
-		tasksBeingPerformed.add(chosenTask);
+		toDoTasks.remove(chosenTask);
+		tasksInProgress.add(chosenTask);
 		taskLock.unlock();
 		return chosenTask;
 	}
@@ -73,7 +73,7 @@ public class TaskBoard {
 	
 	public void submitPerformedTaskToBoard(Task task){
 		submitPerformedTaskLock.lock();
-		tasksBeingPerformed.remove(task);
+		tasksInProgress.remove(task);
 		performedTasks.add(task);
 		submitPerformedTaskLock.unlock();
 	}
@@ -83,14 +83,14 @@ public class TaskBoard {
 		taskLock.lock();
 		Team team = Team.getTeam();
 		if(!team.getTeamWorking()){
-			tasksToBeDone.remove(taskIndex);
+			toDoTasks.remove(taskIndex);
 		}		
 		taskLock.unlock();
 	}
 	
 	public void setTasksToBeDone(List<Task> tasks){
 		taskLock.lock();
-		this.tasksToBeDone = tasks;
+		this.toDoTasks = tasks;
 		taskLock.unlock();
 	}
 	
@@ -101,7 +101,7 @@ public class TaskBoard {
 	}
 	
 	public List<Task> getTasksToBeDone(){
-		return this.tasksToBeDone;
+		return this.toDoTasks;
 	}
 	
 	public List<Task> getPerformedTasks(){

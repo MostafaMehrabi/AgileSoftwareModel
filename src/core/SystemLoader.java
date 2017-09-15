@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Task;
+
 import entities.TaskBoard;
 import entities.Team;
 import entities.TeamMember;
@@ -15,33 +17,44 @@ import enums.TaskAllocationStrategy;
 
 public class SystemLoader {
 	
-	private static String baseDirectoryPath = "." + File.separator + "Files";
+
 	
-	public static void loadSystem(){
-		loadSystem(baseDirectoryPath);
-	}
-	
-	public static Team loadSystem(String baseDirPath){
-		baseDirectoryPath = baseDirPath;
-		File baseDirectory = new File(baseDirPath);
+	public static Team loadSystem(){
+		File baseDirectory = new File(Main.getBaseDirectoryPath());
 		if(!baseDirectory.exists()){
 			if(!baseDirectory.mkdirs()){
-				throw new RuntimeException("System was not able to create one or more directory/directories in path: " + baseDirPath);
+				throw new RuntimeException("System was not able to create one or more directory/directories in path: " + Main.getBaseDirectoryPath());
 			}
 		}
 		Team team = loadTeam();
+		
 		List<TeamMember> teamPersonnel = loadPersonnel();
 		if(!teamPersonnel.isEmpty())
 			team.setPersonnel(teamPersonnel);
+		
 		TaskBoard taskBoard = loadTaskBoard();
 		if(taskBoard != null)
 			team.setTaskBoard(taskBoard);
+		
+		List<Task> backLog = loadBackLog();
+		if(!backLog.isEmpty())
+			team.setProjectBackLog(backLog);
+		
+		List<Task> allTasksDoneSoFar = loadAllTasksDoneSoFar();
+		if(!allTasksDoneSoFar.isEmpty())
+			team.setAllTasksDoneSoFar(allTasksDoneSoFar);
+		
 		return team;
+	}
+	
+	public static Team loadSystem(String baseDirPath){
+		Main.setBaseDirectoryPath(baseDirPath);
+		return loadSystem();
 	}
 	
 	private static Team loadTeam(){
 		Team team = Team.getTeam();
-		String teamFileName = baseDirectoryPath + File.separator + "TeamFile";
+		String teamFileName = Main.getBaseDirectoryPath() + File.separator + Main.getTeamFileName();
 		File teamFile = new File(teamFileName);
 		if(teamFile.exists()){
 			try{
@@ -113,7 +126,7 @@ public class SystemLoader {
 	
 	private static List<TeamMember> loadPersonnel(){
 		List<TeamMember> personnel = new ArrayList<>();
-		String personnelFileName = baseDirectoryPath + File.separator + "personnelFile";
+		String personnelFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPersonnelFileName();
 		File personnelFile = new File(personnelFileName);
 		if(personnelFile.exists()){
 			try{
@@ -158,7 +171,30 @@ public class SystemLoader {
 	
 	private static TaskBoard loadTaskBoard(){
 		TaskBoard taskBoard = null;
-		//String task
+		String TaskBoardFileName = Main.getBaseDirectoryPath() + File.separator + Main.getTaskBoardFielName();
+		File taskBoardFile = new File(TaskBoardFileName);
+		if(taskBoardFile.exists()){
+			try{
+				taskBoard = new TaskBoard();
+				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
+				int lastTaskID = Integer.parseInt(reader.readLine());
+				taskBoard.setLastTaskID(lastTaskID);
+				//loadToDoTasks
+				//loadInProgressTasks
+				//loadPerformedTasks
+				reader.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		return taskBoard;
+	}
+	
+	private static List<Task> loadBackLog(){
+		return null;
+	}
+	
+	private static List<Task> loadAllTasksDoneSoFar(){
+		return null;
 	}
 }

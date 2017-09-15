@@ -10,6 +10,8 @@ public class Team {
 	private TaskAllocationStrategy taskAllocationStrategy;
 	private int lastMemebrID;
 	private List<TeamMember> teamPersonnel;
+	private List<Task> backLog;
+	private List<Task> allTasksDoneSoFar;
 	private double storyPointCoefficient;
 	private double progressPerStoryPoint;
 	private int lowExpertiseLowerBoundary, lowExpertiseHigherBoundary;
@@ -25,6 +27,8 @@ public class Team {
 	private Team(){
 		this.taskAllocationStrategy = TaskAllocationStrategy.ExpertiseBased;
 		teamPersonnel = new ArrayList<>();
+		backLog = new ArrayList<>();
+		allTasksDoneSoFar = new ArrayList<>();
 		//setting default values for team properties, these values can be customized later.
 		storyPointCoefficient = 8;
 		progressPerStoryPoint = 0.3d;
@@ -42,6 +46,38 @@ public class Team {
 			team = new Team();
 		}
 		return team;
+	}
+	
+	public List<Task> getProjectBackLog(){
+		return this.backLog;
+	}
+	
+	public void setProjectBackLog(List<Task> taskList){
+		this.backLog = taskList;
+	}
+	
+	public void addToProjectBackLog(List<Task> taskList){
+		backLog.addAll(taskList);
+	}
+	
+	public void addToProjectBackLog(Task task){
+		backLog.add(task);
+	}
+	
+	public List<Task> getAllTasksDoneSoFar(){
+		return this.allTasksDoneSoFar;
+	}
+	
+	public void setAllTasksDoneSoFar(List<Task> taskList){
+		this.allTasksDoneSoFar = taskList;
+	}
+	
+	public void addToAllTasksDoneSoFar(List<Task> taskList){
+		this.allTasksDoneSoFar.addAll(taskList);
+	}
+	
+	public void addToAllTasksDoneSoFar(Task task){
+		this.allTasksDoneSoFar.add(task);
 	}
 	
 	public int getLasMemberID(){
