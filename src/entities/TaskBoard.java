@@ -2,8 +2,11 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import enums.SkillArea;
 
 public class TaskBoard {
 	private List<Task> tasksToBeDone;
@@ -11,6 +14,7 @@ public class TaskBoard {
 	private List<Task> performedTasks;
 	private Lock taskLock;
 	private Lock submitPerformedTaskLock;
+	private int lastTaskID;
 	
 	public TaskBoard(){
 		this.tasksToBeDone = new ArrayList<>();
@@ -18,9 +22,20 @@ public class TaskBoard {
 		this.tasksBeingPerformed = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
 		this.submitPerformedTaskLock = new ReentrantLock();
+		this.lastTaskID = 0;
 	}
 	
-	public void addTask(Task task){
+	public void addNewTask(Set<SkillArea> requiredSkillAreas, int storyPoints) throws IllegalArgumentException{
+		if(storyPoints < 1 || storyPoints > 10){
+			throw new IllegalArgumentException("The value provided as story points for the"
+					+ " new task, can only be between 0 and 10, inclusive!");
+		}
+		int taskID = ++lastTaskID;
+		Task newTask = new Task(taskID, storyPoints, requiredSkillAreas);
+		addTask(newTask);
+	}
+	
+	private void addTask(Task task){
 		try{
 			taskLock.lock();
 			tasksToBeDone.add(task);
@@ -31,7 +46,7 @@ public class TaskBoard {
 		}
 	}
 	
-	public Task pollTask(Developer developer){
+	public Task pollTask(TeamMember developer){
 		taskLock.lock();
 		Task chosenTask = null;
 		double sai = 0d;
@@ -49,7 +64,7 @@ public class TaskBoard {
 		return chosenTask;
 	}
 	
-	private double calculateSAI(Task task, Developer developer){
+	private double calculateSAI(Task task, TeamMember developer){
 		double motivationLevel = developer.getMotivation(task);
 		double tct = developer.getTaskCompletionTime(task);
 		return motivationLevel/tct;
@@ -91,5 +106,13 @@ public class TaskBoard {
 	
 	public List<Task> getPerformedTasks(){
 		return this.performedTasks;
+	}
+	
+	public int getLastTaskID(){
+		return lastTaskID;
+	}
+	
+	public void setLastTaskID(int lastTaskID){
+		this.lastTaskID = lastTaskID;
 	}
 }

@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import core.DeveloperRole;
-import core.TaskAllocationStrategy;
+import enums.MemberRole;
+import enums.SkillArea;
+import enums.TaskAllocationStrategy;
 
-public class Developer {
-	private long id;
+public class TeamMember {
+	private int id;
 	private String firstName;
 	private String lastName;
 	private int completedStoryPoints;
 	private Map<SkillArea, Double> expertiseInSkillAreas;
-	private DeveloperRole role;
+	private MemberRole role;
 	
-	public Developer(long id, String firstName, String lastName, DeveloperRole role){
+	public TeamMember(int id, String firstName, String lastName, MemberRole role){
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -29,10 +30,6 @@ public class Developer {
 	
 	public void startWorking(){
 		
-	}
-	
-	public Map<SkillArea, Double> getExpertiseInSkillAreas(){
-		return this.expertiseInSkillAreas;
 	}
 	
 	/**
@@ -97,16 +94,47 @@ public class Developer {
 		return this.firstName;
 	}
 	
+	public void setFirstName(String name){
+		this.firstName = name;
+	}
+	
 	public String getLastName(){
 		return this.lastName;
+	}
+	
+	public void setLastName(String name){
+		this.lastName = name;
 	}
 	
 	public long getID(){
 		return this.id;
 	}
 	
-	public DeveloperRole getDeveloperRole(){
+	public void setID(int id){
+		this.id = id;
+	}
+	
+	public MemberRole getMemberRole(){
 		return this.role;
+	}
+	
+	public void setMemberRole(MemberRole role){
+		this.role = role;
+	}
+	
+	public double getExpertiseAtSkillArea(SkillArea skillArea){
+		if(skillArea.equals(SkillArea.Testing))
+			return 0d;
+		else
+			return expertiseInSkillAreas.get(skillArea);
+	}
+	
+	public void setExpertiseAtSkillArea(SkillArea skillArea, double expertise){
+		if(skillArea.equals(SkillArea.Testing))
+			throw new IllegalArgumentException("EXPERTISE LEVEL FOR TESTING SKILL IS NOT SUPPORTED AT THE MOMENT");
+		else{
+			expertiseInSkillAreas.put(skillArea, expertise);
+		}
 	}
 	
 	public int getCompletedStoryPoints(){

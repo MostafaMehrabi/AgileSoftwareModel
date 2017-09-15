@@ -27,7 +27,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
 import javax.swing.table.DefaultTableModel;
 
-import core.DeveloperRole;
+import enums.MemberRole;
 
 import javax.swing.ListSelectionModel;
 
@@ -37,7 +37,7 @@ public class MainWindow {
 	private JTextField firstNameTextField;
 	private JTextField lastNameTextField;
 	private final ButtonGroup radioButtonGroup = new ButtonGroup();
-	private DeveloperRole role = DeveloperRole.Developer;
+	private MemberRole role = MemberRole.Developer;
 	private JTextField txtFrontEnd;
 	private JTextField textField_1;
 	private JTextField txtBackEnd;
@@ -124,7 +124,7 @@ public class MainWindow {
 		developerRadioButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				role = DeveloperRole.Developer;
+				role = MemberRole.Developer;
 			}
 		});
 		
@@ -187,7 +187,7 @@ public class MainWindow {
 		testerRadioButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				role = DeveloperRole.Tester;
+				role = MemberRole.Tester;
 			}
 		});
 		
