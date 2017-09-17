@@ -59,7 +59,13 @@ public class TaskBoard {
 			}
 		}
 		toDoTasks.remove(chosenTask);
-		tasksInProgress.add(chosenTask);
+		//tasksInProgress.add(chosenTask);
+		//before a member starts performing a task, it checks if it can do the task before the 
+		//end of sprint reaches, if not, it will return the task to the task board, and removes
+		//it from the tasks in progress, and looks for another task.
+		//in fact, the worker keeps looking for a task, until it finds one that it can execute before
+		//the deadline, and then returns all the rejected tasks back to the "toDoTasks", and adds 
+		//the chosen task to the "tasksInProgress" list, then updates the gui!
 		taskLock.unlock();
 		return chosenTask;
 	}
@@ -88,16 +94,34 @@ public class TaskBoard {
 		taskLock.unlock();
 	}
 	
-	public void setTasksToBeDone(List<Task> tasks){
+	public void setToDoTasks(List<Task> tasks){
+		//only supposed to be called when loading system 
 		taskLock.lock();
 		this.toDoTasks = tasks;
 		taskLock.unlock();
 	}
 	
-	public void setFinishedTasks(List<Task> tasks){
+	public void setPerformedTasks(List<Task> tasks){
+		//only supposed to be called when loading system 
 		submitPerformedTaskLock.lock();
 		this.performedTasks = tasks;
 		submitPerformedTaskLock.unlock();
+	}
+	
+	public void addToTasksInProgress() {
+		
+	}
+	
+	public void returnRejectedTasks(List<Task> tasks) {
+		//only called if the worker has rejected tasks (this is checked by each 
+		//worker independently). 
+	}
+	
+	public void setTasksInProgress(List<Task> tasks) {
+		//only supposed to be called when loading system 
+		taskLock.lock();
+		this.tasksInProgress = tasks;
+		taskLock.unlock();
 	}
 	
 	public List<Task> getTasksToBeDone(){
@@ -106,6 +130,13 @@ public class TaskBoard {
 	
 	public List<Task> getPerformedTasks(){
 		return this.performedTasks;
+	}
+	
+	public List<Task> getTasksInProgress(){
+		//only supposed to be called when recording the system to files
+		//this should theoretically return empty tasks for now, as
+		//system is only recorded and loaded before and after sprints
+		return this.tasksInProgress;
 	}
 	
 	public int getLastTaskID(){

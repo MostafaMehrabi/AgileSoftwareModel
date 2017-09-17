@@ -179,15 +179,42 @@ public class SystemLoader {
 				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
 				int lastTaskID = Integer.parseInt(reader.readLine());
 				taskBoard.setLastTaskID(lastTaskID);
-				//loadToDoTasks
-				//loadInProgressTasks
-				//loadPerformedTasks
+				List<Task> toDoTasks = loadToDoTask();
+				List<Task> tasksInProgress = loadTasksInProgress();
+				List<Task> performedTasks = loadPerformedTasks();
+				
+				if(!toDoTasks.isEmpty())
+					taskBoard.setToDoTasks(toDoTasks);
+				
+				if(!tasksInProgress.isEmpty())
+					taskBoard.setTasksInProgress(tasksInProgress);
+				
+				if(!performedTasks.isEmpty())
+					taskBoard.setPerformedTasks(performedTasks);
+				
 				reader.close();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 		return taskBoard;
+	}
+	
+	private static List<Task> loadToDoTask(){
+		//tasks should be conventionally recorded in files following the format:
+		//TASK: id name storyPoints performerID [required skills...]
+		//DESCRIPTION: if any description provided, will be held in this optional record. 
+		return null;
+	}
+	
+	private static List<Task> loadTasksInProgress(){
+		//theoretically should always be empty, because recording the system
+		//should only take place after or before a sprint starts. 
+		return null;
+	}
+	
+	private static List<Task> loadPerformedTasks(){
+		return null;
 	}
 	
 	private static List<Task> loadBackLog(){
