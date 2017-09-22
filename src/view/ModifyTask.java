@@ -164,4 +164,8 @@ public class ModifyTask {
 		doneButton.setBounds(214, 258, 256, 46);
 		frmAddmodifyTask.getContentPane().add(doneButton);
 	}
+	
+	public void setVisible(boolean visibility){
+		frmAddmodifyTask.setVisible(visibility);
+	}
 }

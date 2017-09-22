@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -10,7 +8,6 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -24,14 +21,9 @@ import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
 import java.awt.SystemColor;
 
-import enums.MemberRole;
-
-
 public class MainWindow {
 
 	private JFrame frame;
-	private final ButtonGroup radioButtonGroup = new ButtonGroup();
-	private MemberRole role = MemberRole.Developer;
 	private JTable table;
 	private JTable toDoTasksTable;
 	private JTable tasksInProgressTable;
@@ -41,22 +33,6 @@ public class MainWindow {
 	private DefaultTableModel finishedTasksTableModel = new DefaultTableModel();
 
 
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -239,5 +215,9 @@ public class MainWindow {
 				}
 			}
 		});			
+	}
+	
+	public void setVisible(boolean visibility){
+		frame.setVisible(visibility);
 	}
 }

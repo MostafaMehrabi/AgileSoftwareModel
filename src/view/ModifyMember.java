@@ -183,4 +183,8 @@ public class ModifyMember {
 			}
 		});
 	}
+	
+	public void setVisible(boolean visibility){
+		newMemberFrame.setVisible(visibility);
+	}
 }

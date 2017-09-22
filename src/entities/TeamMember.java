@@ -106,7 +106,7 @@ public class TeamMember {
 		this.lastName = name;
 	}
 	
-	public long getID(){
+	public int getID(){
 		return this.id;
 	}
 	

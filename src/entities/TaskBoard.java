@@ -88,24 +88,34 @@ public class TaskBoard {
 		taskLock.unlock();
 	}
 	
-	public void setTasksToBeDone(List<Task> tasks){
+	public void setToDoTasks(List<Task> tasks){
 		taskLock.lock();
 		this.toDoTasks = tasks;
 		taskLock.unlock();
 	}
 	
-	public void setFinishedTasks(List<Task> tasks){
+	public void setInProgressTasks(List<Task> tasks){
+		taskLock.lock();
+		this.tasksInProgress = tasks;
+		taskLock.unlock();
+	}
+	
+	public void setPerformedTasks(List<Task> tasks){
 		submitPerformedTaskLock.lock();
 		this.performedTasks = tasks;
 		submitPerformedTaskLock.unlock();
 	}
 	
-	public List<Task> getTasksToBeDone(){
+	public List<Task> getToDoTasks(){
 		return this.toDoTasks;
 	}
 	
 	public List<Task> getPerformedTasks(){
 		return this.performedTasks;
+	}
+	
+	public List<Task> getInProgressTasks(){
+		return this.tasksInProgress;
 	}
 	
 	public int getLastTaskID(){

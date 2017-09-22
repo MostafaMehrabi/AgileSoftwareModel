@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import entities.Task;
 
@@ -19,13 +21,14 @@ public class SystemLoader {
 	
 
 	
-	public static Team loadSystem(){
+	public static Team loadSystem(){	
 		File baseDirectory = new File(Main.getBaseDirectoryPath());
 		if(!baseDirectory.exists()){
 			if(!baseDirectory.mkdirs()){
 				throw new RuntimeException("System was not able to create one or more directory/directories in path: " + Main.getBaseDirectoryPath());
 			}
 		}
+		
 		Team team = loadTeam();
 		
 		List<TeamMember> teamPersonnel = loadPersonnel();
@@ -53,6 +56,7 @@ public class SystemLoader {
 	}
 	
 	private static Team loadTeam(){
+		
 		Team team = Team.getTeam();
 		String teamFileName = Main.getBaseDirectoryPath() + File.separator + Main.getTeamFileName();
 		File teamFile = new File(teamFileName);
@@ -115,15 +119,6 @@ public class SystemLoader {
 		return team;
 	}
 	
-	private static TaskAllocationStrategy resolveTaskAllocationStrategy(String line){
-		if(line.equals(TaskAllocationStrategy.ExpertiseBased.toString()))
-			return TaskAllocationStrategy.ExpertiseBased;
-		else if(line.equals(TaskAllocationStrategy.LearningBased.toString()))
-			return TaskAllocationStrategy.LearningBased;
-		else
-			throw new RuntimeException("THE TASK ALLOCATION STRATEGY THAT IS LOADED BY THE SYSTEM IS NOT VALID");
-	}
-	
 	private static List<TeamMember> loadPersonnel(){
 		List<TeamMember> personnel = new ArrayList<>();
 		String personnelFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPersonnelFileName();
@@ -160,15 +155,6 @@ public class SystemLoader {
 		return personnel;
 	}
 	
-	private static MemberRole resolveRole(String role){
-		if(role.equals(MemberRole.Developer.toString()))
-			return MemberRole.Developer;
-		else if(role.equals(MemberRole.Tester.toString()))
-			return MemberRole.Tester;
-		else
-			throw new RuntimeException("THE MEMBER ROLE THAT IS LOADED BY THE SYSTEM IS NOT VALID");				
-	}
-	
 	private static TaskBoard loadTaskBoard(){
 		TaskBoard taskBoard = null;
 		String TaskBoardFileName = Main.getBaseDirectoryPath() + File.separator + Main.getTaskBoardFielName();
@@ -179,9 +165,19 @@ public class SystemLoader {
 				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
 				int lastTaskID = Integer.parseInt(reader.readLine());
 				taskBoard.setLastTaskID(lastTaskID);
-				//loadToDoTasks
-				//loadInProgressTasks
-				//loadPerformedTasks
+				
+				List<Task> toDoTasks = loadToDoTasks();
+				if(!toDoTasks.isEmpty())
+					taskBoard.setToDoTasks(toDoTasks);
+				
+				List<Task> inProgressTasks = loadInProgressTasks();
+				if(!inProgressTasks.isEmpty())
+					taskBoard.setInProgressTasks(inProgressTasks);
+				
+				List<Task> performedTasks = loadPerformedTasks();
+				if(!performedTasks.isEmpty())
+					taskBoard.setPerformedTasks(performedTasks);
+				
 				reader.close();
 			}catch(Exception e){
 				e.printStackTrace();
@@ -190,11 +186,117 @@ public class SystemLoader {
 		return taskBoard;
 	}
 	
+	private static List<Task> loadToDoTasks(){
+		String toDoTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getToDoTasksForSprintFileName();
+		return loadTasksFromFile(toDoTasksFileName);
+	}
+	
+	private static List<Task> loadInProgressTasks(){
+		String inProgressTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getInProgressTasksFileName();
+		return loadTasksFromFile(inProgressTasksFileName);
+	}
+	
+	private static List<Task> loadPerformedTasks(){
+		String performedTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPerformedTasksForSprintFileName();
+		return loadTasksFromFile(performedTasksFileName);
+	}
+	
 	private static List<Task> loadBackLog(){
-		return null;
+		String backLogFileName = Main.getBaseDirectoryPath() + File.separator + Main.getBackLogTasksFileName();
+		return loadTasksFromFile(backLogFileName);
 	}
 	
 	private static List<Task> loadAllTasksDoneSoFar(){
-		return null;
+		String allFinishedTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getAllFinishedTasksFileName();
+		return loadTasksFromFile(allFinishedTasksFileName);
+	}
+	
+	private static List<Task> loadTasksFromFile(String fileName){
+		//Tasks are saved in each file using the following format
+		//TASKS: taskName id storyPoints performerID [skillAreas...]
+		//DESCRIPTION: [optional description about the task]
+		List<Task> tasks = new ArrayList<>();
+		File taskFile = new File(fileName);
+		if(taskFile.exists()){
+			try{
+				BufferedReader reader = new BufferedReader(new FileReader(taskFile));
+				String line = reader.readLine();
+				while(line != null){
+					if(line.startsWith(Main.getTaskSyntax())){
+						String[] elements = line.split(" ");
+						//first element is TASK:
+						//second element is taskName
+						String taskName = elements[1];
+						//third element is taskID
+						int taskID = Integer.parseInt(elements[2]);
+						//fourth element is storyPionts
+						int storyPoints = Integer.parseInt(elements[3]);
+						//fifth element is performerID 
+						int performerID = Integer.parseInt(elements[4]);
+						Set<SkillArea> requiredSkillAreas = new HashSet<>();
+						if(elements.length > 5){
+							for(int index = 5; index < elements.length; index++){
+								requiredSkillAreas.add(resolveSkillArea(elements[index]));
+							}
+						}
+						
+						Task task = new Task(taskID, taskName, storyPoints, requiredSkillAreas);
+						task.setPerformerID(performerID);
+
+						String taskDescription = "";
+						line = reader.readLine();
+						if(line.startsWith(Main.getDescriptionSyntax())){
+							taskDescription = line.substring(Main.getDescriptionSyntax().length());
+							line = reader.readLine();
+						}
+						
+						task.setTaskDescription(taskDescription);
+						tasks.add(task);
+					}
+					if(line.isEmpty()){
+						line = reader.readLine();
+					}
+				}
+				reader.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return tasks;
+	}	
+	
+	private static TaskAllocationStrategy resolveTaskAllocationStrategy(String line){
+		if(line.equals(TaskAllocationStrategy.ExpertiseBased.toString()))
+			return TaskAllocationStrategy.ExpertiseBased;
+		else if(line.equals(TaskAllocationStrategy.LearningBased.toString()))
+			return TaskAllocationStrategy.LearningBased;
+		else
+			throw new RuntimeException("THE TASK ALLOCATION STRATEGY THAT IS LOADED BY THE SYSTEM IS NOT VALID");
+	}
+	
+	private static MemberRole resolveRole(String role){
+		if(role.equals(MemberRole.Developer.toString()))
+			return MemberRole.Developer;
+		else if(role.equals(MemberRole.Tester.toString()))
+			return MemberRole.Tester;
+		else
+			throw new RuntimeException("THE MEMBER ROLE THAT IS LOADED BY THE SYSTEM IS NOT VALID");				
+	}
+	
+	private static SkillArea resolveSkillArea(String skill){
+		String frontEnd = SkillArea.FrontEnd.toString();
+		String backEnd = SkillArea.BackEnd.toString();
+		String design = SkillArea.Design.toString();
+		String testing = SkillArea.Testing.toString();
+		if(skill.equals(frontEnd))
+			return SkillArea.FrontEnd;
+		else if(skill.equals(backEnd))
+			return SkillArea.BackEnd;
+		else if (skill.equals(design))
+			return SkillArea.Design;
+		else if (skill.equals(testing))
+			return SkillArea.Testing;
+		else
+			throw new RuntimeException("THE SKILL AREA THAT IS LOADED BY THE SYSTEM IS NOT VALID");
 	}
 }

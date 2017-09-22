@@ -80,7 +80,7 @@ public class Team {
 		this.allTasksDoneSoFar.add(task);
 	}
 	
-	public int getLasMemberID(){
+	public int getLastMemberID(){
 		return this.lastMemebrID;
 	}
 	
@@ -175,6 +175,10 @@ public class Team {
 	
 	public int getHighExpertiseHigherBoundary(){
 		return highExpertiseHigherBoundary;
+	}
+	
+	public int getTctToSystemTimeCoefficient(){
+		return this.tctToSystemTimeCoefficient;
 	}
 	
 	public void setTctToSystemTimeCoefficient(int coef){
