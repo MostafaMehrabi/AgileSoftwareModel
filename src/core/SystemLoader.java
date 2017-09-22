@@ -170,11 +170,12 @@ public class SystemLoader {
 				if(!toDoTasks.isEmpty())
 					taskBoard.setToDoTasks(toDoTasks);
 				
-				List<Task> inProgressTasks = loadInProgressTasks();
+				List<Task> inProgressTasks = loadTasksInProgress();
 				if(!inProgressTasks.isEmpty())
 					taskBoard.setInProgressTasks(inProgressTasks);
 				
 				List<Task> performedTasks = loadPerformedTasks();
+
 				if(!performedTasks.isEmpty())
 					taskBoard.setPerformedTasks(performedTasks);
 				
@@ -186,12 +187,13 @@ public class SystemLoader {
 		return taskBoard;
 	}
 	
+
 	private static List<Task> loadToDoTasks(){
 		String toDoTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getToDoTasksForSprintFileName();
 		return loadTasksFromFile(toDoTasksFileName);
 	}
 	
-	private static List<Task> loadInProgressTasks(){
+	private static List<Task> loadTasksInProgress(){
 		String inProgressTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getInProgressTasksFileName();
 		return loadTasksFromFile(inProgressTasksFileName);
 	}

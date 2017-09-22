@@ -152,7 +152,7 @@ public class SystemRecorder {
 			e.printStackTrace();
 		}
 		recordToDoTasks(taskBoard.getToDoTasks());
-		recordInProgressTasks(taskBoard.getInProgressTasks());
+		recordInProgressTasks(taskBoard.getTasksInProgress());
 		recordPeformedTasks(taskBoard.getPerformedTasks());
 	}
 	
