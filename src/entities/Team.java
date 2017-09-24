@@ -1,5 +1,9 @@
 package entities;
 
+//Very important: mechanism for adding a backlog history must be added, so that we can hold onto the list of project backlogs,
+//because we must be able to repeat them for different task allocation strategies.
+//priority attribute must be added to tasks, as well as task allocation methods that consider priority (a place holder for this)!
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +14,7 @@ import core.Main;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
+
 
 public class Team {
 	private TaskAllocationStrategy taskAllocationStrategy;
