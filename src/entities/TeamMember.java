@@ -85,7 +85,7 @@ public class TeamMember {
 		if(expertiseLevel >= team.getMediumExpertiseLowerBoundary() && expertiseLevel <= team.getMediumExpertiseHigherBoundary())
 			return team.getMediumExpertiseCoefficient();
 		if(expertiseLevel >= team.getHighExpertiseLowerBoundary() && expertiseLevel <= team.getHighExpertiseHigherBoundary())
-			return team.getHighExpertiseCofficient();
+			return team.getHighExpertiseCoefficient();
 		else
 			throw new IllegalArgumentException("Expertise level in a skill area must be between 0 and 30 inclusive! Received expertise level: " + expertiseLevel);
 	}

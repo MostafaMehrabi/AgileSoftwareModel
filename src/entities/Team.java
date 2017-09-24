@@ -1,9 +1,14 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
+import core.Main;
 import enums.MemberRole;
+import enums.SkillArea;
 import enums.TaskAllocationStrategy;
 
 public class Team {
@@ -22,7 +27,8 @@ public class Team {
 	private boolean stopAfterEachSprint, teamWorking;
 	private static Team team = null;
 	private TaskBoard taskBoard;
-	
+	private int lastTaskID;
+
 	
 	private Team(){
 		this.taskAllocationStrategy = TaskAllocationStrategy.ExpertiseBased;
@@ -39,6 +45,7 @@ public class Team {
 		tctToSystemTimeCoefficient = 25;
 		stopAfterEachSprint = false; teamWorking = false;
 		lastMemebrID = 0;
+		lastTaskID = 0;
 	}
 	
 	public static Team getTeam(){
@@ -46,6 +53,14 @@ public class Team {
 			team = new Team();
 		}
 		return team;
+	}
+	
+	public int getLastTaskID(){
+		return lastTaskID;
+	}
+	
+	public void setLastTaskID(int lastTaskID){
+		this.lastTaskID = lastTaskID;
 	}
 	
 	public List<Task> getProjectBackLog(){
@@ -141,7 +156,7 @@ public class Team {
 		return this.mediumExpertiseCoefficient;
 	}
 	
-	public int getHighExpertiseCofficient(){
+	public int getHighExpertiseCoefficient(){
 		return this.highExpertiseCoefficient;
 	}
 	
@@ -237,5 +252,60 @@ public class Team {
 		if(low < mediumExpertiseHigherBoundary)
 			throw new IllegalArgumentException("Unacceptable lower boundary fow high expertise");
 		highExpertiseLowerBoundary = low; highExpertiseHigherBoundary = high;
+	}
+	
+	public void createRandomTasks(int numOfRandomTasks) {
+		for(int i = 1; i <= numOfRandomTasks; i++) {
+			lastTaskID += 1;
+			Random rand = new Random();
+			int randomNo = rand.nextInt(30) + 1; //returns a random value between 1 and 28
+			//for a wider range of variety, and lesser chance of repetition this interval has been considered
+			//to be between 1 to 28, for every interval of 4 digits, we have a certain permutation of skills required. 
+			//and only if the number is 29 or 30, it will be a testing task 
+			Set<SkillArea> requiredSkills = new HashSet<>();
+			if(randomNo <= 4) {
+				requiredSkills.add(SkillArea.BackEnd);
+			}else if(randomNo <= 8) {
+				requiredSkills.add(SkillArea.FrontEnd);
+			}else if(randomNo <= 12) {
+				requiredSkills.add(SkillArea.Design);
+			}else if(randomNo <= 16) {
+				requiredSkills.add(SkillArea.BackEnd);
+				requiredSkills.add(SkillArea.FrontEnd);
+			}else if(randomNo <= 20) {
+				requiredSkills.add(SkillArea.BackEnd);
+				requiredSkills.add(SkillArea.Design);
+			}else if(randomNo <= 24) {
+				requiredSkills.add(SkillArea.FrontEnd);
+				requiredSkills.add(SkillArea.Design);
+			}else if(randomNo <= 28) {
+				requiredSkills.add(SkillArea.BackEnd);
+				requiredSkills.add(SkillArea.FrontEnd);
+				requiredSkills.add(SkillArea.Design);
+			}else if(randomNo <= 30) {
+				requiredSkills.add(SkillArea.Testing);
+			}
+			
+			int taskId = lastTaskID;
+			String taskName = "RandomTask_" + i;
+			int storyPoints = (rand.nextInt(10) + 1); //a random number between 1 - 10
+			Task newTask = new Task(taskId, taskName, storyPoints, requiredSkills);
+			addTask(newTask);
+		}
+	}
+	
+	public void addNewTask(String name, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
+		if(storyPoints < 1 || storyPoints > 10){
+			throw new IllegalArgumentException("The value provided as story points for the"
+					+ " new task, can only be between 0 and 10, inclusive!");
+		}
+		int taskID = ++lastTaskID;
+		Task newTask = new Task(taskID, name, storyPoints, requiredSkillAreas);
+		addTask(newTask);
+	}
+	
+	private void addTask(Task task){
+		backLog.add(task);
+		Main.updateBackLogTabel(task);
 	}
 }

@@ -5,7 +5,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import entities.Task;
 import view.MainWindow;
+import view.ProgressBar;
 
 public class Main {
 	
@@ -21,14 +23,27 @@ public class Main {
 	private static String inProgressTasksForSprintFileName = "TasksInProgress";
 	private static String taskSyntax = "TASK: ";
 	private static String descriptionSyntax = "DESCRIPTION: ";
+	private static MainWindow mainWindow = null;
 
 	public static void main(String[] args){
+		ProgressBar progressBar = null;
+		
+		try {
+			progressBar = new ProgressBar("Please wait while system is loading ...");
+			progressBar.setVisible(true);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		loadMainInfo();
+		progressBar.setValue(5);
+		SystemLoader.loadSystem(progressBar);
+		progressBar.closeProgressBar();
 		EventQueue.invokeLater(new Runnable() {			
 			@Override
 			public void run() {
 				try{
-					MainWindow mainWindow = new MainWindow();
+					mainWindow = new MainWindow();
 					mainWindow.setVisible(true);
 				}catch(Exception e){
 					e.printStackTrace();
@@ -60,6 +75,15 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void updateBackLogTabel(Task task) {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				mainWindow.updateBackLogTabel(task);
+			}
+		});
 	}
 	
 	public static String getMainFileName(){

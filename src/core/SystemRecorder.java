@@ -75,7 +75,7 @@ public class SystemRecorder {
 			String highExpertiseBoundaries = team.getHighExpertiseLowerBoundary() + " " + team.getHighExpertiseHigherBoundary();
 			writer.println(highExpertiseBoundaries);
 			
-			String expertiseCoefs = team.getLowExpertiseCoefficient() + " " + team.getMediumExpertiseCoefficient() + " " + team.getHighExpertiseCofficient();
+			String expertiseCoefs = team.getLowExpertiseCoefficient() + " " + team.getMediumExpertiseCoefficient() + " " + team.getHighExpertiseCoefficient();
 			writer.println(expertiseCoefs);
 			
 			String tctToSystemTimeCoef = Integer.toString(team.getTctToSystemTimeCoefficient());
@@ -89,6 +89,9 @@ public class SystemRecorder {
 			
 			String lastMemberID = Integer.toString(team.getLastMemberID());
 			writer.println(lastMemberID);
+			
+			String lastTaskID = Integer.toString(team.getLastTaskID());
+			writer.println(lastTaskID);
 			
 			writer.flush();
 			writer.close();
@@ -145,7 +148,7 @@ public class SystemRecorder {
 		TaskBoard taskBoard = Team.getTeam().getTaskBoard();
 		try{
 			PrintWriter writer = new PrintWriter(taskBoardFileName);
-			writer.println(taskBoard.getLastTaskID());
+			//place holder for future records for taskBoard, currently taskBoard does not have anything to record. 
 			writer.flush();
 			writer.close();
 		}catch(Exception e){

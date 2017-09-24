@@ -2,11 +2,8 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import enums.SkillArea;
 
 public class TaskBoard {
 	private List<Task> toDoTasks;
@@ -14,7 +11,6 @@ public class TaskBoard {
 	private List<Task> performedTasks;
 	private Lock taskLock;
 	private Lock submitPerformedTaskLock;
-	private int lastTaskID;
 	
 	public TaskBoard(){
 		this.toDoTasks = new ArrayList<>();
@@ -22,29 +18,7 @@ public class TaskBoard {
 		this.tasksInProgress = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
 		this.submitPerformedTaskLock = new ReentrantLock();
-		this.lastTaskID = 0;
-	}
-	
-	public void addNewTask(String name, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
-		if(storyPoints < 1 || storyPoints > 10){
-			throw new IllegalArgumentException("The value provided as story points for the"
-					+ " new task, can only be between 0 and 10, inclusive!");
-		}
-		int taskID = ++lastTaskID;
-		Task newTask = new Task(taskID, name, storyPoints, requiredSkillAreas);
-		addTask(newTask);
-	}
-	
-	private void addTask(Task task){
-		try{
-			taskLock.lock();
-			toDoTasks.add(task);
-			taskLock.unlock();
-		}catch(Exception e){
-			System.err.println("An error occurred while trying to add a new task to the task board");
-			e.printStackTrace();
-		}
-	}
+	}	
 	
 	public Task pollTask(TeamMember developer){
 		taskLock.lock();
@@ -144,13 +118,5 @@ public class TaskBoard {
 		//this should theoretically return empty tasks for now, as
 		//system is only recorded and loaded before and after sprints
 		return this.tasksInProgress;
-	}
-	
-	public int getLastTaskID(){
-		return lastTaskID;
-	}
-	
-	public void setLastTaskID(int lastTaskID){
-		this.lastTaskID = lastTaskID;
 	}
 }

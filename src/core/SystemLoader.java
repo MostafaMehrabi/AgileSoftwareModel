@@ -16,12 +16,14 @@ import entities.TeamMember;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
+import view.ProgressBar;
 
 public class SystemLoader {
+	private static ProgressBar progressBar;
 	
-
-	
-	public static Team loadSystem(){	
+	public static Team loadSystem(ProgressBar pb){	
+		progressBar = pb;
+		
 		File baseDirectory = new File(Main.getBaseDirectoryPath());
 		if(!baseDirectory.exists()){
 			if(!baseDirectory.mkdirs()){
@@ -30,29 +32,34 @@ public class SystemLoader {
 		}
 		
 		Team team = loadTeam();
+		progressBar.setValue(24);
 		
 		List<TeamMember> teamPersonnel = loadPersonnel();
 		if(!teamPersonnel.isEmpty())
 			team.setPersonnel(teamPersonnel);
+		progressBar.setValue(43);
 		
 		TaskBoard taskBoard = loadTaskBoard();
 		if(taskBoard != null)
 			team.setTaskBoard(taskBoard);
+		progressBar.setValue(62);
 		
 		List<Task> backLog = loadBackLog();
 		if(!backLog.isEmpty())
 			team.setProjectBackLog(backLog);
+		progressBar.setValue(81);
 		
 		List<Task> allTasksDoneSoFar = loadAllTasksDoneSoFar();
 		if(!allTasksDoneSoFar.isEmpty())
 			team.setAllTasksDoneSoFar(allTasksDoneSoFar);
+		progressBar.setValue(100);
 		
 		return team;
 	}
 	
-	public static Team loadSystem(String baseDirPath){
+	public static Team loadSystem(String baseDirPath, ProgressBar pb){
 		Main.setBaseDirectoryPath(baseDirPath);
-		return loadSystem();
+		return loadSystem(pb);
 	}
 	
 	private static Team loadTeam(){
@@ -106,6 +113,9 @@ public class SystemLoader {
 							break;
 						case 10://the eleventh line tells the latest id that is used for a team member
 							team.setLastMemberID(Integer.parseInt(line));
+							break;
+						case 11:
+							team.setLastTaskID(Integer.parseInt(line));
 							break;
 					}
 					line = fileReader.readLine();
@@ -163,8 +173,7 @@ public class SystemLoader {
 			try{
 				taskBoard = new TaskBoard();
 				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
-				int lastTaskID = Integer.parseInt(reader.readLine());
-				taskBoard.setLastTaskID(lastTaskID);
+				//currently, there is nothing to read from a file for taskBoard, this is a place holder
 				
 				List<Task> toDoTasks = loadToDoTasks();
 				if(!toDoTasks.isEmpty())
