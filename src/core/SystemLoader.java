@@ -102,7 +102,7 @@ public class SystemLoader {
 							team.setHighExpertiseCoefficient(Integer.parseInt(expertiseCoefficients[2]));
 							break;
 						case 7://the eighth line tells the tct to system time coefficient
-							team.setTctToSystemTimeCoefficient(Integer.parseInt(line));
+							team.setHoursToSystemTimeCoefficient(Integer.parseInt(line));
 							break;
 						case 8://the ninth line tells whether the system should stop after each sprint
 							team.setStopAfterEachSprint(Boolean.parseBoolean(line));
@@ -114,8 +114,14 @@ public class SystemLoader {
 						case 10://the eleventh line tells the latest id that is used for a team member
 							team.setLastMemberID(Integer.parseInt(line));
 							break;
-						case 11:
+						case 11://the twelfth line tells the last task ID 
 							team.setLastTaskID(Integer.parseInt(line));
+							break;
+						case 12://the thirteenth line tells the number of hours in each sprint
+							team.setHoursPerSplit(Integer.parseInt(line));
+							break;
+						case 13://the fourteenth line tells the number of story pionts that are initially moved for the first sprint, if randomly moved by the system
+							team.setInitialStoryPoints(Integer.parseInt(line));
 							break;
 					}
 					line = fileReader.readLine();

@@ -1,5 +1,8 @@
 package entities;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 //Very important: mechanism for adding a backlog history must be added, so that we can hold onto the list of project backlogs,
 //because we must be able to repeat them for different task allocation strategies.
 //priority attribute must be added to tasks, as well as task allocation methods that consider priority (a place holder for this)!
@@ -10,6 +13,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.swing.Timer;
 
 import core.Main;
 import core.SystemRecorder;
@@ -30,11 +37,13 @@ public class Team {
 	private int mediumExpertiseLowerBoundary, mediumExpertiseHigherBoundary;
 	private int highExpertiseLowerBoundary, highExpertiseHigherBoundary;
 	private int lowExpertiseCoefficient, mediumExpertiseCoefficient, highExpertiseCoefficient;
-	private int tctToSystemTimeCoefficient;
+	private int hoursToSystemTimeCoefficient;
 	private boolean stopAfterEachSprint, teamWorking;
 	private static Team team = null;
 	private TaskBoard taskBoard;
 	private int lastTaskID;
+	private int hoursPerSprint;
+	private int initialStoryPoints;
 
 	
 	private Team(){
@@ -50,8 +59,10 @@ public class Team {
 		mediumExpertiseLowerBoundary = 6; mediumExpertiseHigherBoundary = 20;
 		highExpertiseLowerBoundary = 21; highExpertiseHigherBoundary = 30;
 		lowExpertiseCoefficient = 1; mediumExpertiseCoefficient = 3; highExpertiseCoefficient = 5;
-		tctToSystemTimeCoefficient = 25;
+		hoursToSystemTimeCoefficient = 60*25;
 		stopAfterEachSprint = false; teamWorking = false;
+		hoursPerSprint = 80;
+		initialStoryPoints = 60;
 		lastMemebrID = 0;
 		lastTaskID = 0;
 	}
@@ -69,6 +80,22 @@ public class Team {
 	
 	public void setLastTaskID(int lastTaskID){
 		this.lastTaskID = lastTaskID;
+	}
+	
+	public int getHoursPerSpring(){
+		return this.hoursPerSprint;
+	}
+	
+	public void setHoursPerSplit(int hours){
+		this.hoursPerSprint = hours;
+	}
+	
+	public int getInitialStoryPoints(){
+		return this.initialStoryPoints;
+	}
+	
+	public void setInitialStoryPoints(int points){
+		this.initialStoryPoints = points; 
 	}
 	
 	public List<Task> getProjectBackLog(){
@@ -120,7 +147,7 @@ public class Team {
 	}
 	
 	public long convertTctToSystemTime(double tct){
-		return (long) (tct * tctToSystemTimeCoefficient);
+		return (long) (tct * hoursToSystemTimeCoefficient);
 	}
 	
 	public TaskAllocationStrategy getTaskAllocationStrategy(){
@@ -195,12 +222,12 @@ public class Team {
 		return highExpertiseHigherBoundary;
 	}
 	
-	public int getTctToSystemTimeCoefficient(){
-		return this.tctToSystemTimeCoefficient;
+	public int getHoursToSystemTimeCoefficient(){
+		return this.hoursToSystemTimeCoefficient;
 	}
 	
-	public void setTctToSystemTimeCoefficient(int coef){
-		this.tctToSystemTimeCoefficient = coef;
+	public void setHoursToSystemTimeCoefficient(int coef){
+		this.hoursToSystemTimeCoefficient = coef;
 	}
 	
 	public void setStopAfterEachSprint(boolean stop){
@@ -346,4 +373,41 @@ public class Team {
 	public List<Task> getPerformedTasks(){
 		return taskBoard.getPerformedTasks();
 	}
+	
+	public int getSprintNumber(){
+		return taskBoard.getSprintNo();
+	}
+	
+	public void setSpringNumber(int number){
+		taskBoard.setSprintNo(number);
+	}
+	
+	public void startNewSprint(){
+		//remember to disable the start button until sprint is over! or maybe even until project is over?
+		ExecutorService executors = Executors.newFixedThreadPool(teamPersonnel.size());
+		for(TeamMember member : teamPersonnel){
+			Worker worker = new Worker(member);
+			executors.submit(worker);
+		}
+		startSprintTimer();
+	}
+	
+	private void startSprintTimer(){
+		Main.setTaskBoardProgress(0);
+		Main.setTaskBoardSprintNo(taskBoard.getSprintNo());
+		int sprintLengthInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
+		int lengthOfPercent = sprintLengthInSystemTime / 100;
+		Timer timer = new Timer(lengthOfPercent, new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int progress = Main.getTaskBoardProgress();
+				if(progress == 100){
+					((Timer)e.getSource()).stop();
+				}else{
+					Main.setTaskBoardProgress(progress + 1);
+				}
+			}
+		});
+		timer.start();
+	}	
 }

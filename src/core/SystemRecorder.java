@@ -90,7 +90,7 @@ public class SystemRecorder {
 			String expertiseCoefs = team.getLowExpertiseCoefficient() + " " + team.getMediumExpertiseCoefficient() + " " + team.getHighExpertiseCoefficient();
 			writer.println(expertiseCoefs);
 			
-			String tctToSystemTimeCoef = Integer.toString(team.getTctToSystemTimeCoefficient());
+			String tctToSystemTimeCoef = Integer.toString(team.getHoursToSystemTimeCoefficient());
 			writer.println(tctToSystemTimeCoef);
 			
 			String stopAfterEachSprint = Boolean.toString(team.getStopAfterEachSprint());
@@ -104,6 +104,12 @@ public class SystemRecorder {
 			
 			String lastTaskID = Integer.toString(team.getLastTaskID());
 			writer.println(lastTaskID);
+			
+			String hoursPerSpring = Integer.toString(team.getHoursPerSpring());
+			writer.println(hoursPerSpring);
+			
+			String initialStoryPoints = Integer.toString(team.getInitialStoryPoints());
+			writer.println(initialStoryPoints);
 			
 			writer.flush();
 			writer.close();

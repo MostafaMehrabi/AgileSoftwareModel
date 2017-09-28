@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -69,6 +71,8 @@ public class MainWindow {
 
 	private JComboBox<String> allocationStrategyComboBox;
 	private DefaultComboBoxModel<String> allocationStrategyComboBoxModel;
+	private JProgressBar taskBoardProgressBar;
+	private JLabel sprintNumberLabel;
 
 	/**
 	 * Create the application.
@@ -183,14 +187,14 @@ public class MainWindow {
 					boolean answer = Main.issueQuesionDialogue("You have not selected any tasks, do you want the system to "
 							+ "\n automatically select and move to sprint backlog?", "");
 					if (answer)
-						System.out.println("you said yes");
+						automaticTaskMoveToFirstSprint();
 				}				
 				else{
-					Team.getTeam().moveToSprintBackLog(selectedIndecies);	
-					repopulateBackLogTable();
-					repopulateToDoTasksTable();
-					tabbedPane.setSelectedIndex(1);
+					Team.getTeam().moveToSprintBackLog(selectedIndecies);					
 				}
+				repopulateBackLogTable();
+				repopulateToDoTasksTable();
+				tabbedPane.setSelectedIndex(1);
 			}
 		});
 		addTasksForSprintButton.setFont(new Font("Times New Roman", Font.PLAIN, 14));
@@ -263,11 +267,11 @@ public class MainWindow {
 		finishedTasksLabel.setBounds(646, 52, 235, 31);
 		displayTaskBoardPanel.add(finishedTasksLabel);
 		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setStringPainted(true);
-		progressBar.setForeground(Color.GREEN);
-		progressBar.setBounds(212, 400, 587, 31);
-		displayTaskBoardPanel.add(progressBar);
+		taskBoardProgressBar = new JProgressBar();
+		taskBoardProgressBar.setStringPainted(true);
+		taskBoardProgressBar.setForeground(Color.GREEN);
+		taskBoardProgressBar.setBounds(168, 400, 631, 31);
+		displayTaskBoardPanel.add(taskBoardProgressBar);
 		
 		JLabel lblTimeLeftTo = new JLabel("Time Left to the End of Sprint");
 		lblTimeLeftTo.setEnabled(false);
@@ -282,7 +286,7 @@ public class MainWindow {
 		taskBoardLabel.setBounds(353, 11, 175, 30);
 		displayTaskBoardPanel.add(taskBoardLabel);
 		
-		JLabel sprintNumberLabel = new JLabel("1");
+		sprintNumberLabel = new JLabel();
 		sprintNumberLabel.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		sprintNumberLabel.setBounds(521, 11, 52, 30);
 		displayTaskBoardPanel.add(sprintNumberLabel);
@@ -290,7 +294,7 @@ public class MainWindow {
 		JButton startSprintButton = new JButton("Start the Sprint");
 		startSprintButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SystemRecorder.recordSystemStatus();
+				Team.getTeam().startNewSprint();
 			}
 		});
 		startSprintButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -471,11 +475,11 @@ public class MainWindow {
 		highExpertiseCoefficientTextField.setBounds(771, 241, 78, 25);
 		teamAdminPanel.add(highExpertiseCoefficientTextField);
 		
-		JLabel tctToSystemTimeCoefLabel = new JLabel("TCT to System Time Coefficient");
-		tctToSystemTimeCoefLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		tctToSystemTimeCoefLabel.setEnabled(false);
-		tctToSystemTimeCoefLabel.setBounds(10, 296, 208, 25);
-		teamAdminPanel.add(tctToSystemTimeCoefLabel);
+		JLabel hoursToSystemTimeCoefLabel = new JLabel("Hours to System Time Coefficient");
+		hoursToSystemTimeCoefLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		hoursToSystemTimeCoefLabel.setEnabled(false);
+		hoursToSystemTimeCoefLabel.setBounds(10, 296, 208, 25);
+		teamAdminPanel.add(hoursToSystemTimeCoefLabel);
 		
 		TCTtoSystemCoefTextField = new JTextField();
 		TCTtoSystemCoefTextField.setColumns(10);
@@ -498,10 +502,10 @@ public class MainWindow {
 		else
 			stopAfterEachSprintCheckBox.setSelected(false);
 		
-		JButton saveTeamSettingsButton = new JButton("Save System");
-		saveTeamSettingsButton.setBounds(622, 351, 227, 56);
-		teamAdminPanel.add(saveTeamSettingsButton);
-		saveTeamSettingsButton.addActionListener(new ActionListener() {			
+		JButton saveSystemButton = new JButton("Save System");
+		saveSystemButton.setBounds(622, 351, 227, 56);
+		teamAdminPanel.add(saveSystemButton);
+		saveSystemButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveSystem();
@@ -678,9 +682,9 @@ public class MainWindow {
 		try {
 			String tst = TCTtoSystemCoefTextField.getText();
 			int tctToSystemTime = Integer.parseInt(tst);
-			team.setTctToSystemTimeCoefficient(tctToSystemTime);
+			team.setHoursToSystemTimeCoefficient(tctToSystemTime);
 		}catch(NumberFormatException exception) {
-			TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
+			TCTtoSystemCoefTextField.setText(Integer.toString(team.getHoursToSystemTimeCoefficient()));
 			Main.issueErrorMessage("The value provided for TCT to system time coefficient is not a valid integer, try again!");
 		}
 		
@@ -718,7 +722,7 @@ public class MainWindow {
 		personnelTableModel.addRow(rowData);
 	}
 	
-	private void repopulateBackLogTable(){
+	public void repopulateBackLogTable(){
 		int numOfRows = backLogTableModel.getRowCount();
 		for(int index = (numOfRows-1); index >= 0; index--)
 			backLogTableModel.removeRow(index);
@@ -743,7 +747,7 @@ public class MainWindow {
 		}
 	}	
 	
-	private void repopulateToDoTasksTable(){
+	public void repopulateToDoTasksTable(){
 		int numOfRows = toDoTaskTableModel.getRowCount();
 		for(int index = (numOfRows-1); index >= 0; index--)
 			toDoTaskTableModel.removeRow(index);
@@ -767,7 +771,7 @@ public class MainWindow {
 		}
 	}
 	
-	private void repopulateTaskInProgress(){
+	public void repopulateTaskInProgress(){
 		int numOfRows = tasksInProgressTableModel.getRowCount();
 		for(int index = (numOfRows-1); index >= 0; index--)
 			tasksInProgressTableModel.removeRow(index);
@@ -783,7 +787,7 @@ public class MainWindow {
 		}
 	}
 	
-	private void repopulateCompletedTasks(){
+	public void repopulateCompletedTasks(){
 		int numOfRows = finishedTasksTableModel.getRowCount();
 		for(int index = (numOfRows-1); index >= 0; index--)
 			finishedTasksTableModel.removeRow(index);
@@ -798,25 +802,8 @@ public class MainWindow {
 			finishedTasksTableModel.addRow(rowData);
 		}
 	}
-	
-	private void loadTeamTab(){
-		Team team = Team.getTeam();
-		allocationStrategyComboBoxModel.setSelectedItem(team.getTaskAllocationStrategy().toString());
-		storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));
-		progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
-		lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
-		lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
-		lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
-		medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
-		medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));		
-		medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));	
-		highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));	
-		highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));	
-		highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));	
-		TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
-	}
-	
-	private void repopulatePersonnel(){
+		
+	public void repopulatePersonnel(){
 		int numOfRows = personnelTableModel.getRowCount();
 		for(int index = (numOfRows-1); index >= 0; index--)
 			personnelTableModel.removeRow(index);
@@ -834,5 +821,56 @@ public class MainWindow {
 			String[] rowData = {ID, firstName, lastname, role, expInFE, expInBE, expInDesign};
 			personnelTableModel.addRow(rowData);
 		}
+	}
+	
+	public int getTasBoardProgress(){
+		return taskBoardProgressBar.getValue();
+	}
+	
+	public void setTaskBoardProgress(int progress){
+		taskBoardProgressBar.setValue(progress);
+		taskBoardProgressBar.repaint();
+	}
+	
+	public  void setTaskBoardSprintNo(int sprintNo){
+		sprintNumberLabel.setText(Integer.toString(sprintNo));
+	}
+	
+
+	private void loadTeamTab(){
+		Team team = Team.getTeam();
+		allocationStrategyComboBoxModel.setSelectedItem(team.getTaskAllocationStrategy().toString());
+		storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));
+		progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
+		lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
+		lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
+		lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
+		medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
+		medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));		
+		medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));	
+		highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));	
+		highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));	
+		highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));	
+		TCTtoSystemCoefTextField.setText(Integer.toString(team.getHoursToSystemTimeCoefficient()));
+		sprintNumberLabel.setText(Integer.toString(team.getSprintNumber()));
+	}
+	
+	private void automaticTaskMoveToFirstSprint(){
+		Team team = Team.getTeam();
+		List<Integer> taskIndices = new ArrayList<>();
+		int storyPointsToBeMoved = 0;
+		int taskIndex = 0;
+		
+		do{
+			taskIndices.add(taskIndex);
+			storyPointsToBeMoved += Integer.parseInt((String)backLogTableModel.getValueAt(taskIndex, 1));
+			taskIndex++;
+		}while(storyPointsToBeMoved < team.getInitialStoryPoints());
+		System.out.println(storyPointsToBeMoved);
+		int[] array = new int[taskIndices.size()];
+		for(int index = 0; index < taskIndices.size(); index++){
+			array[index] = taskIndices.get(index);
+		}
+		team.moveToSprintBackLog(array);
 	}
 }

@@ -215,4 +215,16 @@ public class Main {
 		else 
 			return false;
 	}	
+	
+	public static void setTaskBoardProgress(int progress){
+		mainWindow.setTaskBoardProgress(progress);
+	}
+	
+	public static int getTaskBoardProgress(){
+		return mainWindow.getTasBoardProgress();
+	}
+	
+	public static void setTaskBoardSprintNo(int sprintNo){
+		mainWindow.setTaskBoardSprintNo(sprintNo);
+	}
 }
