@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -9,11 +7,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import enums.SkillArea;
 
 import javax.swing.SwingConstants;
+
+import core.Main;
+import entities.Team;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
@@ -25,22 +29,6 @@ public class ModifyTask {
 	private JTextField taskNameTextField;
 	private JTextField taskDescriptionTextField;
 	List<SkillArea> requiredSkillAreas;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ModifyTask window = new ModifyTask();
-					window.frmAddmodifyTask.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -57,7 +45,7 @@ public class ModifyTask {
 		frmAddmodifyTask = new JFrame();
 		frmAddmodifyTask.setTitle("Add/Modify Task");
 		frmAddmodifyTask.setBounds(100, 100, 668, 362);
-		frmAddmodifyTask.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAddmodifyTask.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmAddmodifyTask.getContentPane().setLayout(null);
 		
 		taskNameTextField = new JTextField();
@@ -160,6 +148,30 @@ public class ModifyTask {
 		});
 		
 		JButton doneButton = new JButton("Done");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//potential robustness and error checking code can be added here
+				String taskName = taskNameTextField.getText();
+				String taskDescription = taskDescriptionTextField.getText();
+				Integer storyPoints = (Integer) storyPointSpinner.getValue();
+				Set<SkillArea> skillAreas = new HashSet<>();
+				if(frontEndCheckBox.isSelected())
+					skillAreas.add(SkillArea.FrontEnd);
+				if(backEndCheckBox.isSelected())
+					skillAreas.add(SkillArea.BackEnd);
+				if(designCheckBox.isSelected())
+					skillAreas.add(SkillArea.Design);
+				if(testingCheckBox.isSelected())
+					skillAreas.add(SkillArea.Testing);
+				frmAddmodifyTask.setVisible(false);
+				frmAddmodifyTask.dispose();
+				try{
+					Team.getTeam().addNewTaskToBackLog(taskName, taskDescription, storyPoints, skillAreas);
+				}catch(Exception exception){
+					Main.issueErrorMessage(exception.getMessage());
+				}
+			}
+		});
 		doneButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		doneButton.setBounds(214, 258, 256, 46);
 		frmAddmodifyTask.getContentPane().add(doneButton);

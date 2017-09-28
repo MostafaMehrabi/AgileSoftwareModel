@@ -7,25 +7,27 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Panel;
 import javax.swing.table.DefaultTableModel;
 
+import core.Main;
+import core.SystemRecorder;
 import entities.Task;
 import entities.Team;
+import entities.TeamMember;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.JProgressBar;
-import javax.swing.ScrollPaneConstants;
 import java.awt.SystemColor;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
@@ -38,14 +40,19 @@ import javax.swing.DefaultComboBoxModel;
 public class MainWindow {
 
 	private JFrame frame;
-	private JTable table;
+	
+	private JTable personnelTable;
 	private JTable toDoTasksTable;
 	private JTable tasksInProgressTable;
 	private JTable finishedTasksTable;
+	private JTable backLogTable;
+	
 	private DefaultTableModel toDoTaskTableModel = new DefaultTableModel();
 	private DefaultTableModel tasksInProgressTableModel = new DefaultTableModel();
 	private DefaultTableModel finishedTasksTableModel = new DefaultTableModel();
-	private JTable backLogTable;
+	private DefaultTableModel backLogTableModel;
+	private DefaultTableModel personnelTableModel;
+
 	private JTextField numOfRandomTasksTextField;
 	private JTextField storyPointCoefficientTextField;
 	private JTextField progressPerStoryPointTextField;
@@ -59,15 +66,16 @@ public class MainWindow {
 	private JTextField highExpertiseUpperBoundaryTextField;
 	private JTextField highExpertiseCoefficientTextField;
 	private JTextField TCTtoSystemCoefTextField;
-	private DefaultTableModel backLogTableModel;
 
-
+	private JComboBox<String> allocationStrategyComboBox;
+	private DefaultComboBoxModel<String> allocationStrategyComboBoxModel;
 
 	/**
 	 * Create the application.
 	 */
 	public MainWindow() {
 		initialize();
+		loadGUI();
 	}
 
 	/**
@@ -86,16 +94,20 @@ public class MainWindow {
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
 		tabbedPane.setBounds(0, 0, 896, 474);
 		frame.getContentPane().add(tabbedPane);
-		String[] toDoTasksColumn = {"ID", "Name", "Skills"};
-		toDoTaskTableModel.setColumnIdentifiers(toDoTasksColumn);
-		String[] tasksInProgressColumn = {"ID", "Name", "PerformerID"};
-		tasksInProgressTableModel.setColumnIdentifiers(tasksInProgressColumn);
-		String[] finishedTasksColumn = {"ID", "Name", "PerformerID"};
-		finishedTasksTableModel.setColumnIdentifiers(finishedTasksColumn);
-		String[] tableColumns = {"ID", "First Name", "Last Name", "Exp. in Front End", "Exp. in Back End"};
-		DefaultTableModel tableModel = new DefaultTableModel();
-		tableModel.setColumnIdentifiers(tableColumns);
 		
+		String[] toDoTasksColumn = {"ID", "Story Points", "Skills"};
+		toDoTaskTableModel.setColumnIdentifiers(toDoTasksColumn);
+		
+		String[] tasksInProgressColumn = {"ID", "Story Point", "PerformerID"};
+		tasksInProgressTableModel.setColumnIdentifiers(tasksInProgressColumn);
+		
+		String[] finishedTasksColumn = {"ID", "Story Point", "PerformerID"};
+		finishedTasksTableModel.setColumnIdentifiers(finishedTasksColumn);
+		
+		String[] personnelTableColumn = {"ID", "First Name", "Last Name", "Role", "Exp. in Front End", "Exp. in Back End", "Exp. in Design"};
+		personnelTableModel = new DefaultTableModel();
+		personnelTableModel.setColumnIdentifiers(personnelTableColumn);
+
 		JPanel displayProjectBackLogPanel = new JPanel();
 		displayProjectBackLogPanel.setBackground(SystemColor.menu);
 		tabbedPane.addTab("Project BackLog", null, displayProjectBackLogPanel, null);
@@ -122,7 +134,7 @@ public class MainWindow {
 					numberOfTasks = Integer.parseInt(number);
 					Team.getTeam().createRandomTasks(numberOfTasks);
 				}catch(NumberFormatException exception) {
-					issueErrorMessage("Content " + number + " is not a valid integer number! Please try again!");
+					Main.issueErrorMessage("Content " + number + " is not a valid integer number! Please try again!");
 					numOfRandomTasksTextField.setText("");
 				}
 			}
@@ -145,10 +157,16 @@ public class MainWindow {
 		numOfRandomTasksLabel.setBounds(677, 44, 187, 29);
 		displayProjectBackLogPanel.add(numOfRandomTasksLabel);
 		
-		JButton btnNewButton = new JButton("Create New Task");
-		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		btnNewButton.setBounds(677, 214, 187, 45);
-		displayProjectBackLogPanel.add(btnNewButton);
+		JButton newSingleTaskButton = new JButton("Create New Task");
+		newSingleTaskButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ModifyTask newTaskWindow = new ModifyTask();
+				newTaskWindow.setVisible(true);
+			}
+		});
+		newSingleTaskButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		newSingleTaskButton.setBounds(677, 214, 187, 45);
+		displayProjectBackLogPanel.add(newSingleTaskButton);
 		
 		JLabel lblOr = new JLabel("OR");
 		lblOr.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -156,10 +174,28 @@ public class MainWindow {
 		lblOr.setBounds(761, 181, 31, 22);
 		displayProjectBackLogPanel.add(lblOr);
 		
-		JButton btnNewButton_1 = new JButton("Add Tasks");
-		btnNewButton_1.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		btnNewButton_1.setBounds(677, 344, 187, 45);
-		displayProjectBackLogPanel.add(btnNewButton_1);
+		JButton addTasksForSprintButton = new JButton("Move Tasks to First Sprint");
+		addTasksForSprintButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] selectedIndecies = backLogTable.getSelectedRows();
+				
+				if(selectedIndecies.length == 0){
+					boolean answer = Main.issueQuesionDialogue("You have not selected any tasks, do you want the system to "
+							+ "\n automatically select and move to sprint backlog?", "");
+					if (answer)
+						System.out.println("you said yes");
+				}				
+				else{
+					Team.getTeam().moveToSprintBackLog(selectedIndecies);	
+					repopulateBackLogTable();
+					repopulateToDoTasksTable();
+					tabbedPane.setSelectedIndex(1);
+				}
+			}
+		});
+		addTasksForSprintButton.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		addTasksForSprintButton.setBounds(677, 344, 187, 45);
+		displayProjectBackLogPanel.add(addTasksForSprintButton);
 		
 		JLabel lblNewLabel = new JLabel("Add Tasks to Sprint BackLog");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -180,8 +216,6 @@ public class MainWindow {
 		displayTaskBoardPanel.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane_1.setBounds(130, 83, 235, 272);
 		displayTaskBoardPanel.add(scrollPane_1);
 		
@@ -191,8 +225,6 @@ public class MainWindow {
 		toDoTasksTable.setModel(toDoTaskTableModel);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane_2.setBounds(385, 83, 241, 272);
 		displayTaskBoardPanel.add(scrollPane_2);
 		
@@ -202,8 +234,6 @@ public class MainWindow {
 		tasksInProgressTable.setModel(tasksInProgressTableModel);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane_3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane_3.setBounds(646, 83, 235, 272);
 		displayTaskBoardPanel.add(scrollPane_3);
 		
@@ -258,6 +288,12 @@ public class MainWindow {
 		displayTaskBoardPanel.add(sprintNumberLabel);
 		
 		JButton startSprintButton = new JButton("Start the Sprint");
+		startSprintButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SystemRecorder.recordSystemStatus();
+			}
+		});
+		startSprintButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		startSprintButton.setBounds(10, 143, 110, 31);
 		displayTaskBoardPanel.add(startSprintButton);
 		
@@ -283,15 +319,14 @@ public class MainWindow {
 		taskAllocationStrategyLabel.setBounds(10, 11, 155, 25);
 		teamAdminPanel.add(taskAllocationStrategyLabel);
 		
-		JComboBox<String> allocationStrategyComboBox = new JComboBox<String>();
-		DefaultComboBoxModel<String> allocationStrategyComboBoxModel = new DefaultComboBoxModel<String>();
+		allocationStrategyComboBox = new JComboBox<String>();
+		allocationStrategyComboBoxModel = new DefaultComboBoxModel<String>();
 		allocationStrategyComboBoxModel.addElement(TaskAllocationStrategy.ExpertiseBased.toString());
 		allocationStrategyComboBoxModel.addElement(TaskAllocationStrategy.LearningBased.toString());
 		allocationStrategyComboBox.setModel(allocationStrategyComboBoxModel);
 		allocationStrategyComboBox.setSelectedIndex(0);
 		allocationStrategyComboBox.setBounds(10, 47, 155, 25);
 		teamAdminPanel.add(allocationStrategyComboBox);
-		allocationStrategyComboBoxModel.setSelectedItem(team.getTaskAllocationStrategy().toString());
 		
 		JLabel storyPointCoefficientLabel = new JLabel("Story Point Coefficient");
 		storyPointCoefficientLabel.setEnabled(false);
@@ -303,7 +338,6 @@ public class MainWindow {
 		storyPointCoefficientTextField.setColumns(10);
 		storyPointCoefficientTextField.setBounds(10, 136, 155, 25);
 		teamAdminPanel.add(storyPointCoefficientTextField);
-		storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));
 		
 		JLabel progressPerStoryPointLabel = new JLabel("Progress Per Story Point");
 		progressPerStoryPointLabel.setEnabled(false);
@@ -315,7 +349,6 @@ public class MainWindow {
 		progressPerStoryPointTextField.setColumns(10);
 		progressPerStoryPointTextField.setBounds(10, 239, 155, 25);
 		teamAdminPanel.add(progressPerStoryPointTextField);
-		progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
 		
 		JLabel lowExpertiseLabel = new JLabel("Low Expertise ");
 		lowExpertiseLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -328,20 +361,18 @@ public class MainWindow {
 		lowExpertiseLowerBoundaryTextField.setColumns(10);
 		lowExpertiseLowerBoundaryTextField.setBounds(369, 46, 78, 25);
 		teamAdminPanel.add(lowExpertiseLowerBoundaryTextField);
-		lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
 		
 		lowExpertiseUpperBoundaryTextField = new JTextField();
 		lowExpertiseUpperBoundaryTextField.setColumns(10);
 		lowExpertiseUpperBoundaryTextField.setBounds(586, 46, 78, 25);
 		teamAdminPanel.add(lowExpertiseUpperBoundaryTextField);
-		lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
+	
 		
 		lowExpertiseCoefficientTextField = new JTextField();
 		lowExpertiseCoefficientTextField.setColumns(10);
 		lowExpertiseCoefficientTextField.setBounds(771, 46, 78, 25);
 		teamAdminPanel.add(lowExpertiseCoefficientTextField);		
-		lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
-		
+			
 		JLabel lowerBoundaryLabel = new JLabel("Lower Boundary");
 		lowerBoundaryLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		lowerBoundaryLabel.setEnabled(false);
@@ -377,8 +408,7 @@ public class MainWindow {
 		medExpertiseLowerBoundaryTextField.setColumns(10);
 		medExpertiseLowerBoundaryTextField.setBounds(369, 138, 78, 25);
 		teamAdminPanel.add(medExpertiseLowerBoundaryTextField);
-		medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
-		
+			
 		JLabel medExpertiseUpperBoundaryLabel = new JLabel("Upper Boundary");
 		medExpertiseUpperBoundaryLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		medExpertiseUpperBoundaryLabel.setEnabled(false);
@@ -389,7 +419,6 @@ public class MainWindow {
 		medExpertiseUpperBoundaryTextField.setColumns(10);
 		medExpertiseUpperBoundaryTextField.setBounds(586, 138, 78, 25);
 		teamAdminPanel.add(medExpertiseUpperBoundaryTextField);
-		medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));
 		
 		JLabel medExpertiseCoefficientLabel = new JLabel("Coefficient");
 		medExpertiseCoefficientLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -400,8 +429,7 @@ public class MainWindow {
 		medExpertiseCoefficientTextField = new JTextField();
 		medExpertiseCoefficientTextField.setColumns(10);
 		medExpertiseCoefficientTextField.setBounds(771, 138, 78, 25);
-		teamAdminPanel.add(medExpertiseCoefficientTextField);
-		medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));
+		teamAdminPanel.add(medExpertiseCoefficientTextField);		
 		
 		JLabel highExpertiseLabel = new JLabel("High Expertise ");
 		highExpertiseLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -420,7 +448,6 @@ public class MainWindow {
 		highExpertiseLowerBoundaryTextField.setColumns(10);
 		highExpertiseLowerBoundaryTextField.setBounds(369, 241, 78, 25);
 		teamAdminPanel.add(highExpertiseLowerBoundaryTextField);
-		highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));
 		
 		JLabel highExpertiseUpperBoundaryLabel = new JLabel("Upper Boundary");
 		highExpertiseUpperBoundaryLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -432,7 +459,6 @@ public class MainWindow {
 		highExpertiseUpperBoundaryTextField.setColumns(10);
 		highExpertiseUpperBoundaryTextField.setBounds(586, 241, 78, 25);
 		teamAdminPanel.add(highExpertiseUpperBoundaryTextField);
-		highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));
 		
 		JLabel highExpertiseCoefficient = new JLabel("Coefficient");
 		highExpertiseCoefficient.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -444,7 +470,6 @@ public class MainWindow {
 		highExpertiseCoefficientTextField.setColumns(10);
 		highExpertiseCoefficientTextField.setBounds(771, 241, 78, 25);
 		teamAdminPanel.add(highExpertiseCoefficientTextField);
-		highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));
 		
 		JLabel tctToSystemTimeCoefLabel = new JLabel("TCT to System Time Coefficient");
 		tctToSystemTimeCoefLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -456,7 +481,6 @@ public class MainWindow {
 		TCTtoSystemCoefTextField.setColumns(10);
 		TCTtoSystemCoefTextField.setBounds(10, 332, 155, 25);
 		teamAdminPanel.add(TCTtoSystemCoefTextField);
-		TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
 		
 		JLabel stopAfterEachSprintLabel = new JLabel("Stop After Each Sprint");
 		stopAfterEachSprintLabel.setToolTipText("Enabling this option causes the system to stop after each sprint, and wait for direct user command for starting the next sprint. ");
@@ -474,124 +498,13 @@ public class MainWindow {
 		else
 			stopAfterEachSprintCheckBox.setSelected(false);
 		
-		JButton saveTeamSettingsButton = new JButton("Save Team Settings");
+		JButton saveTeamSettingsButton = new JButton("Save System");
 		saveTeamSettingsButton.setBounds(622, 351, 227, 56);
 		teamAdminPanel.add(saveTeamSettingsButton);
 		saveTeamSettingsButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String strategy = (String) allocationStrategyComboBoxModel.getSelectedItem();
-				if(strategy.equals(TaskAllocationStrategy.ExpertiseBased.toString()))
-					team.setTaskAllocationStrategy(TaskAllocationStrategy.ExpertiseBased);
-				else if(strategy.equals(TaskAllocationStrategy.LearningBased.toString()))
-					team.setTaskAllocationStrategy(TaskAllocationStrategy.LearningBased);
-				try {
-					String spc = storyPointCoefficientTextField.getText();
-					double storyPointCoef = Double.parseDouble(spc);
-					team.setStoryPointCoefficient(storyPointCoef);
-				}catch(NumberFormatException exception) {
-					storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));				
-					issueErrorMessage("The value provided for story point coefficients is not a valid double value, try again!");
-				}
-				
-				try {
-					String pps = progressPerStoryPointTextField.getText();
-					double progressPerStoryPoint = Double.parseDouble(pps);
-					team.setProgressPerStoryPoint(progressPerStoryPoint);					
-				}catch(NumberFormatException exception) {
-					progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
-					issueErrorMessage("The value provided for progress per story point is not a valid double value, try again!");
-				}
-				
-				int step = 0;
-				try {
-					String lelb = lowExpertiseLowerBoundaryTextField.getText();
-					int lowExpertiseLowerBoundary = Integer.parseInt(lelb);
-										
-					step = 1;
-					String lehb = lowExpertiseUpperBoundaryTextField.getText();
-					int lowExpertiseUpperBoundary = Integer.parseInt(lehb);
-					team.setLowExpertiseBoundaries(lowExpertiseLowerBoundary, lowExpertiseUpperBoundary);
-					
-					step = 2;
-					String lec = lowExpertiseCoefficientTextField.getText();
-					int lowExpertiseCoefficient = Integer.parseInt(lec);
-					team.setLowExpertiseCoefficient(lowExpertiseCoefficient);
-				}catch(NumberFormatException exception) {
-					if(step == 0) {
-						lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
-						issueErrorMessage("The value provided for low expertise lower boundary is not a valid integer, try again!");
-					}else if (step == 1) {
-						lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
-						issueErrorMessage("The value provided for low expertise uppder boundary is not a valid integer, try again!");
-					}else if (step == 2) {
-						lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
-						issueErrorMessage("The value provided for low expertise coefficient is not a valid integer, try again!");
-					}
-				}
-				
-				step = 0;
-				try {
-					String melb = medExpertiseLowerBoundaryTextField.getText();
-					int medExpertiseLowerBoundary = Integer.parseInt(melb);
-					
-					step = 1;
-					String mehb = medExpertiseUpperBoundaryTextField.getText();
-					int medExpertiseUpperBoundary = Integer.parseInt(mehb);
-					team.setMediumExpertiesBoundaries(medExpertiseLowerBoundary, medExpertiseUpperBoundary);
-					
-					step = 2;
-					String mec = medExpertiseCoefficientTextField.getText();
-					int medExpertiseCoefficient = Integer.parseInt(mec);
-					team.setMediumExpertiseCoefficient(medExpertiseCoefficient);
-				}catch(NumberFormatException exception) {
-					if(step == 0) {
-						medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
-						issueErrorMessage("The value provided for medium expertise lower boundary is not a valid integer, try again!");
-					}else if (step == 1) {
-						medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));
-						issueErrorMessage("The value provided for medium expertise uppder boundary is not a valid integer, try again!");
-					}else if (step == 2) {
-						medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));
-						issueErrorMessage("The value provided for medium expertise coefficient is not a valid integer, try again!");
-					}
-				}
-				
-				step = 0;
-				try {
-					String helb = highExpertiseLowerBoundaryTextField.getText();
-					int highExpertiseLowerBoundary = Integer.parseInt(helb);
-					
-					step = 1;
-					String hehb = highExpertiseUpperBoundaryTextField.getText();
-					int highExpertiseUpperBoundary = Integer.parseInt(hehb);
-					team.setHighExpertiseBoundaries(highExpertiseLowerBoundary, highExpertiseUpperBoundary);
-					
-					step = 2;
-					String hec = highExpertiseCoefficientTextField.getText();
-					int highExpertiseCoefficient = Integer.parseInt(hec);
-					team.setHighExpertiseCoefficient(highExpertiseCoefficient);
-				}catch(NumberFormatException exception) {
-					if(step == 0) {
-						highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));
-						issueErrorMessage("The value provided for high expertise lower boundary is not a valid integer, try again!");
-					}else if (step == 1) {
-						highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));
-						issueErrorMessage("The value provided for high expertise uppder boundary is not a valid integer, try again!");
-					}else if (step == 2) {
-						highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));
-						issueErrorMessage("The value provided for high expertise coefficient is not a valid integer, try again!");
-					}
-				}
-				
-				try {
-					String tst = TCTtoSystemCoefTextField.getText();
-					int tctToSystemTime = Integer.parseInt(tst);
-					team.setTctToSystemTimeCoefficient(tctToSystemTime);
-				}catch(NumberFormatException exception) {
-					TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
-					issueErrorMessage("The value provided for TCT to system time coefficient is not a valid integer, try again!");
-				}
+				saveSystem();
 			}
 		});
 		
@@ -601,13 +514,23 @@ public class MainWindow {
 		displayTeamMembersPanel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 35, 566, 315);
+		scrollPane.setBounds(24, 35, 640, 354);
 		displayTeamMembersPanel.add(scrollPane);
 		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setModel(tableModel);
+		personnelTable = new JTable();
+		scrollPane.setViewportView(personnelTable);
+		personnelTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		personnelTable.setModel(personnelTableModel);
+		
+		JButton btnNewButton = new JButton("Add New Member");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ModifyMember newMember = new ModifyMember();
+				newMember.setVisible(true);
+			}
+		});
+		btnNewButton.setBounds(703, 77, 157, 40);
+		displayTeamMembersPanel.add(btnNewButton);
 				
 		toDoTasksTable.addMouseListener(new MouseListener() {
 			
@@ -637,6 +560,133 @@ public class MainWindow {
 		frame.setVisible(visibility);
 	}
 	
+	private void loadGUI(){
+		loadTeamTab();
+		repopulateBackLogTable();
+		repopulateToDoTasksTable();
+		repopulateTaskInProgress();
+		repopulateCompletedTasks();
+		repopulatePersonnel();
+	}
+	
+	private void saveSystem(){
+		Team team = Team.getTeam();
+		String strategy = (String) allocationStrategyComboBoxModel.getSelectedItem();
+		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased.toString()))
+			team.setTaskAllocationStrategy(TaskAllocationStrategy.ExpertiseBased);
+		else if(strategy.equals(TaskAllocationStrategy.LearningBased.toString()))
+			team.setTaskAllocationStrategy(TaskAllocationStrategy.LearningBased);
+		try {
+			String spc = storyPointCoefficientTextField.getText();
+			double storyPointCoef = Double.parseDouble(spc);
+			team.setStoryPointCoefficient(storyPointCoef);
+		}catch(NumberFormatException exception) {
+			storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));				
+			Main.issueErrorMessage("The value provided for story point coefficients is not a valid double value, try again!");
+		}
+		
+		try {
+			String pps = progressPerStoryPointTextField.getText();
+			double progressPerStoryPoint = Double.parseDouble(pps);
+			team.setProgressPerStoryPoint(progressPerStoryPoint);					
+		}catch(NumberFormatException exception) {
+			progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
+			Main.issueErrorMessage("The value provided for progress per story point is not a valid double value, try again!");
+		}
+		
+		int step = 0;
+		try {
+			String lelb = lowExpertiseLowerBoundaryTextField.getText();
+			int lowExpertiseLowerBoundary = Integer.parseInt(lelb);
+								
+			step = 1;
+			String lehb = lowExpertiseUpperBoundaryTextField.getText();
+			int lowExpertiseUpperBoundary = Integer.parseInt(lehb);
+			team.setLowExpertiseBoundaries(lowExpertiseLowerBoundary, lowExpertiseUpperBoundary);
+			
+			step = 2;
+			String lec = lowExpertiseCoefficientTextField.getText();
+			int lowExpertiseCoefficient = Integer.parseInt(lec);
+			team.setLowExpertiseCoefficient(lowExpertiseCoefficient);
+		}catch(NumberFormatException exception) {
+			if(step == 0) {
+				lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
+				Main.issueErrorMessage("The value provided for low expertise lower boundary is not a valid integer, try again!");
+			}else if (step == 1) {
+				lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
+				Main.issueErrorMessage("The value provided for low expertise uppder boundary is not a valid integer, try again!");
+			}else if (step == 2) {
+				lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
+				Main.issueErrorMessage("The value provided for low expertise coefficient is not a valid integer, try again!");
+			}
+		}
+		
+		step = 0;
+		try {
+			String melb = medExpertiseLowerBoundaryTextField.getText();
+			int medExpertiseLowerBoundary = Integer.parseInt(melb);
+			
+			step = 1;
+			String mehb = medExpertiseUpperBoundaryTextField.getText();
+			int medExpertiseUpperBoundary = Integer.parseInt(mehb);
+			team.setMediumExpertiesBoundaries(medExpertiseLowerBoundary, medExpertiseUpperBoundary);
+			
+			step = 2;
+			String mec = medExpertiseCoefficientTextField.getText();
+			int medExpertiseCoefficient = Integer.parseInt(mec);
+			team.setMediumExpertiseCoefficient(medExpertiseCoefficient);
+		}catch(NumberFormatException exception) {
+			if(step == 0) {
+				medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
+				Main.issueErrorMessage("The value provided for medium expertise lower boundary is not a valid integer, try again!");
+			}else if (step == 1) {
+				medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));
+				Main.issueErrorMessage("The value provided for medium expertise uppder boundary is not a valid integer, try again!");
+			}else if (step == 2) {
+				medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));
+				Main.issueErrorMessage("The value provided for medium expertise coefficient is not a valid integer, try again!");
+			}
+		}
+		
+		step = 0;
+		try {
+			String helb = highExpertiseLowerBoundaryTextField.getText();
+			int highExpertiseLowerBoundary = Integer.parseInt(helb);
+			
+			step = 1;
+			String hehb = highExpertiseUpperBoundaryTextField.getText();
+			int highExpertiseUpperBoundary = Integer.parseInt(hehb);
+			team.setHighExpertiseBoundaries(highExpertiseLowerBoundary, highExpertiseUpperBoundary);
+			
+			step = 2;
+			String hec = highExpertiseCoefficientTextField.getText();
+			int highExpertiseCoefficient = Integer.parseInt(hec);
+			team.setHighExpertiseCoefficient(highExpertiseCoefficient);
+		}catch(NumberFormatException exception) {
+			if(step == 0) {
+				highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));
+				Main.issueErrorMessage("The value provided for high expertise lower boundary is not a valid integer, try again!");
+			}else if (step == 1) {
+				highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));
+				Main.issueErrorMessage("The value provided for high expertise uppder boundary is not a valid integer, try again!");
+			}else if (step == 2) {
+				highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));
+				Main.issueErrorMessage("The value provided for high expertise coefficient is not a valid integer, try again!");
+			}
+		}
+		
+		try {
+			String tst = TCTtoSystemCoefTextField.getText();
+			int tctToSystemTime = Integer.parseInt(tst);
+			team.setTctToSystemTimeCoefficient(tctToSystemTime);
+		}catch(NumberFormatException exception) {
+			TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
+			Main.issueErrorMessage("The value provided for TCT to system time coefficient is not a valid integer, try again!");
+		}
+		
+		SystemRecorder.recordSystemStatus();
+	}
+	
 	public void updateBackLogTabel(Task task) {
 		String taskId = Integer.toString(task.getTaskID());
 		String storyPoints = Integer.toString(task.getStoryPoints());
@@ -653,19 +703,136 @@ public class MainWindow {
 		
 		String[] rowData = {taskId, storyPoints, taskName, skillsString};
 		backLogTableModel.addRow(rowData);
+	}	
+	
+	public void updatePersonnelTabel(TeamMember member){
+		String id = Integer.toString(member.getID());
+		String firstName = member.getFirstName();
+		String lastName = member.getLastName();
+		String role = member.getMemberRole().toString();
+		String expInFE = Double.toString(member.getExpertiseAtSkillArea(SkillArea.FrontEnd));
+		String expInBE = Double.toString(member.getExpertiseAtSkillArea(SkillArea.BackEnd));
+		String expInDesign = Double.toString(member.getExpertiseAtSkillArea(SkillArea.Design));
+		
+		String[] rowData = {id, firstName, lastName, role, expInFE, expInBE, expInDesign};
+		personnelTableModel.addRow(rowData);
 	}
 	
-	private void issueErrorMessage(String message) {
-		EventQueue.invokeLater(new Runnable() {			
-			@Override
-			public void run() {
-				try {
-					ErrorMessageBox errorBox = new ErrorMessageBox(message);
-					errorBox.setVisible(true);
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
+	private void repopulateBackLogTable(){
+		int numOfRows = backLogTableModel.getRowCount();
+		for(int index = (numOfRows-1); index >= 0; index--)
+			backLogTableModel.removeRow(index);
+		
+		List<Task> tasks = Team.getTeam().getProjectBackLog();
+		for(Task task : tasks){
+			String taskId = Integer.toString(task.getTaskID());
+			String storyPoints = Integer.toString(task.getStoryPoints());
+			String taskName = task.getTaskName();
+			String skillsString = "";
+			int counter = 1;
+			Set<SkillArea> skills = task.getRequiredSkillAreas();
+			for(SkillArea skill : skills) {
+				skillsString += skill.toString();
+				if(counter != skills.size())
+					skillsString += ", ";
+				counter++;
 			}
-		});
+			
+			String[] rowData = {taskId, storyPoints, taskName, skillsString};
+			backLogTableModel.addRow(rowData);
+		}
+	}	
+	
+	private void repopulateToDoTasksTable(){
+		int numOfRows = toDoTaskTableModel.getRowCount();
+		for(int index = (numOfRows-1); index >= 0; index--)
+			toDoTaskTableModel.removeRow(index);
+		
+		List<Task> tasks = Team.getTeam().getToDoTasks();
+		for(Task task : tasks){
+			String taskId = Integer.toString(task.getTaskID());
+			String storyPoints = Integer.toString(task.getStoryPoints());
+			String skillsString = "";
+			int counter = 1;
+			Set<SkillArea> skills = task.getRequiredSkillAreas();
+			for(SkillArea skill : skills) {
+				skillsString += skill.toString();
+				if(counter != skills.size())
+					skillsString += ", ";
+				counter++;
+			}
+			
+			String[] rowData = {taskId, storyPoints, skillsString};
+			toDoTaskTableModel.addRow(rowData);
+		}
+	}
+	
+	private void repopulateTaskInProgress(){
+		int numOfRows = tasksInProgressTableModel.getRowCount();
+		for(int index = (numOfRows-1); index >= 0; index--)
+			tasksInProgressTableModel.removeRow(index);
+		
+		List<Task> tasks = Team.getTeam().getTasksInProgress();
+		for(Task task : tasks){
+			String taskId = Integer.toString(task.getTaskID());
+			String storyPoints = Integer.toString(task.getStoryPoints());
+			String performerID = Integer.toString(task.getPerformerID());
+			
+			String[] rowData = {taskId, storyPoints, performerID};
+			tasksInProgressTableModel.addRow(rowData);
+		}
+	}
+	
+	private void repopulateCompletedTasks(){
+		int numOfRows = finishedTasksTableModel.getRowCount();
+		for(int index = (numOfRows-1); index >= 0; index--)
+			finishedTasksTableModel.removeRow(index);
+		
+		List<Task> tasks = Team.getTeam().getPerformedTasks();
+		for(Task task : tasks){
+			String taskId = Integer.toString(task.getTaskID());
+			String storyPoints = Integer.toString(task.getStoryPoints());
+			String performerID = Integer.toString(task.getPerformerID());
+			
+			String[] rowData = {taskId, storyPoints, performerID};
+			finishedTasksTableModel.addRow(rowData);
+		}
+	}
+	
+	private void loadTeamTab(){
+		Team team = Team.getTeam();
+		allocationStrategyComboBoxModel.setSelectedItem(team.getTaskAllocationStrategy().toString());
+		storyPointCoefficientTextField.setText(Double.toString(team.getStoryPointCoefficient()));
+		progressPerStoryPointTextField.setText(Double.toString(team.getProgressPerStoryPoint()));
+		lowExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getLowExpertiseLowerBoundary()));
+		lowExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getLowExpertiseHigherBoundary()));
+		lowExpertiseCoefficientTextField.setText(Integer.toString(team.getLowExpertiseCoefficient()));
+		medExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseLowerBoundary()));
+		medExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getMediumExpertiseHigherBoundary()));		
+		medExpertiseCoefficientTextField.setText(Integer.toString(team.getMediumExpertiseCoefficient()));	
+		highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));	
+		highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));	
+		highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));	
+		TCTtoSystemCoefTextField.setText(Integer.toString(team.getTctToSystemTimeCoefficient()));
+	}
+	
+	private void repopulatePersonnel(){
+		int numOfRows = personnelTableModel.getRowCount();
+		for(int index = (numOfRows-1); index >= 0; index--)
+			personnelTableModel.removeRow(index);
+		
+		List<TeamMember> members = Team.getTeam().getPersonnel();
+		for(TeamMember member : members){
+			String ID = Integer.toString(member.getID());
+			String firstName = member.getFirstName();
+			String lastname = member.getLastName();
+			String role = member.getMemberRole().toString();
+			String expInFE = Double.toString(member.getExpertiseAtSkillArea(SkillArea.FrontEnd));
+			String expInBE = Double.toString(member.getExpertiseAtSkillArea(SkillArea.BackEnd));
+			String expInDesign = Double.toString(member.getExpertiseAtSkillArea(SkillArea.Design));
+			
+			String[] rowData = {ID, firstName, lastname, role, expInFE, expInBE, expInDesign};
+			personnelTableModel.addRow(rowData);
+		}
 	}
 }

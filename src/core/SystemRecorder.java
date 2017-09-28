@@ -29,6 +29,18 @@ public class SystemRecorder {
 		recordAllPerformedTasks();
 	}
 	
+	public static void recordDefaultBackLog(){
+		String originalBaseDir = Main.getBaseDirectoryPath();
+		String defaultsDir = "." + File.separator + "Defaults";
+		File defaultDirectory = new File(defaultsDir);
+		if(!defaultDirectory.exists()){
+			defaultDirectory.mkdirs();
+		}
+		Main.setBaseDirectoryPath(defaultsDir);
+		recordBackLog();
+		Main.setBaseDirectoryPath(originalBaseDir); //set it back to what it was
+	}
+	
 	private static void recordMain(){
 		String mainFileName = Main.getBaseDirectoryPath() + File.separator + Main.getMainFileName();
 		try {
@@ -148,7 +160,7 @@ public class SystemRecorder {
 		TaskBoard taskBoard = Team.getTeam().getTaskBoard();
 		try{
 			PrintWriter writer = new PrintWriter(taskBoardFileName);
-			//place holder for future records for taskBoard, currently taskBoard does not have anything to record. 
+			writer.println(taskBoard.getSprintNo());
 			writer.flush();
 			writer.close();
 		}catch(Exception e){

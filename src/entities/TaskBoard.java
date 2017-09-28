@@ -11,6 +11,7 @@ public class TaskBoard {
 	private List<Task> performedTasks;
 	private Lock taskLock;
 	private Lock submitPerformedTaskLock;
+	private int currentSprint;
 	
 	public TaskBoard(){
 		this.toDoTasks = new ArrayList<>();
@@ -18,6 +19,7 @@ public class TaskBoard {
 		this.tasksInProgress = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
 		this.submitPerformedTaskLock = new ReentrantLock();
+		this.currentSprint = 1;
 	}	
 	
 	public Task pollTask(TeamMember developer){
@@ -118,5 +120,13 @@ public class TaskBoard {
 		//this should theoretically return empty tasks for now, as
 		//system is only recorded and loaded before and after sprints
 		return this.tasksInProgress;
+	}
+	
+	public int getSprintNo(){
+		return this.currentSprint;
+	}
+	
+	public void setSprintNo(int sprintNo){
+		this.currentSprint = sprintNo;
 	}
 }

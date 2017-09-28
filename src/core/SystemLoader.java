@@ -173,7 +173,8 @@ public class SystemLoader {
 			try{
 				taskBoard = new TaskBoard();
 				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
-				//currently, there is nothing to read from a file for taskBoard, this is a place holder
+				String line = reader.readLine();
+				taskBoard.setSprintNo(Integer.parseInt(line));
 				
 				List<Task> toDoTasks = loadToDoTasks();
 				if(!toDoTasks.isEmpty())
@@ -256,15 +257,16 @@ public class SystemLoader {
 
 						String taskDescription = "";
 						line = reader.readLine();
-						if(line.startsWith(Main.getDescriptionSyntax())){
-							taskDescription = line.substring(Main.getDescriptionSyntax().length());
-							line = reader.readLine();
-						}
-						
+						if(line != null){
+							if(line.startsWith(Main.getDescriptionSyntax())){
+								taskDescription = line.substring(Main.getDescriptionSyntax().length());
+								line = reader.readLine();
+							}
+						}						
 						task.setTaskDescription(taskDescription);
 						tasks.add(task);
 					}
-					if(line.isEmpty()){
+					if(line!=null && line.isEmpty()){
 						line = reader.readLine();
 					}
 				}

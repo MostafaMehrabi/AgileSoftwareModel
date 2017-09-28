@@ -5,12 +5,14 @@ package entities;
 //priority attribute must be added to tasks, as well as task allocation methods that consider priority (a place holder for this)!
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import core.Main;
+import core.SystemRecorder;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
@@ -40,6 +42,7 @@ public class Team {
 		teamPersonnel = new ArrayList<>();
 		backLog = new ArrayList<>();
 		allTasksDoneSoFar = new ArrayList<>();
+		taskBoard = new TaskBoard();
 		//setting default values for team properties, these values can be customized later.
 		storyPointCoefficient = 8;
 		progressPerStoryPoint = 0.3d;
@@ -107,11 +110,6 @@ public class Team {
 	public void setLastMemberID(int id){
 		this.lastMemebrID = id;
 	}
-	
-	public void addNewMember(String firstName, String lastName, MemberRole role){
-		TeamMember newDeveloper = new TeamMember(++lastMemebrID, firstName, lastName, role);
-		teamPersonnel.add(newDeveloper);
-	}	
 	
 	public void setPersonnel(List<TeamMember> personnel){
 		this.teamPersonnel = personnel;
@@ -295,22 +293,57 @@ public class Team {
 			String taskName = "RandomTask_" + i;
 			int storyPoints = (rand.nextInt(10) + 1); //a random number between 1 - 10
 			Task newTask = new Task(taskId, taskName, storyPoints, requiredSkills);
-			addTask(newTask);
+			addTaskToBackLog(newTask);
 		}
 	}
 	
-	public void addNewTask(String name, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
+	public void addNewMember(String firstName, String lastName, MemberRole role, double expInBE, double expInFE, double expInDesign){
+		TeamMember newDeveloper = new TeamMember(++lastMemebrID, firstName, lastName, role);
+		newDeveloper.setExpertiseAtSkillArea(SkillArea.BackEnd, expInBE);
+		newDeveloper.setExpertiseAtSkillArea(SkillArea.FrontEnd, expInFE);
+		newDeveloper.setExpertiseAtSkillArea(SkillArea.Design, expInDesign);
+		teamPersonnel.add(newDeveloper);
+		Main.updatePersonnelTabel(newDeveloper);
+	}		
+	
+	public void addNewTaskToBackLog(String name, String description, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
 		if(storyPoints < 1 || storyPoints > 10){
 			throw new IllegalArgumentException("The value provided as story points for the"
 					+ " new task, can only be between 0 and 10, inclusive!");
 		}
 		int taskID = ++lastTaskID;
 		Task newTask = new Task(taskID, name, storyPoints, requiredSkillAreas);
-		addTask(newTask);
+		if(!description.isEmpty())
+			newTask.setTaskDescription(description);
+		addTaskToBackLog(newTask);
 	}
 	
-	private void addTask(Task task){
+	private void addTaskToBackLog(Task task){
 		backLog.add(task);
+		SystemRecorder.recordDefaultBackLog();
 		Main.updateBackLogTabel(task);
+	}	
+	
+	public void moveToSprintBackLog(int[] selectedIndecies){
+		int arraySize = selectedIndecies.length;
+		List<Task> tasks = new ArrayList<>();
+		for(int index = (arraySize-1); index >= 0; index--){
+			Task task = backLog.remove(selectedIndecies[index]);
+			tasks.add(task);
+		}
+		Collections.reverse(tasks);
+		taskBoard.setToDoTasks(tasks);
+	}
+	
+	public List<Task> getToDoTasks(){
+		return taskBoard.getToDoTasks();
+	}
+	
+	public List<Task> getTasksInProgress(){
+		return taskBoard.getTasksInProgress();
+	}
+	
+	public List<Task> getPerformedTasks(){
+		return taskBoard.getPerformedTasks();
 	}
 }

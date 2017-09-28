@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
@@ -15,6 +13,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
+
+import entities.Team;
+
 import javax.swing.JButton;
 
 public class ModifyMember {
@@ -23,29 +24,14 @@ public class ModifyMember {
 	private JTextField firstNameTextField;
 	private JTextField lastNameTextField;
 	private final ButtonGroup roleButtonGroup = new ButtonGroup();
-	MemberRole role = MemberRole.Developer;
 	private JTextField txtBackEnd;
 	private JTextField backEndTextField;
 	private JTextField txtFrontEnd;
 	private JTextField frontEndTextField;
 	private JTextField txtDesign;
-	private JTextField designTextField;
+	private JTextField designTextField;	
+	private MemberRole role = MemberRole.Developer;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ModifyMember window = new ModifyMember();
-					window.newMemberFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -62,7 +48,7 @@ public class ModifyMember {
 		newMemberFrame.setResizable(false);
 		newMemberFrame.setTitle("Add/Modify Team Member");
 		newMemberFrame.setBounds(100, 100, 575, 444);
-		newMemberFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		newMemberFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		newMemberFrame.getContentPane().setLayout(null);
 		
 		firstNameTextField = new JTextField();
@@ -114,6 +100,15 @@ public class ModifyMember {
 		roleButtonGroup.add(testerRadioButton);
 		testerRadioButton.setBounds(384, 164, 109, 23);
 		newMemberFrame.getContentPane().add(testerRadioButton);
+		testerRadioButton.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				role = MemberRole.Tester;
+				backEndTextField.setEnabled(false);
+				frontEndTextField.setEnabled(false);
+				designTextField.setEnabled(false);
+			}
+		});
 		
 		JLabel expertiseLabel = new JLabel("Expertise in Skill Areas");
 		expertiseLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -170,6 +165,18 @@ public class ModifyMember {
 		newMemberFrame.getContentPane().add(designTextField);
 		
 		JButton btnNewButton = new JButton("Done");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String firstName = firstNameTextField.getText();
+				String lastName = lastNameTextField.getText();
+				double expInFE = Double.parseDouble(frontEndTextField.getText());
+				double expInBE = Double.parseDouble(backEndTextField.getText());
+				double expInDesign = Double.parseDouble(designTextField.getText());
+				newMemberFrame.setVisible(false);
+				newMemberFrame.dispose();
+				Team.getTeam().addNewMember(firstName, lastName, role, expInBE, expInFE, expInDesign);
+			}
+		});
 		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		btnNewButton.setBounds(171, 355, 223, 38);
 		newMemberFrame.getContentPane().add(btnNewButton);

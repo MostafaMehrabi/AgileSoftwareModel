@@ -5,7 +5,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import javax.swing.JOptionPane;
 import entities.Task;
+import entities.TeamMember;
+import view.ErrorMessageBox;
 import view.MainWindow;
 import view.ProgressBar;
 
@@ -38,7 +41,7 @@ public class Main {
 		loadMainInfo();
 		progressBar.setValue(5);
 		SystemLoader.loadSystem(progressBar);
-		progressBar.closeProgressBar();
+		progressBar.close();
 		EventQueue.invokeLater(new Runnable() {			
 			@Override
 			public void run() {
@@ -49,8 +52,7 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
-		});
-		
+		});		
 	}
 	
 	private static void loadMainInfo(){
@@ -82,6 +84,15 @@ public class Main {
 			@Override
 			public void run() {
 				mainWindow.updateBackLogTabel(task);
+			}
+		});
+	}
+	
+	public static void updatePersonnelTabel(TeamMember member){
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				mainWindow.updatePersonnelTabel(member);
 			}
 		});
 	}
@@ -177,4 +188,31 @@ public class Main {
 	public static void setDescriptionSyntax(String syntax){
 		Main.descriptionSyntax = syntax;
 	}
+	
+	
+	public static  void issueErrorMessage(String message) {
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				try {
+					ErrorMessageBox errorBox = new ErrorMessageBox(message);
+					errorBox.setVisible(true);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public static boolean issueQuesionDialogue(String message, String dialogTitle){
+		if(dialogTitle.isEmpty())
+			dialogTitle = "Please Confirm";
+		
+		int answer = JOptionPane.showConfirmDialog(null, message, dialogTitle, JOptionPane.YES_NO_OPTION);
+		
+		if(answer == 0)
+			return true;
+		else 
+			return false;
+	}	
 }
