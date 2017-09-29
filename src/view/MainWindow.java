@@ -111,7 +111,7 @@ public class MainWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
 		tabbedPane.setBounds(0, 0, 896, 474);
@@ -158,6 +158,7 @@ public class MainWindow {
 		
 		JButton generateRandomTasksButton = new JButton("Generate Random Tasks");
 		generateRandomTasksButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String number = numOfRandomTasksTextField.getText();
 				int numberOfTasks;
@@ -190,6 +191,7 @@ public class MainWindow {
 		
 		JButton newSingleTaskButton = new JButton("Create New Task");
 		newSingleTaskButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				ModifyTask newTaskWindow = new ModifyTask();
 				newTaskWindow.setVisible(true);
@@ -207,6 +209,7 @@ public class MainWindow {
 		
 		JButton addTasksForSprintButton = new JButton("Move Tasks to First Sprint");
 		addTasksForSprintButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int[] selectedIndices = backLogTable.getSelectedRows();
 				
@@ -325,6 +328,7 @@ public class MainWindow {
 		
 		JButton startSprintButton = new JButton("Start the Sprint");
 		startSprintButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				Team.getTeam().startNewSprint();
 			}
@@ -547,6 +551,7 @@ public class MainWindow {
 		
 		JButton saveAsSystemDefaultsButton = new JButton("Save As System Defaults");
 		saveAsSystemDefaultsButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveAsDefaultSettings();
 			}
@@ -557,6 +562,7 @@ public class MainWindow {
 		
 		JButton loadSystemDefaultsButton = new JButton("Load System Defaults");
 		loadSystemDefaultsButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				loadSystemDefaults();
 			}
@@ -608,6 +614,7 @@ public class MainWindow {
 		
 		JButton btnNewButton = new JButton("Add New Member");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				ModifyMember newMember = new ModifyMember();
 				newMember.setVisible(true);

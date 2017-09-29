@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import entities.Team;
 
@@ -48,7 +49,7 @@ public class ModifyMember {
 		newMemberFrame.setResizable(false);
 		newMemberFrame.setTitle("Add/Modify Team Member");
 		newMemberFrame.setBounds(100, 100, 575, 444);
-		newMemberFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		newMemberFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		newMemberFrame.getContentPane().setLayout(null);
 		
 		firstNameTextField = new JTextField();
@@ -166,6 +167,7 @@ public class ModifyMember {
 		
 		JButton btnNewButton = new JButton("Done");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				String firstName = firstNameTextField.getText();
 				String lastName = lastNameTextField.getText();

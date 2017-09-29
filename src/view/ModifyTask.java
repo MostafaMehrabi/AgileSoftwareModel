@@ -14,6 +14,7 @@ import java.util.Set;
 import enums.SkillArea;
 
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import core.Main;
 import entities.Team;
@@ -45,7 +46,7 @@ public class ModifyTask {
 		frmAddmodifyTask = new JFrame();
 		frmAddmodifyTask.setTitle("Add/Modify Task");
 		frmAddmodifyTask.setBounds(100, 100, 668, 362);
-		frmAddmodifyTask.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmAddmodifyTask.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frmAddmodifyTask.getContentPane().setLayout(null);
 		
 		taskNameTextField = new JTextField();
@@ -161,6 +162,7 @@ public class ModifyTask {
 		
 		JButton doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				//potential robustness and error checking code can be added here
 				String taskName = taskNameTextField.getText();

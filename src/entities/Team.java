@@ -394,8 +394,8 @@ public class Team {
 	
 	public double getTimeLeftToDeadline(){
 		long duration = System.currentTimeMillis() - sprintStartTime;
-		long timeLeft = ((long)hoursPerSprint) - duration; 
-		return (double)timeLeft;
+		long timeLeft = (hoursPerSprint) - duration; 
+		return timeLeft;
 	}
 	
 	public List<Task> getToDoTasks(){

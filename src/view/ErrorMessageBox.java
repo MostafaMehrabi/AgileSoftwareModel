@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
@@ -30,7 +31,7 @@ public class ErrorMessageBox {
 		errorFrame = new JFrame();
 		errorFrame.setTitle("Error");
 		errorFrame.setBounds(100, 100, 564, 250);
-		errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		errorFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		errorFrame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("ERROR!!!");

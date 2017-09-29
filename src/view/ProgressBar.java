@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import javax.swing.WindowConstants;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -26,7 +28,7 @@ public class ProgressBar {
 	private void initialize(String waitMessage) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 732, 195);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		progressBar = new JProgressBar();

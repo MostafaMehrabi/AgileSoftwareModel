@@ -109,7 +109,7 @@ public class TeamMember {
 		}
 		
 		double averageExpertise =  ((double) overallExpertise / (double) requiredSkillAreas.size());
-		return  ((double) (Team.getTeam().getStoryPointCoefficient() * storyPoints) / averageExpertise);
+		return  (Team.getTeam().getStoryPointCoefficient() * storyPoints / averageExpertise);
 	}
 	
 	public int getExpertiseCoefficient(double expertiseLevel) throws IllegalArgumentException{
