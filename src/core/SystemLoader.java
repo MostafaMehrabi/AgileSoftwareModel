@@ -21,7 +21,12 @@ import view.ProgressBar;
 public class SystemLoader {
 	private static ProgressBar progressBar;
 	
-	public static Team loadSystem(ProgressBar pb){	
+	public static void loadSystem(String baseDirPath, ProgressBar pb){
+		Main.setBaseDirectoryPath(baseDirPath);
+		loadSystem(pb);
+	}
+	
+	public static void loadSystem(ProgressBar pb){	
 		progressBar = pb;
 		
 		File baseDirectory = new File(Main.getBaseDirectoryPath());
@@ -53,13 +58,36 @@ public class SystemLoader {
 		if(!allTasksDoneSoFar.isEmpty())
 			team.setAllTasksDoneSoFar(allTasksDoneSoFar);
 		progressBar.setValue(100);
-		
-		return team;
 	}
 	
-	public static Team loadSystem(String baseDirPath, ProgressBar pb){
-		Main.setBaseDirectoryPath(baseDirPath);
-		return loadSystem(pb);
+	public static void loadDefaultSystemSettings(){
+		String originalBaseDirectory = Main.getBaseDirectoryPath();
+		String defaultSettingsDirectory = "." + File.separator + "Defaults";
+		File defaultDirectory = new File(defaultSettingsDirectory);
+		if(!defaultDirectory.exists()){
+			Main.issueErrorMessage("There are no default settings saved for the system!");
+		}
+		else{
+			Main.setBaseDirectoryPath(defaultSettingsDirectory);
+			Team team = loadTeam();
+
+			List<TeamMember> teamPersonnel = loadPersonnel();
+			if(!teamPersonnel.isEmpty())
+				team.setPersonnel(teamPersonnel);
+			
+			TaskBoard taskBoard = loadTaskBoard();
+			if(taskBoard != null)
+				team.setTaskBoard(taskBoard);
+			
+			List<Task> backLog = loadBackLog();
+			if(!backLog.isEmpty())
+				team.setProjectBackLog(backLog);
+			
+			List<Task> allTasksDoneSoFar = loadAllTasksDoneSoFar();
+			if(!allTasksDoneSoFar.isEmpty())
+				team.setAllTasksDoneSoFar(allTasksDoneSoFar);			
+		}
+		Main.setBaseDirectoryPath(originalBaseDirectory);
 	}
 	
 	private static Team loadTeam(){
@@ -180,7 +208,7 @@ public class SystemLoader {
 				taskBoard = new TaskBoard();
 				BufferedReader reader = new BufferedReader(new FileReader(taskBoardFile));
 				String line = reader.readLine();
-				taskBoard.setSprintNo(Integer.parseInt(line));
+				taskBoard.setCurrentSprint(Integer.parseInt(line));
 				
 				List<Task> toDoTasks = loadToDoTasks();
 				if(!toDoTasks.isEmpty())

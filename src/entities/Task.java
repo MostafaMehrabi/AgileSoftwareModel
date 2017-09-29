@@ -11,6 +11,7 @@ public class Task {
 	private Set<SkillArea> requiredSkillAreas;
 	private int performerID;
 	private String taskDescription;
+	private int priority;
 	
 	public Task(int taskId, String taskName, int storyPoints, Set<SkillArea> requiredSkillAreas){
 		this.taskName = taskName;
@@ -19,6 +20,7 @@ public class Task {
 		this.requiredSkillAreas = requiredSkillAreas;
 		this.taskDescription = "";
 		this.performerID = -1;//when a task is not done by anyone yet!
+		this.priority = 1;
 	}
 	
 	public int getStoryPoints(){
@@ -57,6 +59,14 @@ public class Task {
 		Team team = Team.getTeam();
 		double lp = requiredSkillAreas.size() * team.getStoryPointCoefficient();
 		return lp;
+	}
+	
+	public int getPriority(){
+		return priority;
+	}
+	
+	public void setPriority(int priority){
+		this.priority = priority;
 	}
 	
 	public String getTaskName(){

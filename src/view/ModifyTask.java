@@ -75,13 +75,13 @@ public class ModifyTask {
 		JLabel storyPiontLabel = new JLabel("Story Pionts");
 		storyPiontLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		storyPiontLabel.setEnabled(false);
-		storyPiontLabel.setBounds(10, 136, 137, 37);
+		storyPiontLabel.setBounds(10, 126, 137, 37);
 		frmAddmodifyTask.getContentPane().add(storyPiontLabel);
 		
 		JSpinner storyPointSpinner = new JSpinner();
 		storyPointSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		storyPointSpinner.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		storyPointSpinner.setBounds(37, 184, 61, 46);
+		storyPointSpinner.setBounds(37, 174, 61, 34);
 		frmAddmodifyTask.getContentPane().add(storyPointSpinner);
 		
 		JLabel lblRequiredSkillAreas = new JLabel("Required Skill Areas");
@@ -147,6 +147,18 @@ public class ModifyTask {
 			}
 		});
 		
+		JLabel priorityLabel = new JLabel("Priority");
+		priorityLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		priorityLabel.setEnabled(false);
+		priorityLabel.setBounds(10, 219, 137, 37);
+		frmAddmodifyTask.getContentPane().add(priorityLabel);
+		
+		JSpinner prioritySpinner = new JSpinner();
+		prioritySpinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		prioritySpinner.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		prioritySpinner.setBounds(37, 267, 61, 34);
+		frmAddmodifyTask.getContentPane().add(prioritySpinner);
+		
 		JButton doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -154,6 +166,7 @@ public class ModifyTask {
 				String taskName = taskNameTextField.getText();
 				String taskDescription = taskDescriptionTextField.getText();
 				Integer storyPoints = (Integer) storyPointSpinner.getValue();
+				Integer priority = (Integer) prioritySpinner.getValue();
 				Set<SkillArea> skillAreas = new HashSet<>();
 				if(frontEndCheckBox.isSelected())
 					skillAreas.add(SkillArea.FrontEnd);
@@ -166,14 +179,14 @@ public class ModifyTask {
 				frmAddmodifyTask.setVisible(false);
 				frmAddmodifyTask.dispose();
 				try{
-					Team.getTeam().addNewTaskToBackLog(taskName, taskDescription, storyPoints, skillAreas);
+					Team.getTeam().addNewTaskToBackLog(taskName, taskDescription, storyPoints, skillAreas, priority);
 				}catch(Exception exception){
 					Main.issueErrorMessage(exception.getMessage());
 				}
 			}
 		});
 		doneButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		doneButton.setBounds(214, 258, 256, 46);
+		doneButton.setBounds(358, 255, 256, 46);
 		frmAddmodifyTask.getContentPane().add(doneButton);
 	}
 	

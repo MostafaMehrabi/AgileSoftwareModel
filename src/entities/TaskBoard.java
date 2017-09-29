@@ -22,16 +22,39 @@ public class TaskBoard {
 		this.currentSprint = 1;
 	}	
 	
+	public boolean isToDoTaskEmpty(){
+		return toDoTasks.isEmpty();
+	}
+	
 	public Task pollTask(TeamMember developer){
 		taskLock.lock();
-		Task chosenTask = null;
-		double sai = 0d;
+		
+		Team team = Team.getTeam();
+		
+		if(isToDoTaskEmpty()){
+			team.sprintFinished();
+			return null;
+		}
+		
+		Task chosenTask = toDoTasks.get(0);
+		double chosenSAI = calculateSAI(chosenTask, developer);
+		
 		for(Task task : toDoTasks){
-			//calculate self assignment index for each task. 
-			double tempSAI = calculateSAI(task, developer);
-			if (tempSAI > sai){
-				sai = tempSAI;
+			int priority = task.getPriority();
+			
+			if(priority > chosenTask.getPriority()){
+				//if the task has a higher priority, definitely pick this.
 				chosenTask = task;
+			}
+			
+			else if(priority == chosenTask.getPriority()){
+				//if the tasks are of the same priority then calculate self assignment index (sai)
+				//only replace if (sai) is bigger than current task. 
+				double tempSAI = calculateSAI(task, developer);
+				if (tempSAI > chosenSAI){
+					chosenSAI = tempSAI;
+					chosenTask = task;
+				}
 			}
 		}
 		toDoTasks.remove(chosenTask);
@@ -42,13 +65,16 @@ public class TaskBoard {
 		//in fact, the worker keeps looking for a task, until it finds one that it can execute before
 		//the deadline, and then returns all the rejected tasks back to the "toDoTasks", and adds 
 		//the chosen task to the "tasksInProgress" list, then updates the gui!
-		taskLock.unlock();
 		return chosenTask;
 	}
 	
+	public void releaseTaskLock(){
+		taskLock.unlock();
+	}
+	
 	private double calculateSAI(Task task, TeamMember developer){
-		double motivationLevel = developer.getMotivation(task);
-		double tct = developer.getTaskCompletionTime(task);
+		double motivationLevel = developer.calculateMotivation(task);
+		double tct = developer.calculateTaskCompletionTime(task);
 		return motivationLevel/tct;
 	}	
 	
@@ -122,11 +148,15 @@ public class TaskBoard {
 		return this.tasksInProgress;
 	}
 	
-	public int getSprintNo(){
+	public int getCurrentSprint(){
 		return this.currentSprint;
 	}
 	
-	public void setSprintNo(int sprintNo){
+	public void setCurrentSprint(int sprintNo){
 		this.currentSprint = sprintNo;
 	}
+	
+	public void goToNextSprint(){
+		this.currentSprint++;
+	}	
 }

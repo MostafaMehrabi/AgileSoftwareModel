@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import core.Main;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
@@ -29,7 +30,37 @@ public class TeamMember {
 	}
 	
 	public void startWorking(){
-		
+		Team team = Team.getTeam();
+		TaskBoard taskBoard = team.getTaskBoard();
+		Task firstChosenTask = null;
+		while(team.getTeamWorking()){
+			Task task = taskBoard.pollTask(this);
+			firstChosenTask = task;
+			if(memberCanPerformTask(task)){
+				taskBoard.releaseTaskLock();
+				execute(team.convertTctToSystemTime(calculateTaskCompletionTime(task)));
+			}else{
+				
+			}
+		}
+	}
+	
+	private void execute(long time){
+		try{
+			Thread.sleep(time);
+		}catch(Exception e){
+			Main.issueErrorMessage("Worker encountered probelm\n" + e.getMessage());
+		}
+	}
+	
+	private boolean memberCanPerformTask(Task task){
+		Team team = Team.getTeam();
+		double tct = calculateTaskCompletionTime(task);
+		double timeLeftToDeadline = team.getTimeLeftToDeadline();
+		if(tct < timeLeftToDeadline)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -39,37 +70,40 @@ public class TeamMember {
 	 * @param task
 	 * @return
 	 */
-	public double getMotivation(Task task){
+	public double calculateMotivation(Task task){
 		Team team = Team.getTeam();
 		int storyPoints = task.getStoryPoints();
 		double potentialLearning = 0d;
 		double progressPerStoryPoint = team.getProgressPerStoryPoint();
 		double highestExpertiseLevel = team.getHighExpertiseHigherBoundary();
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
+		
 		for(SkillArea skillArea : requiredSkillAreas){
 			double expertiseInThisSkillArea = expertiseInSkillAreas.get(skillArea);
 			if(expertiseInThisSkillArea < highestExpertiseLevel){
-				double potentialProgressInThisSkill = storyPoints * progressPerStoryPoint;
-				if ((expertiseInThisSkillArea + potentialProgressInThisSkill) > highestExpertiseLevel){
-					potentialProgressInThisSkill = highestExpertiseLevel - expertiseInThisSkillArea;
+				double potentialProgressInThisSkillArea = storyPoints * progressPerStoryPoint;
+				if ((expertiseInThisSkillArea + potentialProgressInThisSkillArea) > highestExpertiseLevel){
+					potentialProgressInThisSkillArea = highestExpertiseLevel - expertiseInThisSkillArea;
 				}
-				potentialLearning += potentialProgressInThisSkill; 
+				potentialLearning += potentialProgressInThisSkillArea; 
 			}
 		}
+		
 		if(team.getTaskAllocationStrategy().equals(TaskAllocationStrategy.ExpertiseBased)){
 			potentialLearning = 1d / potentialLearning;
 		}
+		
 		return potentialLearning;
 	}
 	
-	public double getTaskCompletionTime(Task task) throws IllegalArgumentException{
+	public double calculateTaskCompletionTime(Task task) throws IllegalArgumentException{
 		int overallExpertise = 0;
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
 		int storyPoints = task.getStoryPoints();
 		try{			
 			for(SkillArea skillArea : requiredSkillAreas){
 				overallExpertise += getExpertiseCoefficient(expertiseInSkillAreas.get(skillArea));
-		}
+			}
 		}catch(IllegalArgumentException e){
 			throw e;
 		}

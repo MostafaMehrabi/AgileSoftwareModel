@@ -227,4 +227,8 @@ public class Main {
 	public static void setTaskBoardSprintNo(int sprintNo){
 		mainWindow.setTaskBoardSprintNo(sprintNo);
 	}
+	
+	public static void setLastSprintVelocity(double velocity){
+		mainWindow.setLastSprintVelocity(velocity);
+	}
 }

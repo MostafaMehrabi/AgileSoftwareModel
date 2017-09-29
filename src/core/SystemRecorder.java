@@ -29,15 +29,20 @@ public class SystemRecorder {
 		recordAllPerformedTasks();
 	}
 	
-	public static void recordDefaultBackLog(){
+	public static void recordAsSystemDefault(){
 		String originalBaseDir = Main.getBaseDirectoryPath();
-		String defaultsDir = "." + File.separator + "Defaults";
-		File defaultDirectory = new File(defaultsDir);
+		String defaultSettingsDir = "." + File.separator + "Defaults";
+		File defaultDirectory = new File(defaultSettingsDir);
 		if(!defaultDirectory.exists()){
 			defaultDirectory.mkdirs();
 		}
-		Main.setBaseDirectoryPath(defaultsDir);
+		Main.setBaseDirectoryPath(defaultSettingsDir);
+		recordMain();
+		recordTeam();
+		recordPersonnel();
+		recordTaskBoard();
 		recordBackLog();
+		recordAllPerformedTasks();
 		Main.setBaseDirectoryPath(originalBaseDir); //set it back to what it was
 	}
 	
@@ -111,6 +116,9 @@ public class SystemRecorder {
 			String initialStoryPoints = Integer.toString(team.getInitialStoryPoints());
 			writer.println(initialStoryPoints);
 			
+			String totalSprintsPerProject = Integer.toString(team.getNumberOfSprintsPerProject());
+			writer.println(totalSprintsPerProject);
+			
 			writer.flush();
 			writer.close();
 		}catch(Exception e){
@@ -166,7 +174,7 @@ public class SystemRecorder {
 		TaskBoard taskBoard = Team.getTeam().getTaskBoard();
 		try{
 			PrintWriter writer = new PrintWriter(taskBoardFileName);
-			writer.println(taskBoard.getSprintNo());
+			writer.println(taskBoard.getCurrentSprint());
 			writer.flush();
 			writer.close();
 		}catch(Exception e){

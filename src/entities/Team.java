@@ -19,7 +19,6 @@ import java.util.concurrent.Executors;
 import javax.swing.Timer;
 
 import core.Main;
-import core.SystemRecorder;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
@@ -31,6 +30,7 @@ public class Team {
 	private List<TeamMember> teamPersonnel;
 	private List<Task> backLog;
 	private List<Task> allTasksDoneSoFar;
+	private List<String> log;
 	private double storyPointCoefficient;
 	private double progressPerStoryPoint;
 	private int lowExpertiseLowerBoundary, lowExpertiseHigherBoundary;
@@ -44,6 +44,11 @@ public class Team {
 	private int lastTaskID;
 	private int hoursPerSprint;
 	private int initialStoryPoints;
+	private int numberOfSprintsPerProject;
+	private double lastSprintVelocity;
+	private ExecutorService executors;
+	private Timer timer;
+	private long sprintStartTime, sprintFinishTime;
 
 	
 	private Team(){
@@ -51,6 +56,7 @@ public class Team {
 		teamPersonnel = new ArrayList<>();
 		backLog = new ArrayList<>();
 		allTasksDoneSoFar = new ArrayList<>();
+		log = new ArrayList<>();
 		taskBoard = new TaskBoard();
 		//setting default values for team properties, these values can be customized later.
 		storyPointCoefficient = 8;
@@ -59,12 +65,17 @@ public class Team {
 		mediumExpertiseLowerBoundary = 6; mediumExpertiseHigherBoundary = 20;
 		highExpertiseLowerBoundary = 21; highExpertiseHigherBoundary = 30;
 		lowExpertiseCoefficient = 1; mediumExpertiseCoefficient = 3; highExpertiseCoefficient = 5;
-		hoursToSystemTimeCoefficient = 60*25;
+		hoursToSystemTimeCoefficient = 750; //MAKES A SPRINT TAKE 1 MINUTE IN SYSTEM TIME
 		stopAfterEachSprint = false; teamWorking = false;
 		hoursPerSprint = 80;
 		initialStoryPoints = 60;
 		lastMemebrID = 0;
 		lastTaskID = 0;
+		numberOfSprintsPerProject = 26; //each sprint 2 weeks, 26 sprints is roughly 1 year project!
+		lastSprintVelocity = 0;
+		executors = null;
+		sprintStartTime = 0l;
+		sprintFinishTime = 0l;
 	}
 	
 	public static Team getTeam(){
@@ -147,7 +158,8 @@ public class Team {
 	}
 	
 	public long convertTctToSystemTime(double tct){
-		return (long) (tct * hoursToSystemTimeCoefficient);
+		long tctLong = Double.valueOf(tct).longValue();
+		return tctLong * hoursToSystemTimeCoefficient;
 	}
 	
 	public TaskAllocationStrategy getTaskAllocationStrategy(){
@@ -254,6 +266,14 @@ public class Team {
 		return this.taskBoard;
 	}
 	
+	public int getNumberOfSprintsPerProject(){
+		return this.numberOfSprintsPerProject;
+	}
+	
+	public void setNumberOfSprintsPerProject(int sprints){
+		this.numberOfSprintsPerProject = sprints;
+	}
+	
 	public void setLowExpertiseBoundaries(int low, int high){
 		if(low > high)
 			throw new IllegalArgumentException("The lowe boundary is larger than the high boundary!");
@@ -333,33 +353,49 @@ public class Team {
 		Main.updatePersonnelTabel(newDeveloper);
 	}		
 	
-	public void addNewTaskToBackLog(String name, String description, int storyPoints, Set<SkillArea> requiredSkillAreas) throws IllegalArgumentException{
+	public void addNewTaskToBackLog(String name, String description, int storyPoints, Set<SkillArea> requiredSkillAreas, int priority) throws IllegalArgumentException{
 		if(storyPoints < 1 || storyPoints > 10){
 			throw new IllegalArgumentException("The value provided as story points for the"
 					+ " new task, can only be between 0 and 10, inclusive!");
 		}
 		int taskID = ++lastTaskID;
 		Task newTask = new Task(taskID, name, storyPoints, requiredSkillAreas);
+		newTask.setPriority(priority);
+		
 		if(!description.isEmpty())
 			newTask.setTaskDescription(description);
+		
 		addTaskToBackLog(newTask);
 	}
 	
 	private void addTaskToBackLog(Task task){
 		backLog.add(task);
-		SystemRecorder.recordDefaultBackLog();
 		Main.updateBackLogTabel(task);
 	}	
 	
-	public void moveToSprintBackLog(int[] selectedIndecies){
-		int arraySize = selectedIndecies.length;
+	public void moveToSprintBackLog(int[] selectedIndices){
+		int arraySize = selectedIndices.length;
 		List<Task> tasks = new ArrayList<>();
 		for(int index = (arraySize-1); index >= 0; index--){
-			Task task = backLog.remove(selectedIndecies[index]);
+			Task task = backLog.remove(selectedIndices[index]);
 			tasks.add(task);
 		}
 		Collections.reverse(tasks);
-		taskBoard.setToDoTasks(tasks);
+		List<Task> toDoTasks = taskBoard.getToDoTasks();
+		toDoTasks.addAll(tasks);
+		taskBoard.setToDoTasks(toDoTasks);
+	}
+	
+	public void deleteFromBackLog(int[] selectedIndices){
+		for(int index = (selectedIndices.length - 1); index >= 0; index--){
+			backLog.remove(selectedIndices[index]);
+		}
+	}
+	
+	public double getTimeLeftToDeadline(){
+		long duration = System.currentTimeMillis() - sprintStartTime;
+		long timeLeft = ((long)hoursPerSprint) - duration; 
+		return (double)timeLeft;
 	}
 	
 	public List<Task> getToDoTasks(){
@@ -374,35 +410,67 @@ public class Team {
 		return taskBoard.getPerformedTasks();
 	}
 	
-	public int getSprintNumber(){
-		return taskBoard.getSprintNo();
+	public int getCurrentSprint(){
+		return taskBoard.getCurrentSprint();
 	}
 	
-	public void setSpringNumber(int number){
-		taskBoard.setSprintNo(number);
+	public void setCurrentSprint(int number){
+		taskBoard.setCurrentSprint(number);
+	}
+	
+	public void sprintFinished(){
+		//stop the timer, and the rest...
+		setTeamWorking(false);				
+		timer.stop();
+		calculateForNextSprint();
+		double velocity = 0d;
+		//velocity = calculateVelocity();
+	
+		sprintFinishTime = System.currentTimeMillis();
+		String logEntry = "Sprint" + getCurrentSprint() + " took " + (sprintFinishTime - sprintStartTime) + ", at velocity: " + Double.toString(velocity);
+				
+		//logInfo();
+		setCurrentSprint(getCurrentSprint() + 1);
+		if(!stopAfterEachSprint){
+			startNewSprint();
+		}
 	}
 	
 	public void startNewSprint(){
+		setTeamWorking(true);
+		sprintStartTime = System.currentTimeMillis();
+		Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
+		Main.setLastSprintVelocity(lastSprintVelocity);
 		//remember to disable the start button until sprint is over! or maybe even until project is over?
-		ExecutorService executors = Executors.newFixedThreadPool(teamPersonnel.size());
+		if(executors != null){
+			executors.shutdownNow();
+		}
+		executors = Executors.newFixedThreadPool(teamPersonnel.size());
 		for(TeamMember member : teamPersonnel){
 			Worker worker = new Worker(member);
 			executors.submit(worker);
 		}
-		startSprintTimer();
+		startSprintTimer();	
+	}
+	
+	private void calculateForNextSprint(){
+		//calculateVelocity();
+		//logInfo();
+		//based on the current team velocity move as much tasks as calculated
+		//to the sprint backlog
+	
 	}
 	
 	private void startSprintTimer(){
 		Main.setTaskBoardProgress(0);
-		Main.setTaskBoardSprintNo(taskBoard.getSprintNo());
 		int sprintLengthInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
 		int lengthOfPercent = sprintLengthInSystemTime / 100;
-		Timer timer = new Timer(lengthOfPercent, new ActionListener() {			
+		timer = new Timer(lengthOfPercent, new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int progress = Main.getTaskBoardProgress();
 				if(progress == 100){
-					((Timer)e.getSource()).stop();
+					sprintFinished();
 				}else{
 					Main.setTaskBoardProgress(progress + 1);
 				}
