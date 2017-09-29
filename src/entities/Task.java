@@ -27,6 +27,10 @@ public class Task {
 		return this.storyPoints;
 	}
 	
+	public void setStoryPoints(int points){
+		this.storyPoints = points;
+	}
+	
 	public Set<SkillArea> getRequiredSkillAreas(){
 		return this.requiredSkillAreas;
 	}

@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,6 +50,7 @@ public class Team {
 	private ExecutorService executors;
 	private Timer timer;
 	private long sprintStartTime, sprintFinishTime;
+	private CountDownLatch latch;
 
 	
 	private Team(){
@@ -76,6 +78,7 @@ public class Team {
 		executors = null;
 		sprintStartTime = 0l;
 		sprintFinishTime = 0l;
+		latch = null;
 	}
 	
 	public static Team getTeam(){
@@ -393,9 +396,12 @@ public class Team {
 	}
 	
 	public double getTimeLeftToDeadline(){
-		long duration = System.currentTimeMillis() - sprintStartTime;
-		long timeLeft = (hoursPerSprint) - duration; 
-		return timeLeft;
+		long sprintDurationInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
+		long currentTime = System.currentTimeMillis();
+		long duration = currentTime - sprintStartTime;
+		long timeLeft = sprintDurationInSystemTime - duration; 
+		System.out.println("duration: " + duration  + ", time left: " + timeLeft);
+		return (double)timeLeft;
 	}
 	
 	public List<Task> getToDoTasks(){
@@ -418,19 +424,35 @@ public class Team {
 		taskBoard.setCurrentSprint(number);
 	}
 	
+	public void readyForNextSprint(){
+		taskBoard.goToNextSprint();
+	}
+	
 	public void sprintFinished(){
+		//consider the case that there might be tasks left in the toDoTask list when sprint is over!
 		//stop the timer, and the rest...
-		setTeamWorking(false);				
+		setTeamWorking(false);		
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//even though task pool is empty, timer stops only when all workers have finished.
+		sprintFinishTime = System.currentTimeMillis();
 		timer.stop();
+
 		calculateForNextSprint();
 		double velocity = 0d;
 		//velocity = calculateVelocity();
+		
+		long supposedTime = sprintStartTime + (hoursPerSprint * hoursToSystemTimeCoefficient);
 	
-		sprintFinishTime = System.currentTimeMillis();
-		String logEntry = "Sprint" + getCurrentSprint() + " took " + (sprintFinishTime - sprintStartTime) + ", at velocity: " + Double.toString(velocity);
-				
+		String logEntryOne = "Sprint" + getCurrentSprint() + " took " + (sprintFinishTime - sprintStartTime) + ", at velocity: " + Double.toString(velocity);
+		String logEntryTwo = "Supposed time for team to finishe this sprint was: " + supposedTime + ", but team finished at: " + sprintFinishTime;		
 		//logInfo();
-		setCurrentSprint(getCurrentSprint() + 1);
+		readyForNextSprint();
 		if(!stopAfterEachSprint){
 			startNewSprint();
 		}
@@ -438,16 +460,17 @@ public class Team {
 	
 	public void startNewSprint(){
 		setTeamWorking(true);
+		latch = new CountDownLatch(teamPersonnel.size());
 		sprintStartTime = System.currentTimeMillis();
 		Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
 		Main.setLastSprintVelocity(lastSprintVelocity);
 		//remember to disable the start button until sprint is over! or maybe even until project is over?
 		if(executors != null){
 			executors.shutdownNow();
-		}
+		}		
 		executors = Executors.newFixedThreadPool(teamPersonnel.size());
 		for(TeamMember member : teamPersonnel){
-			Worker worker = new Worker(member);
+			Worker worker = new Worker(member, latch);
 			executors.submit(worker);
 		}
 		startSprintTimer();	

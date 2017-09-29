@@ -1,16 +1,18 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import core.Main;
 
 public class TaskBoard {
 	private List<Task> toDoTasks;
 	private List<Task> tasksInProgress;
 	private List<Task> performedTasks;
 	private Lock taskLock;
-	private Lock submitPerformedTaskLock;
 	private int currentSprint;
 	
 	public TaskBoard(){
@@ -18,11 +20,10 @@ public class TaskBoard {
 		this.performedTasks = new ArrayList<>();
 		this.tasksInProgress = new ArrayList<>();
 		this.taskLock = new ReentrantLock();
-		this.submitPerformedTaskLock = new ReentrantLock();
 		this.currentSprint = 1;
 	}	
 	
-	public boolean isToDoTaskEmpty(){
+	public boolean isToDoTasksListEmpty(){
 		return toDoTasks.isEmpty();
 	}
 	
@@ -31,7 +32,7 @@ public class TaskBoard {
 		
 		Team team = Team.getTeam();
 		
-		if(isToDoTaskEmpty()){
+		if(isToDoTasksListEmpty()){
 			team.sprintFinished();
 			return null;
 		}
@@ -57,14 +58,9 @@ public class TaskBoard {
 				}
 			}
 		}
-		toDoTasks.remove(chosenTask);
-		//tasksInProgress.add(chosenTask);
-		//before a member starts performing a task, it checks if it can do the task before the 
-		//end of sprint reaches, if not, it will return the task to the task board, and removes
-		//it from the tasks in progress, and looks for another task.
-		//in fact, the worker keeps looking for a task, until it finds one that it can execute before
-		//the deadline, and then returns all the rejected tasks back to the "toDoTasks", and adds 
-		//the chosen task to the "tasksInProgress" list, then updates the gui!
+
+		removeObjectFromList(toDoTasks, chosenTask);
+		
 		return chosenTask;
 	}
 	
@@ -78,12 +74,24 @@ public class TaskBoard {
 		return motivationLevel/tct;
 	}	
 	
+	private synchronized void removeObjectFromList(List<Task> list, Task task){
+		Iterator<Task> iterator = list.iterator();
+		while(iterator.hasNext()){
+			Task tempTask = iterator.next();
+			if(tempTask.equals(task)){
+				iterator.remove();
+				return;
+			}				
+		}
+	}
 	
 	public void submitPerformedTaskToBoard(Task task){
-		submitPerformedTaskLock.lock();
-		tasksInProgress.remove(task);
+		taskLock.lock();
+		removeObjectFromList(tasksInProgress, task);
 		performedTasks.add(task);
-		submitPerformedTaskLock.unlock();
+		Main.repopulateTasksInProgressTable();
+		Main.repopulateCompletedTasksTable();
+		taskLock.unlock();
 	}
 	
 	public void removeTask(int taskIndex){
@@ -112,18 +120,19 @@ public class TaskBoard {
 	
 	public void setPerformedTasks(List<Task> tasks){
 		//only supposed to be called when loading system 
-		submitPerformedTaskLock.lock();
+		taskLock.lock();
 		this.performedTasks = tasks;
-		submitPerformedTaskLock.unlock();
+		taskLock.unlock();
 	}
 	
-	public void addToTasksInProgress() {
-		
+	public void addToTasksInProgress(Task task) {
+		tasksInProgress.add(task);
+		Main.repopulateToDoTaskTable();
+		Main.repopulateTasksInProgressTable();
 	}
 	
-	public void returnRejectedTasks(List<Task> tasks) {
-		//only called if the worker has rejected tasks (this is checked by each 
-		//worker independently). 
+	public void rejectTask(Task task) {
+		toDoTasks.add(task);
 	}
 	
 	public void setTasksInProgress(List<Task> tasks) {

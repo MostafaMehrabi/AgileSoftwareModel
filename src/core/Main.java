@@ -217,7 +217,12 @@ public class Main {
 	}	
 	
 	public static void setTaskBoardProgress(int progress){
-		mainWindow.setTaskBoardProgress(progress);
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.setTaskBoardProgress(progress);
+			}
+		});
 	}
 	
 	public static int getTaskBoardProgress(){
@@ -225,10 +230,47 @@ public class Main {
 	}
 	
 	public static void setTaskBoardSprintNo(int sprintNo){
-		mainWindow.setTaskBoardSprintNo(sprintNo);
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.setTaskBoardSprintNo(sprintNo);
+			}
+		});
 	}
 	
 	public static void setLastSprintVelocity(double velocity){
-		mainWindow.setLastSprintVelocity(velocity);
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.setLastSprintVelocity(velocity);
+			}
+		});
+	}
+	
+	public synchronized static void repopulateTasksInProgressTable(){
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.repopulateTaskInProgressTable();
+			}
+		});
+	}
+	
+	public synchronized static void repopulateCompletedTasksTable(){
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.repopulateCompletedTasksTable();
+			}
+		});
+	}
+	
+	public synchronized static void repopulateToDoTaskTable(){
+		EventQueue.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				mainWindow.repopulateToDoTasksTable();
+			}
+		});
 	}
 }
