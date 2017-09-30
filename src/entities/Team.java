@@ -492,6 +492,7 @@ public class Team {
 		Main.setTaskBoardProgress(0);
 		int sprintLengthInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
 		int lengthOfPercent = sprintLengthInSystemTime / 100;
+		System.out.println("timer pulse: " + lengthOfPercent);
 		timer = new Timer(lengthOfPercent, new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
