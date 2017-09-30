@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,7 +71,7 @@ public class Team {
 		hoursToSystemTimeCoefficient = 750; //MAKES A SPRINT TAKE 1 MINUTE IN SYSTEM TIME
 		stopAfterEachSprint = false; teamWorking = false;
 		hoursPerSprint = 80;
-		initialStoryPoints = 60;
+		initialStoryPoints = 70;
 		lastMemebrID = 0;
 		lastTaskID = 0;
 		numberOfSprintsPerProject = 26; //each sprint 2 weeks, 26 sprints is roughly 1 year project!
@@ -100,7 +101,7 @@ public class Team {
 		return this.hoursPerSprint;
 	}
 	
-	public void setHoursPerSplit(int hours){
+	public void setHoursPerSprint(int hours){
 		this.hoursPerSprint = hours;
 	}
 	
@@ -384,7 +385,7 @@ public class Team {
 			tasks.add(task);
 		}
 		Collections.reverse(tasks);
-		List<Task> toDoTasks = taskBoard.getToDoTasks();
+		ConcurrentLinkedQueue<Task> toDoTasks = taskBoard.getToDoTasks();
 		toDoTasks.addAll(tasks);
 		taskBoard.setToDoTasks(toDoTasks);
 	}
@@ -396,23 +397,22 @@ public class Team {
 	}
 	
 	public double getTimeLeftToDeadline(){
-		long sprintDurationInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
 		long currentTime = System.currentTimeMillis();
 		long duration = currentTime - sprintStartTime;
-		long timeLeft = sprintDurationInSystemTime - duration; 
-		System.out.println("duration: " + duration  + ", time left: " + timeLeft);
+		duration /= hoursToSystemTimeCoefficient;
+		long timeLeft = hoursPerSprint - duration; 
 		return (double)timeLeft;
 	}
 	
-	public List<Task> getToDoTasks(){
+	public ConcurrentLinkedQueue<Task> getToDoTasks(){
 		return taskBoard.getToDoTasks();
 	}
 	
-	public List<Task> getTasksInProgress(){
+	public ConcurrentLinkedQueue<Task> getTasksInProgress(){
 		return taskBoard.getTasksInProgress();
 	}
 	
-	public List<Task> getPerformedTasks(){
+	public ConcurrentLinkedQueue<Task> getPerformedTasks(){
 		return taskBoard.getPerformedTasks();
 	}
 	
@@ -428,20 +428,25 @@ public class Team {
 		taskBoard.goToNextSprint();
 	}
 	
-	public void sprintFinished(){
+	public void waitForSprintToFinish(){
+		System.out.println("Sprint finished called");
 		//consider the case that there might be tasks left in the toDoTask list when sprint is over!
 		//stop the timer, and the rest...
-		setTeamWorking(false);		
 		try {
+			System.out.println("waiting for latch");
 			latch.await();
+			System.out.println("waiting for latch done!");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}	
 		
+		System.out.println("latch has been count down");
+		timer.stop();
+		setTeamWorking(false);
+		executors.shutdown();
 		//even though task pool is empty, timer stops only when all workers have finished.
 		sprintFinishTime = System.currentTimeMillis();
-		timer.stop();
 
 		calculateForNextSprint();
 		double velocity = 0d;
@@ -453,9 +458,10 @@ public class Team {
 		String logEntryTwo = "Supposed time for team to finishe this sprint was: " + supposedTime + ", but team finished at: " + sprintFinishTime;		
 		//logInfo();
 		readyForNextSprint();
-		if(!stopAfterEachSprint){
-			startNewSprint();
-		}
+//		if(!stopAfterEachSprint){
+//			startNewSprint();
+//		}
+		System.out.println("at this point");
 	}
 	
 	public void startNewSprint(){
@@ -465,13 +471,11 @@ public class Team {
 		Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
 		Main.setLastSprintVelocity(lastSprintVelocity);
 		//remember to disable the start button until sprint is over! or maybe even until project is over?
-		if(executors != null){
-			executors.shutdownNow();
-		}		
+			
 		executors = Executors.newFixedThreadPool(teamPersonnel.size());
 		for(TeamMember member : teamPersonnel){
 			Worker worker = new Worker(member, latch);
-			executors.submit(worker);
+			executors.submit(worker);			
 		}
 		startSprintTimer();	
 	}
@@ -493,7 +497,7 @@ public class Team {
 			public void actionPerformed(ActionEvent e) {
 				int progress = Main.getTaskBoardProgress();
 				if(progress == 100){
-					sprintFinished();
+					setTeamWorking(false);		
 				}else{
 					Main.setTaskBoardProgress(progress + 1);
 				}

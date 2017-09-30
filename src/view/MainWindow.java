@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
@@ -769,7 +770,7 @@ public class MainWindow {
 		try{
 			String hoursPerSprint = hoursPerSpringTextField.getText();
 			int hoursPerSpringInt = Integer.parseInt(hoursPerSprint);
-			team.setHoursPerSplit(hoursPerSpringInt);
+			team.setHoursPerSprint(hoursPerSpringInt);
 		}catch(NumberFormatException exception){
 			hoursPerSpringTextField.setText(Integer.toString(team.getHoursPerSpring()));
 			Main.issueErrorMessage("The value provided for hours-per-sprint is not a valid integer, try again!");
@@ -874,7 +875,7 @@ public class MainWindow {
 		for(int index = (numOfRows-1); index >= 0; index--)
 			toDoTaskTableModel.removeRow(index);
 		
-		List<Task> tasks = Team.getTeam().getToDoTasks();
+		ConcurrentLinkedQueue<Task> tasks = Team.getTeam().getToDoTasks();
 		for(Task task : tasks){
 			String taskId = Integer.toString(task.getTaskID());
 			String storyPoints = Integer.toString(task.getStoryPoints());
@@ -899,7 +900,7 @@ public class MainWindow {
 		for(int index = (numOfRows-1); index >= 0; index--)
 			tasksInProgressTableModel.removeRow(index);
 		
-		List<Task> tasks = Team.getTeam().getTasksInProgress();
+		ConcurrentLinkedQueue<Task> tasks = Team.getTeam().getTasksInProgress();
 		for(Task task : tasks){
 			String taskId = Integer.toString(task.getTaskID());
 			String storyPoints = Integer.toString(task.getStoryPoints());
@@ -915,7 +916,7 @@ public class MainWindow {
 		for(int index = (numOfRows-1); index >= 0; index--)
 			finishedTasksTableModel.removeRow(index);
 		
-		List<Task> tasks = Team.getTeam().getPerformedTasks();
+		ConcurrentLinkedQueue<Task> tasks = Team.getTeam().getPerformedTasks();
 		for(Task task : tasks){
 			String taskId = Integer.toString(task.getTaskID());
 			String storyPoints = Integer.toString(task.getStoryPoints());
@@ -993,7 +994,6 @@ public class MainWindow {
 		List<Integer> taskIndices = new ArrayList<>();
 		int storyPointsToBeMoved = 0;
 		int taskIndex = 0;
-		
 		do{
 			taskIndices.add(taskIndex);
 			storyPointsToBeMoved += Integer.parseInt((String)backLogTableModel.getValueAt(taskIndex, 1));

@@ -248,29 +248,14 @@ public class Main {
 	}
 	
 	public synchronized static void repopulateTasksInProgressTable(){
-		EventQueue.invokeLater(new Runnable() {			
-			@Override
-			public void run() {
-				mainWindow.repopulateTaskInProgressTable();
-			}
-		});
+		mainWindow.repopulateTaskInProgressTable();
 	}
 	
 	public synchronized static void repopulateCompletedTasksTable(){
-		EventQueue.invokeLater(new Runnable() {			
-			@Override
-			public void run() {
-				mainWindow.repopulateCompletedTasksTable();
-			}
-		});
+		mainWindow.repopulateCompletedTasksTable();
 	}
 	
 	public synchronized static void repopulateToDoTaskTable(){
-		EventQueue.invokeLater(new Runnable() {			
-			@Override
-			public void run() {
-				mainWindow.repopulateToDoTasksTable();
-			}
-		});
+		mainWindow.repopulateToDoTasksTable();
 	}
 }

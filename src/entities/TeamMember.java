@@ -44,18 +44,18 @@ public class TeamMember {
 		Team team = Team.getTeam();
 		TaskBoard taskBoard = team.getTaskBoard();
 		Task chosenTask = null;
-		while(team.getTeamWorking()){
-			chosenTask = taskBoard.pollTask(this);
+		boolean memberFinishedForThisSprint = false;
+		while(team.getTeamWorking() && !memberFinishedForThisSprint){
+			chosenTask = taskBoard.pollTask(this, false);
 			if(chosenTask != null){
 				if(!memberCanPerformTask(chosenTask)){
-					
 					boolean foundTask = false; 
 					List<Task> rejectedTasks = new ArrayList<>();
 					rejectedTasks.add(chosenTask);
 					
 					while(!taskBoard.isToDoTasksListEmpty()){//whilst there are tasks in the toDoTasks list to poll
 						//keep in mind, that this worker has yet not released the lock!
-						Task tempTask = taskBoard.pollTask(this);
+						Task tempTask = taskBoard.pollTask(this, true);
 						if(memberCanPerformTask(tempTask)){
 							returnRejectedTasks(rejectedTasks, taskBoard);
 							chosenTask = tempTask;
@@ -69,27 +69,39 @@ public class TeamMember {
 						//if worker went through all tasks, and could not find a task,
 						//gets the first chosen task and breaks it into smaller tasks.
 						Task spareTask = breakTask(chosenTask);
-						rejectedTasks.remove(chosenTask);//replace chosen task with the spare task.
-						rejectedTasks.add(0, spareTask);
+						if(spareTask.getStoryPoints() == 0) {
+							memberFinishedForThisSprint = true;
+						}
+						else if(spareTask.getStoryPoints() != 0) {
+							rejectedTasks.remove(chosenTask);//replace chosen task with the spare task.
+							rejectedTasks.add(0, spareTask);
+						}
 						returnRejectedTasks(rejectedTasks, taskBoard);
 					}
 				}
-				
-				chosenTask.setPerformerID(getID());
-				taskBoard.addToTasksInProgress(chosenTask);
-				taskBoard.releaseTaskLock();
-				execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)));
-				adjustExpertiseLevels(chosenTask);
-				//logInfo();
-				taskBoard.submitPerformedTaskToBoard(chosenTask);
+				if(!memberFinishedForThisSprint) {
+					chosenTask.setPerformerID(getID());
+					taskBoard.addToTasksInProgress(chosenTask);
+					taskBoard.releaseTaskLock(this);
+					execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)));
+					adjustExpertiseLevels(chosenTask);
+					taskBoard.submitPerformedTaskToBoard(chosenTask);
+				}
+				else {
+					taskBoard.releaseTaskLock(this);
+				}
+			}else if(chosenTask == null) {
+				memberFinishedForThisSprint = true;
+				taskBoard.releaseTaskLock(this);
 			}
 		}
+		//logInfo();
 		latch.countDown();
+		System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
 	}
 	
 	private void execute(long time){
 		try{
-			System.out.println("member " + Thread.currentThread().getId() + " working for " + time + " hours");
 			Thread.sleep(time);
 		}catch(Exception e){
 			Main.issueErrorMessage("Worker encountered probelm\n" + e.getMessage());
@@ -100,7 +112,7 @@ public class TeamMember {
 		Team team = Team.getTeam();
 		double tct = calculateTaskCompletionTime(task);
 		double timeLeftToDeadline = team.getTimeLeftToDeadline();
-		if(tct < timeLeftToDeadline)
+		if(tct <= timeLeftToDeadline)
 			return true;
 		else
 			return false;
@@ -132,15 +144,24 @@ public class TeamMember {
 	}
 	
 	private Task breakTask(Task chosenTask){
+		Task spareTask = new Task(chosenTask.getTaskID(), chosenTask.getTaskName(), 0, chosenTask.getRequiredSkillAreas());
+	
 		double timeLeft = Team.getTeam().getTimeLeftToDeadline();
 		double averageExpertise = calculateAverageExpertiseCoefficient(chosenTask.getRequiredSkillAreas());
 		double supposedStoryPoint = (timeLeft * averageExpertise) / Team.getTeam().getStoryPointCoefficient();
-		System.out.println("time left: " + timeLeft + ", tct: " + calculateTaskCompletionTime(chosenTask) + " for thread " + Thread.currentThread().getId());
+		
 		int idealStoryPoints = Double.valueOf(supposedStoryPoint).intValue();
 		int initialStoryPoints = chosenTask.getStoryPoints();
 		int spareTaskStoryPoints = initialStoryPoints - idealStoryPoints;
-		System.out.println("points: " + initialStoryPoints + ", " + idealStoryPoints + ", " + spareTaskStoryPoints + " for member " + Thread.currentThread().getId());
-		Task spareTask = new Task(chosenTask.getTaskID(), chosenTask.getTaskName(), spareTaskStoryPoints, chosenTask.getRequiredSkillAreas());
+		
+		if(idealStoryPoints == 0) {
+			//swap them!
+			int temp = idealStoryPoints;
+			idealStoryPoints = spareTaskStoryPoints;
+			spareTaskStoryPoints = temp;
+		}
+		
+		spareTask.setStoryPoints(spareTaskStoryPoints);
 		spareTask.setPriority(chosenTask.getPriority());
 		spareTask.setTaskDescription(chosenTask.getTaskDescription());
 		chosenTask.setStoryPoints(idealStoryPoints);
@@ -200,16 +221,18 @@ public class TeamMember {
 		
 		double averageExpertise = calculateAverageExpertiseCoefficient(requiredSkillAreas);
 		
-		return  (Team.getTeam().getStoryPointCoefficient() * storyPoints / averageExpertise);
+		double tct =  (double)(Team.getTeam().getStoryPointCoefficient() * storyPoints) / averageExpertise;
+		return tct;
 	}
 	
-	public int getExpertiseCoefficient(double expertiseLevel) throws IllegalArgumentException{
+	public int getExpertiseCoefficient(double expertis) throws IllegalArgumentException{
 		Team team = Team.getTeam();
+		int expertiseLevel = (int) Math.ceil(expertis);
 		if(expertiseLevel >= team.getLowExpertiseLowerBoundary() && expertiseLevel <= team.getLowExpertiseHigherBoundary())
 			return team.getLowExpertiseCoefficient();
-		if(expertiseLevel >= team.getMediumExpertiseLowerBoundary() && expertiseLevel <= team.getMediumExpertiseHigherBoundary())
+		else if(expertiseLevel >= team.getMediumExpertiseLowerBoundary() && expertiseLevel <= team.getMediumExpertiseHigherBoundary())
 			return team.getMediumExpertiseCoefficient();
-		if(expertiseLevel >= team.getHighExpertiseLowerBoundary() && expertiseLevel <= team.getHighExpertiseHigherBoundary())
+		else if(expertiseLevel >= team.getHighExpertiseLowerBoundary() && expertiseLevel <= team.getHighExpertiseHigherBoundary())
 			return team.getHighExpertiseCoefficient();
 		else
 			throw new IllegalArgumentException("Expertise level in a skill area must be between 0 and 30 inclusive! Received expertise level: " + expertiseLevel);

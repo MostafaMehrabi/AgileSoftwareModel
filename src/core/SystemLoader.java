@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import entities.Task;
 
@@ -146,10 +147,13 @@ public class SystemLoader {
 							team.setLastTaskID(Integer.parseInt(line));
 							break;
 						case 12://the thirteenth line tells the number of hours in each sprint
-							team.setHoursPerSplit(Integer.parseInt(line));
+							team.setHoursPerSprint(Integer.parseInt(line));
 							break;
 						case 13://the fourteenth line tells the number of story pionts that are initially moved for the first sprint, if randomly moved by the system
 							team.setInitialStoryPoints(Integer.parseInt(line));
+							break;
+						case 14://the fifteenth line tells the number of sprints in each project
+							team.setNumberOfSprintsPerProject(Integer.parseInt(line));
 							break;
 					}
 					line = fileReader.readLine();
@@ -210,15 +214,15 @@ public class SystemLoader {
 				String line = reader.readLine();
 				taskBoard.setCurrentSprint(Integer.parseInt(line));
 				
-				List<Task> toDoTasks = loadToDoTasks();
+				ConcurrentLinkedQueue<Task> toDoTasks = loadToDoTasks();
 				if(!toDoTasks.isEmpty())
 					taskBoard.setToDoTasks(toDoTasks);
 				
-				List<Task> inProgressTasks = loadTasksInProgress();
+				ConcurrentLinkedQueue<Task> inProgressTasks = loadTasksInProgress();
 				if(!inProgressTasks.isEmpty())
 					taskBoard.setInProgressTasks(inProgressTasks);
 				
-				List<Task> performedTasks = loadPerformedTasks();
+				ConcurrentLinkedQueue<Task> performedTasks = loadPerformedTasks();
 
 				if(!performedTasks.isEmpty())
 					taskBoard.setPerformedTasks(performedTasks);
@@ -232,19 +236,28 @@ public class SystemLoader {
 	}
 	
 
-	private static List<Task> loadToDoTasks(){
+	private static ConcurrentLinkedQueue<Task> loadToDoTasks(){
 		String toDoTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getToDoTasksForSprintFileName();
-		return loadTasksFromFile(toDoTasksFileName);
+		List<Task> tasks = loadTasksFromFile(toDoTasksFileName);
+		ConcurrentLinkedQueue<Task> concurrentTasks = new ConcurrentLinkedQueue<>();
+		concurrentTasks.addAll(tasks);
+		return concurrentTasks;
 	}
 	
-	private static List<Task> loadTasksInProgress(){
+	private static ConcurrentLinkedQueue<Task> loadTasksInProgress(){
 		String inProgressTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getInProgressTasksFileName();
-		return loadTasksFromFile(inProgressTasksFileName);
+		List<Task> tasks = loadTasksFromFile(inProgressTasksFileName);
+		ConcurrentLinkedQueue<Task> concurrentTasks = new ConcurrentLinkedQueue<>();
+		concurrentTasks.addAll(tasks);
+		return concurrentTasks;
 	}
 	
-	private static List<Task> loadPerformedTasks(){
+	private static ConcurrentLinkedQueue<Task> loadPerformedTasks(){
 		String performedTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPerformedTasksForSprintFileName();
-		return loadTasksFromFile(performedTasksFileName);
+		List<Task> tasks = loadTasksFromFile(performedTasksFileName);
+		ConcurrentLinkedQueue<Task> concurrentTasks = new ConcurrentLinkedQueue<>();
+		concurrentTasks.addAll(tasks);
+		return concurrentTasks;
 	}
 	
 	private static List<Task> loadBackLog(){

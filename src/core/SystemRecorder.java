@@ -3,9 +3,10 @@ package core;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import entities.Task;
 import entities.TaskBoard;
@@ -185,19 +186,31 @@ public class SystemRecorder {
 		recordPeformedTasks(taskBoard.getPerformedTasks());
 	}
 	
-	private static void recordToDoTasks(List<Task> tasks){
+	private static void recordToDoTasks(ConcurrentLinkedQueue<Task> tasks){
 		String toDoTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getToDoTasksForSprintFileName();
-		writeTasksToFile(tasks, toDoTasksFileName);
+		List<Task> taskList = new ArrayList<>();
+		for(Task task : tasks) {
+			taskList.add(task);
+		}
+		writeTasksToFile(taskList, toDoTasksFileName);
 	}
 	
-	private static void recordInProgressTasks(List<Task> tasks){
+	private static void recordInProgressTasks(ConcurrentLinkedQueue<Task> tasks){
 		String inProgressTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getInProgressTasksFileName();
-		writeTasksToFile(tasks, inProgressTasksFileName);
+		List<Task> taskList = new ArrayList<>();
+		for(Task task : tasks) {
+			taskList.add(task);
+		}
+		writeTasksToFile(taskList, inProgressTasksFileName);
 	}
 	
-	private static void recordPeformedTasks(List<Task> tasks){
+	private static void recordPeformedTasks(ConcurrentLinkedQueue<Task> tasks){
 		String performedTasksFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPerformedTasksForSprintFileName();
-		writeTasksToFile(tasks, performedTasksFileName);
+		List<Task> taskList = new ArrayList<>();
+		for(Task task : tasks) {
+			taskList.add(task);
+		}
+		writeTasksToFile(taskList, performedTasksFileName);
 	}
 	
 	private static void  recordBackLog(){
