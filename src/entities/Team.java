@@ -429,19 +429,15 @@ public class Team {
 	}
 	
 	public void waitForSprintToFinish(){
-		System.out.println("Sprint finished called");
 		//consider the case that there might be tasks left in the toDoTask list when sprint is over!
 		//stop the timer, and the rest...
 		try {
-			System.out.println("waiting for latch");
 			latch.await();
-			System.out.println("waiting for latch done!");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		
-		System.out.println("latch has been count down");
 		timer.stop();
 		setTeamWorking(false);
 		executors.shutdown();
@@ -461,7 +457,6 @@ public class Team {
 //		if(!stopAfterEachSprint){
 //			startNewSprint();
 //		}
-		System.out.println("at this point");
 	}
 	
 	public void startNewSprint(){
@@ -506,7 +501,9 @@ public class Team {
 				if(progress == 100){
 					setTeamWorking(false);		
 				}else{
-					Main.setTaskBoardProgress(progress + 1);
+					long duration = System.currentTimeMillis() - sprintStartTime;
+					int progressValue = (int) (duration / lengthOfPercent);
+					Main.setTaskBoardProgress(progressValue);
 				}
 			}
 		});

@@ -209,7 +209,10 @@ public class TeamMember {
 		}
 		
 		if(team.getTaskAllocationStrategy().equals(TaskAllocationStrategy.ExpertiseBased)){
-			potentialLearning = 1d / potentialLearning;
+			if(potentialLearning != 0d)
+				potentialLearning = 1d / potentialLearning;
+			else
+				potentialLearning = Double.MAX_VALUE;
 		}
 		
 		return potentialLearning;
