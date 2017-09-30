@@ -217,12 +217,7 @@ public class Main {
 	}	
 	
 	public static void setTaskBoardProgress(int progress){
-		EventQueue.invokeLater(new Runnable() {			
-			@Override
-			public void run() {
-				mainWindow.setTaskBoardProgress(progress);
-			}
-		});
+		mainWindow.setTaskBoardProgress(progress);	
 	}
 	
 	public static int getTaskBoardProgress(){

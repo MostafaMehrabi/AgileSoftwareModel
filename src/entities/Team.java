@@ -465,19 +465,26 @@ public class Team {
 	}
 	
 	public void startNewSprint(){
-		setTeamWorking(true);
-		latch = new CountDownLatch(teamPersonnel.size());
-		sprintStartTime = System.currentTimeMillis();
-		Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
-		Main.setLastSprintVelocity(lastSprintVelocity);
-		//remember to disable the start button until sprint is over! or maybe even until project is over?
-			
-		executors = Executors.newFixedThreadPool(teamPersonnel.size());
-		for(TeamMember member : teamPersonnel){
-			Worker worker = new Worker(member, latch);
-			executors.submit(worker);			
-		}
-		startSprintTimer();	
+		Thread motherThread = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				setTeamWorking(true);
+				latch = new CountDownLatch(teamPersonnel.size());
+				sprintStartTime = System.currentTimeMillis();
+				Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
+				Main.setLastSprintVelocity(lastSprintVelocity);
+				//remember to disable the start button until sprint is over! or maybe even until project is over?
+					
+				executors = Executors.newFixedThreadPool(teamPersonnel.size());
+				for(TeamMember member : teamPersonnel){
+					Worker worker = new Worker(member, latch);
+					executors.submit(worker);			
+				}
+				startSprintTimer();	
+				waitForSprintToFinish();				
+			}
+		});
+		motherThread.start();
 	}
 	
 	private void calculateForNextSprint(){
@@ -492,7 +499,6 @@ public class Team {
 		Main.setTaskBoardProgress(0);
 		int sprintLengthInSystemTime = hoursPerSprint * hoursToSystemTimeCoefficient;
 		int lengthOfPercent = sprintLengthInSystemTime / 100;
-		System.out.println("timer pulse: " + lengthOfPercent);
 		timer = new Timer(lengthOfPercent, new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
