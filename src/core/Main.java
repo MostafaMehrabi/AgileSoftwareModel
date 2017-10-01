@@ -253,4 +253,8 @@ public class Main {
 	public synchronized static void repopulateToDoTaskTable(){
 		mainWindow.repopulateToDoTasksTable();
 	}
+	
+	public synchronized static void repopulatePersonnelTabel(){
+		mainWindow.repopulatePersonnelTable();
+	}
 }

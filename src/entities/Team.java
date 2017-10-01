@@ -453,6 +453,7 @@ public class Team {
 		String logEntryOne = "Sprint" + getCurrentSprint() + " took " + (sprintFinishTime - sprintStartTime) + ", at velocity: " + Double.toString(velocity);
 		String logEntryTwo = "Supposed time for team to finishe this sprint was: " + supposedTime + ", but team finished at: " + sprintFinishTime;		
 		//logInfo();
+		Main.repopulatePersonnelTabel();
 		readyForNextSprint();
 //		if(!stopAfterEachSprint){
 //			startNewSprint();
