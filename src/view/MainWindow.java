@@ -523,7 +523,7 @@ public class MainWindow {
 		highExpertiseCoefficientTextField.setBounds(771, 241, 78, 25);
 		teamAdminPanel.add(highExpertiseCoefficientTextField);
 		
-		JLabel hoursToSystemTimeCoefLabel = new JLabel("Hours to System Time Coefficient");
+		JLabel hoursToSystemTimeCoefLabel = new JLabel("Model to System Time Coefficient");
 		hoursToSystemTimeCoefLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		hoursToSystemTimeCoefLabel.setEnabled(false);
 		hoursToSystemTimeCoefLabel.setBounds(10, 296, 208, 25);
