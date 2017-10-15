@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,6 @@ import entities.Team;
 import entities.TeamMember;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
-
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.JProgressBar;
@@ -84,7 +84,7 @@ public class MainWindow {
 	private JProgressBar taskBoardProgressBar;
 	private JTextField hoursPerSpringTextField;
 	private JTextField sprintsPerProjectTextField;
-
+	private JButton startSprintButton;
 
 	/**
 	 * Create the application.
@@ -336,11 +336,11 @@ public class MainWindow {
 		sprintNumberLabel.setBounds(349, 11, 52, 30);
 		displayTaskBoardPanel.add(sprintNumberLabel);
 		
-		JButton startSprintButton = new JButton("Start the Sprint");
+		startSprintButton = new JButton("Start the Sprint");
 		startSprintButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Team.getTeam().startNewSprint();
+				Team.getTeam().startProcess();
 			}
 		});
 		startSprintButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -366,7 +366,7 @@ public class MainWindow {
 		lastSprintVelocityValueLabel = new JLabel();
 		lastSprintVelocityValueLabel.setText("0");
 		lastSprintVelocityValueLabel.setFont(new Font("Times New Roman", Font.BOLD, 22));
-		lastSprintVelocityValueLabel.setBounds(706, 11, 52, 30);
+		lastSprintVelocityValueLabel.setBounds(706, 11, 110, 30);
 		displayTaskBoardPanel.add(lastSprintVelocityValueLabel);
 		
 		JPanel teamAdminPanel = new JPanel();
@@ -635,6 +635,7 @@ public class MainWindow {
 		
 		JButton modifyMemberButton = new JButton("Modify Member");
 		modifyMemberButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
@@ -1020,7 +1021,12 @@ public class MainWindow {
 	}
 	
 	public void setLastSprintVelocity(double velocity){
-		lastSprintVelocityValueLabel.setText(Double.toString(velocity));
+		DecimalFormat df = new DecimalFormat("#.##");		
+		lastSprintVelocityValueLabel.setText(df.format(velocity));
+	}
+	
+	public void enableStartButton(boolean enable) {
+		this.startSprintButton.setEnabled(enable);
 	}
 	
 	private void automaticTaskMoveToFirstSprint(){

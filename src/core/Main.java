@@ -263,6 +263,10 @@ public class Main {
 		});
 	}
 	
+	public static void enableStartButton(boolean enable) {
+		mainWindow.enableStartButton(enable);
+	}
+	
 	public synchronized static void repopulateTasksInProgressTable(){
 		mainWindow.repopulateTaskInProgressTable();
 	}
@@ -277,5 +281,9 @@ public class Main {
 	
 	public synchronized static void repopulatePersonnelTabel(){
 		mainWindow.repopulatePersonnelTable();
+	}
+	
+	public synchronized static void repopulateProjectBackLog() {
+		mainWindow.repopulateBackLogTable();
 	}
 }

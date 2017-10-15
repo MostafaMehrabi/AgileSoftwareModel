@@ -22,7 +22,7 @@ public class TeamMember {
 	private Map<SkillArea, Double> expertiseInSkillAreas;
 	private MemberRole role;
 	private Random breakTask;
-	
+		
 	public TeamMember(int id, String firstName, String lastName, MemberRole role){
 		this.id = id;
 		this.firstName = firstName;
@@ -56,8 +56,8 @@ public class TeamMember {
 					boolean foundTask = false; 
 					List<Task> rejectedTasks = new ArrayList<>();
 					rejectedTasks.add(chosenTask);
-					
-					while(!taskBoard.isToDoTasksListEmpty()){//whilst there are tasks in the toDoTasks list to poll
+							
+					while(!taskBoard.toDoTasksListIsEmpty()){//whilst there are tasks in the toDoTasks list to poll
 						//keep in mind, that this worker has yet not released the lock!
 						Task tempTask = taskBoard.pollTask(this, true);
 						if(memberCanPerformTask(tempTask)){
@@ -92,23 +92,23 @@ public class TeamMember {
 					adjustExpertiseLevels(chosenTask);
 					logInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), false);
 					taskBoard.submitPerformedTaskToBoard(chosenTask);
-				}
-				else {
+				}else {
 					taskBoard.releaseTaskLock(this);
 				}
 			}else if(chosenTask == null) {
 				memberFinishedForThisSprint = true;
 				taskBoard.releaseTaskLock(this);
 			}
+			
+			if(memberFinishedForThisSprint) {
+				latch.countDown();
+				System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
+			}
 		}
-		//logInfo();
-		latch.countDown();
-		System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
 	}
 	
 	private void execute(long time){
 		try{
-			//Statistics.getStatRecorder().logPersonnelInfo(this, sprintNo, performedTask, true, time);
 			Thread.sleep(time);
 		}catch(Exception e){
 			Main.issueErrorMessage("Worker encountered probelm\n" + e.getMessage());
@@ -186,6 +186,8 @@ public class TeamMember {
 			}
 		}catch(IllegalArgumentException e){
 			Main.issueErrorMessage(e.getMessage());
+		}catch(Exception e) {
+			System.out.println("exception has been incured for worker " + getID() + " in calculate average expertise");
 		}
 		
 		double averageExpertise =  ((double) overallExpertise / (double) requiredSkillAreas.size());
@@ -226,16 +228,19 @@ public class TeamMember {
 		double progressPerStoryPoint = team.getProgressPerStoryPoint();
 		double highestExpertiseLevel = team.getHighExpertiseHigherBoundary();
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
-		
-		for(SkillArea skillArea : requiredSkillAreas){
-			double expertiseInThisSkillArea = expertiseInSkillAreas.get(skillArea);
-			if(expertiseInThisSkillArea < highestExpertiseLevel){
-				double potentialProgressInThisSkillArea = storyPoints * progressPerStoryPoint;
-				if ((expertiseInThisSkillArea + potentialProgressInThisSkillArea) > highestExpertiseLevel){
-					potentialProgressInThisSkillArea = highestExpertiseLevel - expertiseInThisSkillArea;
+		try {
+			for(SkillArea skillArea : requiredSkillAreas){
+				double expertiseInThisSkillArea = expertiseInSkillAreas.get(skillArea);
+				if(expertiseInThisSkillArea < highestExpertiseLevel){
+					double potentialProgressInThisSkillArea = storyPoints * progressPerStoryPoint;
+					if ((expertiseInThisSkillArea + potentialProgressInThisSkillArea) > highestExpertiseLevel){
+						potentialProgressInThisSkillArea = highestExpertiseLevel - expertiseInThisSkillArea;
+					}
+					potentialLearning += potentialProgressInThisSkillArea; 
 				}
-				potentialLearning += potentialProgressInThisSkillArea; 
 			}
+		}catch(Exception e) {
+			System.out.println("An exception occurred for worker " + getID() + " when calculating motivation");
 		}
 		
 		if(team.getTaskAllocationStrategy().equals(TaskAllocationStrategy.ExpertiseBased)){
@@ -250,11 +255,14 @@ public class TeamMember {
 	
 	public double calculateTaskCompletionTime(Task task){
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
+		if(requiredSkillAreas == null) {
+			System.out.println("required skill areas is null for worker " + getID());
+		}
 		int storyPoints = task.getStoryPoints();
 		
 		double averageExpertise = calculateAverageExpertiseCoefficient(requiredSkillAreas);
 		
-		double tct =  (double)(Team.getTeam().getStoryPointCoefficient() * storyPoints) / averageExpertise;
+		double tct =  Team.getTeam().getStoryPointCoefficient() * storyPoints / averageExpertise;
 		return tct;
 	}
 	

@@ -48,6 +48,7 @@ public class Statistics {
 		try {
 			writer = new PrintWriter(teamStatsFileName);
 			String title = "sprint,velocity,storyPoints,duration";
+			writer.println("sep=,");
 			writer.println(title);
 			writer.flush();
 		}catch(Exception e) {
@@ -65,6 +66,7 @@ public class Statistics {
 				String fileName = personnelFilePreFix + member.getID() + ".csv";
 				PrintWriter  writer = new PrintWriter(fileName);
 				String title = "sprint,time,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp";
+				writer.println("sep=,");
 				writer.println(title);
 				writer.flush();
 				writer.close();
@@ -118,6 +120,7 @@ public class Statistics {
 		try {
 			PrintWriter taskLogger = new PrintWriter(fileName);
 			String title = "TaskName,TaskID,Priority,StoryPoints,PerformerID,RequiredSkills";
+			taskLogger.println("sep=,");
 			taskLogger.println(title);
 			for(Task task : finishedTasks) {
 				totalStoryPoints += task.getStoryPoints();

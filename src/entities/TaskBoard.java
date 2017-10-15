@@ -27,7 +27,7 @@ public class TaskBoard {
 		this.currentSprint = 1;
 	}	
 	
-	public boolean isToDoTasksListEmpty(){
+	public boolean toDoTasksListIsEmpty(){
 		return toDoTasks.isEmpty();
 	}
 	
@@ -36,7 +36,7 @@ public class TaskBoard {
 			taskLock.lock();
 		}
 		
-		if(isToDoTasksListEmpty()){
+		if(toDoTasksListIsEmpty()){
 			return null;
 		}
 		
@@ -99,8 +99,9 @@ public class TaskBoard {
 		if(requiredSkills.contains(SkillArea.Testing)) {
 			//if the task is a testing task, and the member is not a tester
 			//then return false.
-			if(!developer.getMemberRole().equals(MemberRole.Tester))
-				return false;
+//			if(!developer.getMemberRole().equals(MemberRole.Tester))
+//				return false;
+			return false;
 		}else {
 			//other wise if the task is a development task, and the member is 
 			//not a developer, return false. 
@@ -110,7 +111,14 @@ public class TaskBoard {
 		return true;
 	}
 	
-	private double calculateSAI(Task task, TeamMember developer){		
+	private double calculateSAI(Task task, TeamMember developer){	
+		//for now, we consider the same SAI for all testing tasks, so they will
+		//only be distinguished based on their priorities. Priorities are all the 
+		//same for now.
+		Set<SkillArea> requiredSkills = task.getRequiredSkillAreas();
+		if(requiredSkills.contains(SkillArea.Testing))
+			return 1d;
+		
 		double motivationLevel = developer.calculateMotivation(task);
 		double tct = developer.calculateTaskCompletionTime(task);
 		return motivationLevel/tct;
