@@ -340,6 +340,7 @@ public class MainWindow {
 		startSprintButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				applyTeamSettings();
 				Team.getTeam().startProcess();
 			}
 		});
