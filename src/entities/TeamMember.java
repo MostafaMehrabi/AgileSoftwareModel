@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import core.Main;
+import core.Statistics;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
@@ -19,6 +21,7 @@ public class TeamMember {
 	private int completedStoryPoints;
 	private Map<SkillArea, Double> expertiseInSkillAreas;
 	private MemberRole role;
+	private Random breakTask;
 	
 	public TeamMember(int id, String firstName, String lastName, MemberRole role){
 		this.id = id;
@@ -30,6 +33,7 @@ public class TeamMember {
 		expertiseInSkillAreas.put(SkillArea.BackEnd, 0d);
 		expertiseInSkillAreas.put(SkillArea.FrontEnd, 0d);
 		expertiseInSkillAreas.put(SkillArea.Design, 0d);
+		breakTask = new Random();
 	}
 	
 	/*before a member starts performing a task, it checks if it can do the task before the 
@@ -83,8 +87,10 @@ public class TeamMember {
 					chosenTask.setPerformerID(getID());
 					taskBoard.addToTasksInProgress(chosenTask);
 					taskBoard.releaseTaskLock(this);
-					execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)));
+					logInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), true);
+					execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)));					
 					adjustExpertiseLevels(chosenTask);
+					logInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), false);
 					taskBoard.submitPerformedTaskToBoard(chosenTask);
 				}
 				else {
@@ -102,6 +108,7 @@ public class TeamMember {
 	
 	private void execute(long time){
 		try{
+			//Statistics.getStatRecorder().logPersonnelInfo(this, sprintNo, performedTask, true, time);
 			Thread.sleep(time);
 		}catch(Exception e){
 			Main.issueErrorMessage("Worker encountered probelm\n" + e.getMessage());
@@ -145,6 +152,9 @@ public class TeamMember {
 	
 	private Task breakTask(Task chosenTask){
 		Task spareTask = new Task(chosenTask.getTaskID(), chosenTask.getTaskName(), 0, chosenTask.getRequiredSkillAreas());
+		
+		if(!breakTask())//only break tasks in fifty percent of the cases, not always.
+			return spareTask;
 	
 		double timeLeft = Team.getTeam().getTimeLeftToDeadline();
 		double averageExpertise = calculateAverageExpertiseCoefficient(chosenTask.getRequiredSkillAreas());
@@ -180,6 +190,26 @@ public class TeamMember {
 		
 		double averageExpertise =  ((double) overallExpertise / (double) requiredSkillAreas.size());
 		return averageExpertise;
+	}
+	
+	private void logInfo(int taskID, int storyPoints, boolean started) {
+		long startTime = Team.getTeam().getSprintStartTime();
+		long time = System.currentTimeMillis() - startTime;
+		int sprintNo = Team.getTeam().getCurrentSprint();
+		Statistics.getStatRecorder().logPersonnelInfo(this, sprintNo, taskID, storyPoints, started, time);
+	}
+	
+	/*
+	 * There is only a %50 chance to get a task broken into smaller tasks,
+	 * this cannot happen every time when a task is too big to be done before
+	 * the deadline. 
+	 */
+	private boolean breakTask() {
+		int randNo = (breakTask.nextInt(100) + 1);
+		if(randNo >= 1 && randNo <= 50)
+			return true;
+		else 
+			return false;
 	}
 	
 	/**

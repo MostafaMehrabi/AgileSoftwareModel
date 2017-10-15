@@ -278,6 +278,10 @@ public class Team {
 		this.numberOfSprintsPerProject = sprints;
 	}
 	
+	public long getSprintStartTime() {
+		return this.sprintStartTime;
+	}
+	
 	public void setLowExpertiseBoundaries(int low, int high){
 		if(low > high)
 			throw new IllegalArgumentException("The lowe boundary is larger than the high boundary!");

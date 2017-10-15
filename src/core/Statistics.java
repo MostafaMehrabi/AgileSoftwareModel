@@ -144,13 +144,13 @@ public class Statistics {
 		teamStatsLogger.close();
 	}
 	
-	public void logPersonnelInfo(TeamMember member, int sprintNo, Task performedTask, boolean started, long time) {
+	public void logPersonnelInfo(TeamMember member, int sprintNo, int taskID, int storyPoints, boolean started, long time) {
 		//sprint,time,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp
 		try {
 			PrintWriter memberLogger = loadPersonnelFile(member.getID());
 			String startEnd = (started) ? "start" : "end";
-			String record = sprintNo + "," + time + "," + performedTask.getTaskID() + "," + performedTask.getStoryPoints() + "," + startEnd + ","
-					+ member.getExpertiseAtSkillArea(SkillArea.BackEnd) + "," + member.getExpertiseAtSkillArea(SkillArea.FrontEnd) + "," + member.getExpertiseAtSkillArea(SkillArea.Design);
+			String record = sprintNo + "," + time + "," + taskID + "," + storyPoints + "," + startEnd + ","	+ member.getExpertiseAtSkillArea(SkillArea.BackEnd) 
+					+ "," + member.getExpertiseAtSkillArea(SkillArea.FrontEnd) + "," + member.getExpertiseAtSkillArea(SkillArea.Design);
 			memberLogger.println(record);
 			memberLogger.flush();
 			memberLogger.close();
