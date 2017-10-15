@@ -51,7 +51,6 @@ public class SystemRecorder {
 		String mainFileName = Main.getBaseDirectoryPath() + File.separator + Main.getMainFileName();
 		try {
 			PrintWriter writer = new PrintWriter(mainFileName);
-			writer.println(Main.getBaseDirectoryPath());
 			writer.println(Main.getPersonnelFileName());
 			writer.println(Main.getTeamFileName());
 			writer.println(Main.getTaskBoardFielName());
@@ -225,7 +224,7 @@ public class SystemRecorder {
 	
 	private static void writeTasksToFile(List<Task> tasks, String fileName){
 		//every task is saved as:
-		//TASK: taskName id storyPoint performerID [skillAreas...]
+		//TASK: taskName id priority storyPoint performerID [skillAreas...]
 		//DESCRIPTION: [optional description...]
 		try{
 			PrintWriter writer = new PrintWriter(fileName);
@@ -237,6 +236,9 @@ public class SystemRecorder {
 				
 				String taskID = Integer.toString(task.getTaskID());
 				taskString += taskID + " "; 
+				
+				String taskPriority = Integer.toString(task.getPriority());
+				taskString += taskPriority + " ";
 				
 				String storyPoints = Integer.toString(task.getStoryPoints());
 				taskString += storyPoints + " ";

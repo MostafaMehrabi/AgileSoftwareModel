@@ -467,7 +467,7 @@ public class Team {
 				setTeamWorking(true);
 				latch = new CountDownLatch(teamPersonnel.size());
 				sprintStartTime = System.currentTimeMillis();
-				Main.setTaskBoardSprintNo(taskBoard.getCurrentSprint());
+				Main.setTaskBoardSprintNo(getCurrentSprint());
 				Main.setLastSprintVelocity(lastSprintVelocity);
 				//remember to disable the start button until sprint is over! or maybe even until project is over?
 					

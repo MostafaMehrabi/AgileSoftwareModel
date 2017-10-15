@@ -272,7 +272,7 @@ public class SystemLoader {
 	
 	private static List<Task> loadTasksFromFile(String fileName){
 		//Tasks are saved in each file using the following format
-		//TASKS: taskName id storyPoints performerID [skillAreas...]
+		//TASKS: taskName id priority storyPoints performerID [skillAreas...]
 		//DESCRIPTION: [optional description about the task]
 		List<Task> tasks = new ArrayList<>();
 		File taskFile = new File(fileName);
@@ -288,18 +288,21 @@ public class SystemLoader {
 						String taskName = elements[1];
 						//third element is taskID
 						int taskID = Integer.parseInt(elements[2]);
-						//fourth element is storyPionts
-						int storyPoints = Integer.parseInt(elements[3]);
-						//fifth element is performerID 
-						int performerID = Integer.parseInt(elements[4]);
+						//fourth element is priority
+						int priority = Integer.parseInt(elements[3]);
+						//fifth element is storyPionts
+						int storyPoints = Integer.parseInt(elements[4]);
+						//sixth element is performerID 
+						int performerID = Integer.parseInt(elements[5]);
 						Set<SkillArea> requiredSkillAreas = new HashSet<>();
 						if(elements.length > 5){
-							for(int index = 5; index < elements.length; index++){
+							for(int index = 6; index < elements.length; index++){
 								requiredSkillAreas.add(resolveSkillArea(elements[index]));
 							}
 						}
 						
 						Task task = new Task(taskID, taskName, storyPoints, requiredSkillAreas);
+						task.setPriority(priority);
 						task.setPerformerID(performerID);
 
 						String taskDescription = "";

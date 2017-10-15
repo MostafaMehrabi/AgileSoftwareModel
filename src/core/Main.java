@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JOptionPane;
 import entities.Task;
@@ -15,6 +16,7 @@ import view.ProgressBar;
 public class Main {
 	
 	private static String baseDirectoryPath = "." + File.separator + "Files";
+	private static String statisticsDirectoryPath = "." + File.separator + "Statistics";
 	private static String mainFileName = "Main";
 	private static String personnelFileName = "Personnel";
 	private static String teamFileName = "Team";
@@ -27,17 +29,29 @@ public class Main {
 	private static String taskSyntax = "TASK: ";
 	private static String descriptionSyntax = "DESCRIPTION: ";
 	private static MainWindow mainWindow = null;
-
+	private static ProgressBar progressBar = null;
+	
+	
 	public static void main(String[] args){
-		ProgressBar progressBar = null;
 		
 		try {
-			progressBar = new ProgressBar("Please wait while system is loading ...");
-			progressBar.setVisible(true);
-		}catch(Exception e) {
-			e.printStackTrace();
+			EventQueue.invokeAndWait(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						progressBar = new ProgressBar("Please wait while system is loading ...");
+						progressBar.setVisible(true);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}				
+				}
+			});
+		} catch (InvocationTargetException | InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		
+				
 		loadMainInfo();
 		progressBar.setValue(5);
 		SystemLoader.loadSystem(progressBar);
@@ -61,7 +75,6 @@ public class Main {
 		if(mainFile.exists()){
 			try{
 				BufferedReader reader = new BufferedReader(new FileReader(mainFile));
-				baseDirectoryPath = reader.readLine();
 				personnelFileName = reader.readLine();
 				teamFileName = reader.readLine();
 				taskBoardFileName = reader.readLine();
@@ -107,6 +120,14 @@ public class Main {
 	
 	public static void setBaseDirectoryPath(String path){
 		Main.baseDirectoryPath = path;
+	}
+	
+	public static void setStatisticsDirectoryPath(String path) {
+		Main.statisticsDirectoryPath = path;
+	}
+	
+	public static String getStatisticsDirectoryPath() {
+		return Main.statisticsDirectoryPath;
 	}
 
 	public static String getTaskBoardFielName(){

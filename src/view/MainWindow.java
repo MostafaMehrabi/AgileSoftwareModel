@@ -41,6 +41,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.Canvas;
 
 public class MainWindow {
 
@@ -131,7 +133,7 @@ public class MainWindow {
 		personnelTableModel = new DefaultTableModel();
 		personnelTableModel.setColumnIdentifiers(personnelTableColumn);
 
-		JPanel displayProjectBackLogPanel = new JPanel();
+		JPanel displayProjectBackLogPanel = new JPanel();		
 		displayProjectBackLogPanel.setBackground(SystemColor.menu);
 		tabbedPane.addTab("Project BackLog", null, displayProjectBackLogPanel, null);
 		displayProjectBackLogPanel.setLayout(null);
@@ -156,6 +158,13 @@ public class MainWindow {
 		backLogTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		backLogPane.setViewportView(backLogTable);
 		backLogTable.setModel(backLogTableModel);
+		
+		displayProjectBackLogPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				backLogTable.clearSelection();
+			}
+		});
 		
 		JButton generateRandomTasksButton = new JButton("Generate Random Tasks");
 		generateRandomTasksButton.addActionListener(new ActionListener() {
@@ -621,8 +630,33 @@ public class MainWindow {
 				newMember.setVisible(true);
 			}
 		});
-		btnNewButton.setBounds(703, 77, 157, 40);
+		btnNewButton.setBounds(703, 107, 157, 40);
 		displayTeamMembersPanel.add(btnNewButton);
+		
+		JButton modifyMemberButton = new JButton("Modify Member");
+		modifyMemberButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		modifyMemberButton.setBounds(703, 188, 157, 40);
+		displayTeamMembersPanel.add(modifyMemberButton);
+		
+		JButton removeMemberButton = new JButton("Remove Member");
+		removeMemberButton.setBounds(703, 273, 157, 40);
+		displayTeamMembersPanel.add(removeMemberButton);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("Statistics Report", null, panel, null);
+		panel.setLayout(null);
+		
+		Canvas graphsCanvas = new Canvas();
+		graphsCanvas.setBackground(Color.WHITE);
+		graphsCanvas.setBounds(10, 10, 692, 426);
+		panel.add(graphsCanvas);
+		
+		JButton viewReportButton = new JButton("View Report");
+		viewReportButton.setBounds(722, 99, 159, 51);
+		panel.add(viewReportButton);
 				
 		toDoTasksTable.addMouseListener(new MouseListener() {
 			
