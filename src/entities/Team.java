@@ -462,11 +462,15 @@ public class Team {
 		Statistics.getStatRecorder().logSprintInfo(getPerformedTasks(), lastSprintVelocity, getCurrentSprint(), sprintDuration);		
 		
 		Main.repopulatePersonnelTabel();
-		readyForNextSprint();
+			
+		if(getCurrentSprint() == numberOfSprintsPerProject){
+			setProjectFinished();
+		}
 		
 		if(!stopAfterEachSprint){
 			calculateForNextSprint();
 			if(!projectFinished){
+				readyForNextSprint();
 				getPerformedTasks().clear();
 				Main.repopulateToDoTaskTable();
 				Main.repopulateTasksInProgressTable();

@@ -12,23 +12,30 @@ import entities.Task;
 import entities.Team;
 import entities.TeamMember;
 import enums.SkillArea;
+import enums.TaskAllocationStrategy;
 
 public class Statistics {
 	
 	private static Statistics stats = null;
-	private String teamStatsFileName = null;
-	private String personnelFilePreFix = null;
+	private String expertiseBasedFolder = null;
+	private String learningBasedFolder = null;
 	
 	private Statistics() {
+		expertiseBasedFolder = "ExpertiseBased";
+		learningBasedFolder = "LearningBased";
 		String statsFolderName = Main.getStatisticsDirectoryPath();
-		File statsFolder = new File(statsFolderName);
-		if(!statsFolder.exists()) {
-			statsFolder.mkdirs();
+		String expertiseFolderName = statsFolderName + File.separator + expertiseBasedFolder;
+		String learningFolderName = statsFolderName + File.separator + learningBasedFolder;
+		
+		File expertiseFolder = new File(expertiseFolderName);
+		File learningFolder = new File(learningFolderName);
+		if(!expertiseFolder.exists()){
+			expertiseFolder.mkdirs();
 		}
-		
-		teamStatsFileName = Main.getStatisticsDirectoryPath() + File.separator + "TeamStats.csv";
-		personnelFilePreFix = Main.getStatisticsDirectoryPath() + File.separator + "Personnel_";
-		
+		if(!learningFolder.exists()){
+			learningFolder.mkdirs();
+		}
+			
 		int currentSprint = Team.getTeam().getCurrentSprint();
 		if(currentSprint == 1) {
 			createTeamStatsFile();
@@ -43,10 +50,43 @@ public class Statistics {
 		return stats;
 	}
 	
+	private String getTeamStatsFileName(){
+		Team team = Team.getTeam();
+		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
+		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
+			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "TeamStats.csv";
+		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
+			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "TeamStats.csv";
+		}			
+		return null;
+	}
+	
+	private String getPersonnelFilePrefix(){
+		Team team = Team.getTeam();
+		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
+		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
+			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "Personnel_";
+		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
+			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "Personnel_";
+		}			
+		return null;
+	}
+	
+	private String getPerformedTasksFilePrefix(){
+		Team team = Team.getTeam();
+		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
+		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
+			return 	Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "tasksPeformedForSprint_";
+		}else if(strategy.equals(TaskAllocationStrategy.LearningBased)){
+			return 	Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "tasksPeformedForSprint_";
+		}
+		return null;
+	}
+	
 	private void createTeamStatsFile(){
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(teamStatsFileName);
+			writer = new PrintWriter(getTeamStatsFileName());
 			String title = "sprint,velocity,storyPoints,duration";
 			writer.println("sep=,");
 			writer.println(title);
@@ -59,11 +99,23 @@ public class Statistics {
 		writer.close();
 	}
 	
+	private PrintWriter loadTeamStatsFile() {
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(new BufferedWriter(new FileWriter(getTeamStatsFileName(), true)));
+			return writer;
+		}catch(Exception e) {
+			Main.issueErrorMessage("ERROR INCURED WHEN OPENING THE LOG FILE FOR TEAM");
+			e.printStackTrace();
+		}
+		return null;
+	}
+		
 	private void createPersonnelStatsFiles() {
 		List<TeamMember> personnel = Team.getTeam().getPersonnel();
 		try {
 			for(TeamMember member : personnel) {
-				String fileName = personnelFilePreFix + member.getID() + ".csv";
+				String fileName = getPersonnelFilePrefix() + member.getID() + ".csv";
 				PrintWriter  writer = new PrintWriter(fileName);
 				String title = "sprint,time,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp";
 				writer.println("sep=,");
@@ -79,23 +131,11 @@ public class Statistics {
 	
 	private PrintWriter loadPersonnelFile(int id) {
 		try {
-			String fileName = personnelFilePreFix + id + ".csv";
+			String fileName = getPersonnelFilePrefix() + id + ".csv";
 			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
 			return writer;
 		}catch(Exception e) {
 			Main.issueErrorMessage("ERROR INCURED WHILE TRYING TO LOAD THE FILE FOR TEAM MEMBER WITH ID: " + id);
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private PrintWriter loadTeamStatsFile() {
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(new BufferedWriter(new FileWriter(teamStatsFileName, true)));
-			return writer;
-		}catch(Exception e) {
-			Main.issueErrorMessage("ERROR INCURED WHEN OPENING THE LOG FILE FOR TEAM");
 			e.printStackTrace();
 		}
 		return null;
@@ -115,7 +155,7 @@ public class Statistics {
 	}
 	
 	private int logPerformedTasksForSprint(ConcurrentLinkedQueue<Task> finishedTasks, int sprintNo) {
-		String fileName = Main.getStatisticsDirectoryPath() + File.separator + "tasksPeformedForSprint_" + sprintNo + ".csv";
+		String fileName = getPerformedTasksFilePrefix() + sprintNo + ".csv";
 		int totalStoryPoints = 0;
 		try {
 			PrintWriter taskLogger = new PrintWriter(fileName);

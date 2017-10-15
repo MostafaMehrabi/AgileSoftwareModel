@@ -98,13 +98,10 @@ public class TeamMember {
 			}else if(chosenTask == null) {
 				memberFinishedForThisSprint = true;
 				taskBoard.releaseTaskLock(this);
-			}
-			
-			if(memberFinishedForThisSprint) {
-				latch.countDown();
-				System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
-			}
+			}		
 		}
+		latch.countDown();
+		System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
 	}
 	
 	private void execute(long time){
