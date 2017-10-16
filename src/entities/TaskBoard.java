@@ -112,13 +112,6 @@ public class TaskBoard {
 	}
 	
 	private double calculateSAI(Task task, TeamMember developer){	
-		//for now, we consider the same SAI for all testing tasks, so they will
-		//only be distinguished based on their priorities. Priorities are all the 
-		//same for now.
-		Set<SkillArea> requiredSkills = task.getRequiredSkillAreas();
-		if(requiredSkills.contains(SkillArea.Testing))
-			return 1d;
-		
 		double motivationLevel = developer.calculateMotivation(task);
 		double tct = developer.calculateTaskCompletionTime(task);
 		return motivationLevel/tct;

@@ -221,7 +221,7 @@ public class TeamMember {
 	public double calculateMotivation(Task task){
 		Team team = Team.getTeam();
 		int storyPoints = task.getStoryPoints();
-		double potentialLearning = 0d;
+		double learningPotential = 0d;
 		double progressPerStoryPoint = team.getProgressPerStoryPoint();
 		double highestExpertiseLevel = team.getHighExpertiseHigherBoundary();
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
@@ -233,7 +233,7 @@ public class TeamMember {
 					if ((expertiseInThisSkillArea + potentialProgressInThisSkillArea) > highestExpertiseLevel){
 						potentialProgressInThisSkillArea = highestExpertiseLevel - expertiseInThisSkillArea;
 					}
-					potentialLearning += potentialProgressInThisSkillArea; 
+					learningPotential += potentialProgressInThisSkillArea; 
 				}
 			}
 		}catch(Exception e) {
@@ -241,20 +241,18 @@ public class TeamMember {
 		}
 		
 		if(team.getTaskAllocationStrategy().equals(TaskAllocationStrategy.ExpertiseBased)){
-			if(potentialLearning != 0d)
-				potentialLearning = 1d / potentialLearning;
+			if(learningPotential != 0d)
+				learningPotential = 1d / learningPotential;
 			else
-				potentialLearning = Double.MAX_VALUE;
+				learningPotential = Double.MAX_VALUE;
 		}
 		
-		return potentialLearning;
+		return learningPotential;
 	}
 	
 	public double calculateTaskCompletionTime(Task task){
 		Set<SkillArea> requiredSkillAreas = task.getRequiredSkillAreas();
-		if(requiredSkillAreas == null) {
-			System.out.println("required skill areas is null for worker " + getID());
-		}
+		
 		int storyPoints = task.getStoryPoints();
 		
 		double averageExpertise = calculateAverageExpertiseCoefficient(requiredSkillAreas);
