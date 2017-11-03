@@ -131,7 +131,7 @@ public class SystemLoader {
 							team.setHighExpertiseCoefficient(Integer.parseInt(expertiseCoefficients[2]));
 							break;
 						case 7://the eighth line tells the tct to system time coefficient
-							team.setHoursToSystemTimeCoefficient(Integer.parseInt(line));
+							team.setSystemToModelTimeCoefficient(Integer.parseInt(line));
 							break;
 						case 8://the ninth line tells whether the system should stop after each sprint
 							team.setStopAfterEachSprint(Boolean.parseBoolean(line));

@@ -236,11 +236,11 @@ public class Team {
 		return highExpertiseHigherBoundary;
 	}
 	
-	public int getHoursToSystemTimeCoefficient(){
+	public int getSystemToModelTimeCoefficient(){
 		return this.hoursToSystemTimeCoefficient;
 	}
 	
-	public void setHoursToSystemTimeCoefficient(int coef){
+	public void setSystemToModelTimeCoefficient(int coef){
 		this.hoursToSystemTimeCoefficient = coef;
 	}
 	
@@ -322,7 +322,7 @@ public class Team {
 		for(int i = 1; i <= numOfRandomTasks; i++) {
 			lastTaskID += 1;
 			Random rand = new Random();
-			int randomNo = rand.nextInt(30) + 1; //returns a random value between 1 and 28
+			int randomNo = rand.nextInt(28) + 1; //returns a random value between 1 and 28
 			//for a wider range of variety, and lesser chance of repetition this interval has been considered
 			//to be between 1 to 28, for every interval of 4 digits, we have a certain permutation of skills required. 
 			//and only if the number is 29 or 30, it will be a testing task 
@@ -346,12 +346,7 @@ public class Team {
 				requiredSkills.add(SkillArea.BackEnd);
 				requiredSkills.add(SkillArea.FrontEnd);
 				requiredSkills.add(SkillArea.Design);
-			}else if(randomNo <= 30) {
-				//requiredSkills.add(SkillArea.Testing);
-				requiredSkills.add(SkillArea.BackEnd);
-				requiredSkills.add(SkillArea.FrontEnd);
-			}
-			
+			}		
 			int taskId = lastTaskID;
 			String taskName = "RandomTask_" + i;
 			int storyPoints = (rand.nextInt(10) + 1); //a random number between 1 - 10

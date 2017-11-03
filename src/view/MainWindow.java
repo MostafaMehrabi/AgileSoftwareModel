@@ -85,6 +85,7 @@ public class MainWindow {
 	private JTextField hoursPerSpringTextField;
 	private JTextField sprintsPerProjectTextField;
 	private JButton startSprintButton;
+	private JTabbedPane tabbedPane;
 
 	/**
 	 * Create the application.
@@ -114,7 +115,7 @@ public class MainWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
+		tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
 		tabbedPane.setBounds(0, 0, 896, 474);
@@ -797,9 +798,9 @@ public class MainWindow {
 		try {
 			String tst = TCTtoSystemCoefTextField.getText();
 			int tctToSystemTime = Integer.parseInt(tst);
-			team.setHoursToSystemTimeCoefficient(tctToSystemTime);
+			team.setSystemToModelTimeCoefficient(tctToSystemTime);
 		}catch(NumberFormatException exception) {
-			TCTtoSystemCoefTextField.setText(Integer.toString(team.getHoursToSystemTimeCoefficient()));
+			TCTtoSystemCoefTextField.setText(Integer.toString(team.getSystemToModelTimeCoefficient()));
 			Main.issueErrorMessage("The value provided for TCT to system time coefficient is not a valid integer, try again!");
 		}
 		
@@ -997,7 +998,7 @@ public class MainWindow {
 		highExpertiseLowerBoundaryTextField.setText(Integer.toString(team.getHighExpertiseLowerBoundary()));	
 		highExpertiseUpperBoundaryTextField.setText(Integer.toString(team.getHighExpertiseHigherBoundary()));	
 		highExpertiseCoefficientTextField.setText(Integer.toString(team.getHighExpertiseCoefficient()));	
-		TCTtoSystemCoefTextField.setText(Integer.toString(team.getHoursToSystemTimeCoefficient()));
+		TCTtoSystemCoefTextField.setText(Integer.toString(team.getSystemToModelTimeCoefficient()));
 		sprintNumberLabel.setText(Integer.toString(team.getCurrentSprint()));
 		sprintsPerProjectTextField.setText(Integer.toString(team.getNumberOfSprintsPerProject()));
 		hoursPerSpringTextField.setText(Integer.toString(team.getHoursPerSpring()));

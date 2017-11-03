@@ -95,7 +95,7 @@ public class SystemRecorder {
 			String expertiseCoefs = team.getLowExpertiseCoefficient() + " " + team.getMediumExpertiseCoefficient() + " " + team.getHighExpertiseCoefficient();
 			writer.println(expertiseCoefs);
 			
-			String tctToSystemTimeCoef = Integer.toString(team.getHoursToSystemTimeCoefficient());
+			String tctToSystemTimeCoef = Integer.toString(team.getSystemToModelTimeCoefficient());
 			writer.println(tctToSystemTimeCoef);
 			
 			String stopAfterEachSprint = Boolean.toString(team.getStopAfterEachSprint());

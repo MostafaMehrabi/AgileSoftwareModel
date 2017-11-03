@@ -19,10 +19,14 @@ public class Statistics {
 	private static Statistics stats = null;
 	private String expertiseBasedFolder = null;
 	private String learningBasedFolder = null;
+	private int hoursPerSprint = 0;
+	private int systemToModelTimeCoef = 0;
 	
 	private Statistics() {
 		expertiseBasedFolder = "ExpertiseBased";
 		learningBasedFolder = "LearningBased";
+		hoursPerSprint = Team.getTeam().getHoursPerSpring();
+		systemToModelTimeCoef = Team.getTeam().getSystemToModelTimeCoefficient();
 		String statsFolderName = Main.getStatisticsDirectoryPath();
 		String expertiseFolderName = statsFolderName + File.separator + expertiseBasedFolder;
 		String learningFolderName = statsFolderName + File.separator + learningBasedFolder;
@@ -87,7 +91,7 @@ public class Statistics {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(getTeamStatsFileName());
-			String title = "sprint,velocity,storyPoints,duration";
+			String title = "sprint,velocity,storyPoints,duration,idlePeriod";
 			writer.println("sep=,");
 			writer.println(title);
 			writer.flush();
@@ -117,7 +121,7 @@ public class Statistics {
 			for(TeamMember member : personnel) {
 				String fileName = getPersonnelFilePrefix() + member.getID() + ".csv";
 				PrintWriter  writer = new PrintWriter(fileName);
-				String title = "sprint,time,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp";
+				String title = "sprint,systemTime,modelTime,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp";
 				writer.println("sep=,");
 				writer.println(title);
 				writer.flush();
@@ -178,21 +182,27 @@ public class Statistics {
 	}
 	
 	public void logSprintInfo(ConcurrentLinkedQueue<Task> finishedTasks, double sprintVelocity, int sprintNo, long duration) {
-		//sprint,velocity,storyPoints,duration
+		//sprint,velocity,storyPoints,duration,idlePeriod
 		int accomplishedStoryPoints = logPerformedTasksForSprint(finishedTasks, sprintNo);
+		int idlePeriod = hoursPerSprint - ((int) duration);
+		if(idlePeriod < 0)
+			idlePeriod = 0;
 		PrintWriter teamStatsLogger = loadTeamStatsFile();
-		String record = Integer.toString(sprintNo) + "," + Double.toString(sprintVelocity) + "," + Integer.toString(accomplishedStoryPoints) + "," + Long.toString(duration);
+		String record = Integer.toString(sprintNo) + "," + Double.toString(sprintVelocity) + "," 
+				+ Integer.toString(accomplishedStoryPoints) + "," + Long.toString(duration) + "," + Integer.toString(idlePeriod);
 		teamStatsLogger.println(record);	
 		teamStatsLogger.flush();
 		teamStatsLogger.close();
 	}
 	
-	public void logPersonnelInfo(TeamMember member, int sprintNo, int taskID, int storyPoints, boolean started, long time) {
-		//sprint,time,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp
+	public void logPersonnelInfo(TeamMember member, int sprintNo, int taskID, int storyPoints, boolean started, long systemTime) {
+		//sprint,systemTime,modelTime,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp
 		try {
 			PrintWriter memberLogger = loadPersonnelFile(member.getID());
 			String startEnd = (started) ? "start" : "end";
-			String record = sprintNo + "," + time + "," + taskID + "," + storyPoints + "," + startEnd + ","	+ member.getExpertiseAtSkillArea(SkillArea.BackEnd) 
+			long mt = systemTime / systemToModelTimeCoef;
+			int modelTime = (int) mt + ((sprintNo-1)*hoursPerSprint);
+			String record = sprintNo + "," + systemTime + "," + modelTime + "," + taskID + "," + storyPoints + "," + startEnd + ","	+ member.getExpertiseAtSkillArea(SkillArea.BackEnd) 
 					+ "," + member.getExpertiseAtSkillArea(SkillArea.FrontEnd) + "," + member.getExpertiseAtSkillArea(SkillArea.Design);
 			memberLogger.println(record);
 			memberLogger.flush();
