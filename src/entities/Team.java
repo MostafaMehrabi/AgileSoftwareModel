@@ -497,9 +497,9 @@ public class Team {
 		//for a fairer distribution of processor time, workers should be 
 		//ordered randomly in each sprint
 		List<Integer> orders = generateRandomOrders();
-		executors = Executors.newFixedThreadPool(teamPersonnel.size()-1);
+		executors = Executors.newFixedThreadPool(teamPersonnel.size());
 		for(Integer index : orders) {
-			TeamMember member = teamPersonnel.get(index);
+			TeamMember member = teamPersonnel.get(index-1);
 			Worker worker = new Worker(member, latch);
 			executors.submit(worker);
 		}		
@@ -512,13 +512,13 @@ public class Team {
 	}
 	
 	private List<Integer> generateRandomOrders() {
-		int size = teamPersonnel.size() - 1; //at this stage we don't track the tester
+		int size = teamPersonnel.size();
 		List<Integer> orders = new ArrayList<>();
 		Random rand = new Random();
 		while(orders.size() != size) {
 			int randomNo = (rand.nextInt(size) + 1);
 			if(!orders.contains(randomNo)) {
-				orders.add(randomNo);
+					orders.add(randomNo);
 			}
 		}		
 		return orders;
