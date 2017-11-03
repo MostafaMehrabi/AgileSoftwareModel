@@ -184,12 +184,13 @@ public class Statistics {
 	public void logSprintInfo(ConcurrentLinkedQueue<Task> finishedTasks, double sprintVelocity, int sprintNo, long duration) {
 		//sprint,velocity,storyPoints,duration,idlePeriod
 		int accomplishedStoryPoints = logPerformedTasksForSprint(finishedTasks, sprintNo);
-		int idlePeriod = hoursPerSprint - ((int) duration);
+		int modelDuration = (int) (duration / systemToModelTimeCoef);
+		int idlePeriod = hoursPerSprint - (modelDuration);
 		if(idlePeriod < 0)
 			idlePeriod = 0;
 		PrintWriter teamStatsLogger = loadTeamStatsFile();
 		String record = Integer.toString(sprintNo) + "," + Double.toString(sprintVelocity) + "," 
-				+ Integer.toString(accomplishedStoryPoints) + "," + Long.toString(duration) + "," + Integer.toString(idlePeriod);
+				+ Integer.toString(accomplishedStoryPoints) + "," + Integer.toString(modelDuration) + "," + Integer.toString(idlePeriod);
 		teamStatsLogger.println(record);	
 		teamStatsLogger.flush();
 		teamStatsLogger.close();

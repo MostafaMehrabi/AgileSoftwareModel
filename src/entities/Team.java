@@ -494,17 +494,34 @@ public class Team {
 		latch = new CountDownLatch(teamPersonnel.size());
 		setTeamWorking(true);
 
-		executors = Executors.newFixedThreadPool(teamPersonnel.size());
-		for(TeamMember member : teamPersonnel) {
+		//for a fairer distribution of processor time, workers should be 
+		//ordered randomly in each sprint
+		List<Integer> orders = generateRandomOrders();
+		executors = Executors.newFixedThreadPool(teamPersonnel.size()-1);
+		for(Integer index : orders) {
+			TeamMember member = teamPersonnel.get(index);
 			Worker worker = new Worker(member, latch);
 			executors.submit(worker);
-		}
+		}		
 		
 		sprintStartTime = System.currentTimeMillis();
 		Main.setTaskBoardSprintNo(getCurrentSprint());
 		Main.setLastSprintVelocity(lastSprintVelocity);
 		startSprintTimer();	
 		waitForSprintToFinish();				
+	}
+	
+	private List<Integer> generateRandomOrders() {
+		int size = teamPersonnel.size() - 1; //at this stage we don't track the tester
+		List<Integer> orders = new ArrayList<>();
+		Random rand = new Random();
+		while(orders.size() != size) {
+			int randomNo = (rand.nextInt(size) + 1);
+			if(!orders.contains(randomNo)) {
+				orders.add(randomNo);
+			}
+		}		
+		return orders;
 	}
 	
 	private void calculateForNextSprint(){
