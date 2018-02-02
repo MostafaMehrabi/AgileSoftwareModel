@@ -17,6 +17,7 @@ public class Main {
 	
 	private static String baseDirectoryPath = "." + File.separator + "Files";
 	private static String statisticsDirectoryPath = "." + File.separator + "Statistics";
+	private static String permutationFileName = "Permutation_";
 	private static String mainFileName = "Main";
 	private static String personnelFileName = "Personnel";
 	private static String teamFileName = "Team";
@@ -108,6 +109,14 @@ public class Main {
 				mainWindow.updatePersonnelTabel(member);
 			}
 		});
+	}
+	
+	public static String getPermutationFileName() {
+		return Main.permutationFileName;
+	}
+	
+	public static void setPermutationFileName(String name) {
+		Main.permutationFileName = name;
 	}
 	
 	public static String getMainFileName(){
