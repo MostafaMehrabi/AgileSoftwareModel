@@ -21,7 +21,7 @@ import view.ProgressBar;
 
 public class SystemLoader {
 	private static ProgressBar progressBar;
-	
+	private static Team team = null;
 	public static void loadSystem(String baseDirPath, ProgressBar pb){
 		Main.setBaseDirectoryPath(baseDirPath);
 		loadSystem(pb);
@@ -35,26 +35,45 @@ public class SystemLoader {
 			if(!baseDirectory.mkdirs()){
 				throw new RuntimeException("System was not able to create one or more directory/directories in path: " + Main.getBaseDirectoryPath());
 			}
-		}
-		
-		Team team = loadTeam();
-		progressBar.setValue(24);
-		
+		}		
+		prepareTeam();
+		preparePersonnel();
+		prepareTaskBoard();
+		prepareProjectBacklog();
+		prepareAllTasksDoneSoFar();		
+	}
+	
+	public static void prepareTeam() {
+		team = loadTeam();
+		progressBar.setValue(24);	
+	}
+	
+	public static void preparePersonnel() {
 		List<TeamMember> teamPersonnel = loadPersonnel();
 		if(!teamPersonnel.isEmpty())
 			team.setPersonnel(teamPersonnel);
 		progressBar.setValue(43);
-		
+	}
+	
+	public static void prepareTaskBoard() {
 		TaskBoard taskBoard = loadTaskBoard();
 		if(taskBoard != null)
 			team.setTaskBoard(taskBoard);
 		progressBar.setValue(62);
-		
+	}
+	
+	public static void prepareProjectBacklog() {
 		List<Task> backLog = loadBackLog();
-		if(!backLog.isEmpty())
-			team.setProjectBackLog(backLog);
+		//affect permutations here!
+		if(!backLog.isEmpty()) {
+			List<Task> permutedLog = applyPermutation(backLog);
+			team.setProjectBackLog(permutedLog);
+		}
 		progressBar.setValue(81);
-		
+	}
+	
+	public static void prepareAllTasksDoneSoFar() {
+
 		List<Task> allTasksDoneSoFar = loadAllTasksDoneSoFar();
 		if(!allTasksDoneSoFar.isEmpty())
 			team.setAllTasksDoneSoFar(allTasksDoneSoFar);
@@ -89,6 +108,29 @@ public class SystemLoader {
 				team.setAllTasksDoneSoFar(allTasksDoneSoFar);			
 		}
 		Main.setBaseDirectoryPath(originalBaseDirectory);
+	}
+	
+	private static List<Task> applyPermutation(List<Task> backLog){
+		List<Task> permutedTasks = new ArrayList<>();
+		String fileName = Main.getBaseDirectoryPath() + File.separator + Main.getPermutationFileName() + team.getPermutationNumber();
+		File permutationFile = new File(fileName);
+		if(permutationFile.exists()) {
+			try {
+				BufferedReader fileReader = new BufferedReader(new FileReader(permutationFile));
+				String line = fileReader.readLine();
+				while(line != null) {
+					int taskIndex = Integer.parseInt(line);
+					Task tempTask = backLog.get(taskIndex);
+					permutedTasks.add(tempTask);
+					line = fileReader.readLine();
+				}
+				fileReader.close();
+			}catch(Exception e) {
+				System.err.println("Problem when trying to read permutation file no. " + team.getPermutationNumber());
+				e.printStackTrace();
+			}
+		}
+		return permutedTasks;	
 	}
 	
 	private static Team loadTeam(){
@@ -169,7 +211,7 @@ public class SystemLoader {
 	
 	private static List<TeamMember> loadPersonnel(){
 		List<TeamMember> personnel = new ArrayList<>();
-		String personnelFileName = Main.getBaseDirectoryPath() + File.separator + Main.getPersonnelFileName();
+		String personnelFileName = Main.getBaseDirectoryPath() + File.separator + Main.getScenarioDirectoryName() + File.separator + team.getScenarioNumber();
 		File personnelFile = new File(personnelFileName);
 		if(personnelFile.exists()){
 			try{

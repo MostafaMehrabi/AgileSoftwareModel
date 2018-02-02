@@ -21,6 +21,7 @@ import javax.swing.Timer;
 
 import core.Main;
 import core.Statistics;
+import core.SystemLoader;
 import enums.MemberRole;
 import enums.SkillArea;
 import enums.TaskAllocationStrategy;
@@ -51,7 +52,11 @@ public class Team {
 	private Timer timer;
 	private long sprintStartTime, sprintFinishTime;
 	private CountDownLatch latch;
-
+	private int permutationNo;
+	private int scenarioNo;
+	private int totalNumberOfScenarios;
+	private int totalNumberOfPermutations;
+	
 	
 	private Team(){
 		this.taskAllocationStrategy = TaskAllocationStrategy.ExpertiseBased;
@@ -78,6 +83,10 @@ public class Team {
 		sprintStartTime = 0l;
 		sprintFinishTime = 0l;
 		latch = null;		
+		permutationNo = 1;
+		scenarioNo = 1;
+		totalNumberOfScenarios = 5;
+		totalNumberOfPermutations = 10;
 	}
 	
 	public static Team getTeam(){
@@ -85,6 +94,42 @@ public class Team {
 			team = new Team();
 		}
 		return team;
+	}
+	
+	public int getScenarioNumber() {
+		return scenarioNo;
+	}
+	
+	public void setScenarioNumber(int number) {
+		scenarioNo = number;
+		SystemLoader.preparePersonnel();
+		Main.repopulatePersonnelTabel();
+	}
+	
+	public int getPermutationNumber() {
+		return permutationNo;
+	}
+	
+	public void setPermutationNumber(int number) {
+		permutationNo = number;
+		SystemLoader.prepareProjectBacklog();
+		Main.repopulateProjectBackLog();
+	}
+	
+	public int getTotalNumberOfScenarios() {
+		return totalNumberOfScenarios;
+	}
+	
+	public void setTotalNumberOfScenarios(int num) {
+		totalNumberOfScenarios = num;
+	}
+	
+	public int getTotalNumberOfPermutations() {
+		return totalNumberOfPermutations;
+	}
+	
+	public void setTotalNumberOfPermutations(int num) {
+		totalNumberOfPermutations = num;
 	}
 	
 	public int getLastTaskID(){

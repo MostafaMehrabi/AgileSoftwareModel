@@ -17,28 +17,17 @@ import enums.TaskAllocationStrategy;
 public class Statistics {
 	
 	private static Statistics stats = null;
-	private String expertiseBasedFolder = null;
-	private String learningBasedFolder = null;
+	private String expertiseBasedFolderName = null;
+	private String learningBasedFolderName = null;
 	private int hoursPerSprint = 0;
 	private int systemToModelTimeCoef = 0;
 	
 	private Statistics() {
-		expertiseBasedFolder = "ExpertiseBased";
-		learningBasedFolder = "LearningBased";
+		expertiseBasedFolderName = "ExpertiseBased";
+		learningBasedFolderName = "LearningBased";
 		hoursPerSprint = Team.getTeam().getHoursPerSpring();
 		systemToModelTimeCoef = Team.getTeam().getSystemToModelTimeCoefficient();
-		String statsFolderName = Main.getStatisticsDirectoryPath();
-		String expertiseFolderName = statsFolderName + File.separator + expertiseBasedFolder;
-		String learningFolderName = statsFolderName + File.separator + learningBasedFolder;
-		
-		File expertiseFolder = new File(expertiseFolderName);
-		File learningFolder = new File(learningFolderName);
-		if(!expertiseFolder.exists()){
-			expertiseFolder.mkdirs();
-		}
-		if(!learningFolder.exists()){
-			learningFolder.mkdirs();
-		}
+		createFolders();
 			
 		int currentSprint = Team.getTeam().getCurrentSprint();
 		if(currentSprint == 1) {
@@ -54,13 +43,45 @@ public class Statistics {
 		return stats;
 	}
 	
+	private void createFolders() {
+		Team team = Team.getTeam();
+		for(int permutationIndex = 1; permutationIndex <= team.getTotalNumberOfPermutations(); permutationIndex++) {
+			String statsFolderPath = Main.getStatisticsDirectoryPath();
+			String permutationFolderPath = statsFolderPath + File.separator + Main.getPermutationFileName() + permutationIndex;
+			File permutationFolder = new File(permutationFolderPath);
+			if(!permutationFolder.exists()) {
+				permutationFolder.mkdirs();
+			}
+			
+			for(int scenarioIndex = 1; scenarioIndex <= team.getTotalNumberOfScenarios(); scenarioIndex++) {
+				String scenarioFolderName = Main.getScenarioFolderName(scenarioIndex);
+				String scenarioFolderPath = permutationFolderPath + File.separator + scenarioFolderName;
+				File scenarioFolder = new File(scenarioFolderPath);
+				if(!scenarioFolder.exists()) {
+					scenarioFolder.mkdirs();
+				}
+				
+				String expertiseBasedFolderPath = scenarioFolderPath + File.separator + expertiseBasedFolderName + File.separator + "extras";
+				File expertiseBasedFolder = new File(expertiseBasedFolderPath);
+				if(!expertiseBasedFolder.exists())
+					expertiseBasedFolder.mkdirs();
+				
+				String learningBasedFolderPath = scenarioFolderPath + File.separator + learningBasedFolderName + File.separator + "extras";
+				File learningBasedFolder = new File(learningBasedFolderPath);
+				if(!learningBasedFolder.exists())
+					learningBasedFolder.mkdirs();
+				
+			}
+		}
+	}
+	
 	private String getTeamStatsFileName(){
 		Team team = Team.getTeam();
 		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
 		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "TeamStats.csv";
+			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "TeamStats.csv";
 		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "TeamStats.csv";
+			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "TeamStats.csv";
 		}			
 		return null;
 	}
@@ -69,9 +90,9 @@ public class Statistics {
 		Team team = Team.getTeam();
 		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
 		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "Personnel_";
+			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "Personnel_";
 		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "Personnel_";
+			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "Personnel_";
 		}			
 		return null;
 	}
@@ -80,9 +101,9 @@ public class Statistics {
 		Team team = Team.getTeam();
 		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
 		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return 	Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolder + File.separator + "tasksPeformedForSprint_";
+			return 	Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "tasksPeformedForSprint_";
 		}else if(strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return 	Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolder + File.separator + "tasksPeformedForSprint_";
+			return 	Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "tasksPeformedForSprint_";
 		}
 		return null;
 	}

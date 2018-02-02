@@ -17,7 +17,13 @@ public class Main {
 	
 	private static String baseDirectoryPath = "." + File.separator + "Files";
 	private static String statisticsDirectoryPath = "." + File.separator + "Statistics";
-	private static String permutationFileName = "Permutation_";
+	private static String permutationFileName = "Permutation";
+	private static String scenarioDirectoryName = "scenarios";
+	private static String firstScenarioFolderName = "Scenario1-AllMembersLowExpertiseInAllSkills";
+	private static String secondScenarioFolderName = "Scenario2-TwoSkillsThreeHighThreeLow-OneSkillAllMedium";
+	private static String thirdScenarioFolderName = "Scenario3-TwoSkillsThreeMediumThreeLow-OneSkillAllHigh";
+	private static String fourthScenarioFolderName = "Scenario4-TwoSkillsThreeMediumThreeHigh-OneSkillAllLow";
+	private static String fifthScenarioFolderName = "Scenario5-AllMembersNearlyZeroExpertiseInAllSkills";
 	private static String mainFileName = "Main";
 	private static String personnelFileName = "Personnel";
 	private static String teamFileName = "Team";
@@ -109,8 +115,51 @@ public class Main {
 				mainWindow.updatePersonnelTabel(member);
 			}
 		});
+	}	
+	
+	public static String getScenarioFolderName(int scenarioNumber) {
+		switch (scenarioNumber) {
+			case 1:
+				return getFirstScenarioFolderName();
+			case 2:
+				return getSecondScenarioFolderName();
+			case 3: 
+				return getThridScenarioFolderName();
+			case 4:
+				return getFourthScenarioFolderName();
+			default:
+				return getFifthScenarioFolderName();
+		}
 	}
 	
+	public static String getFirstScenarioFolderName() {
+		return Main.firstScenarioFolderName;
+	}
+	
+	public static String getSecondScenarioFolderName() {
+		return Main.secondScenarioFolderName;
+	}
+	
+	public static String getThridScenarioFolderName() {
+		return Main.thirdScenarioFolderName;
+	}
+	
+	public static String getFourthScenarioFolderName() {
+		return Main.fourthScenarioFolderName;
+	}
+	
+	public static String getFifthScenarioFolderName() {
+		return Main.fifthScenarioFolderName;
+	}
+	
+	public static void setScenarioDirectoryName(String name) {
+		Main.scenarioDirectoryName = name;
+	}
+	
+	public static String getScenarioDirectoryName() {
+		return Main.scenarioDirectoryName;
+	}
+
 	public static String getPermutationFileName() {
 		return Main.permutationFileName;
 	}

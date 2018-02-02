@@ -43,6 +43,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.Canvas;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class MainWindow {
 
@@ -86,6 +88,8 @@ public class MainWindow {
 	private JTextField sprintsPerProjectTextField;
 	private JButton startSprintButton;
 	private JTabbedPane tabbedPane;
+	private JSpinner scenarioSpinner;
+	private JSpinner permutationSpinner;
 
 	/**
 	 * Create the application.
@@ -394,23 +398,23 @@ public class MainWindow {
 		JLabel storyPointCoefficientLabel = new JLabel("Story Point Coefficient");
 		storyPointCoefficientLabel.setEnabled(false);
 		storyPointCoefficientLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		storyPointCoefficientLabel.setBounds(10, 100, 155, 25);
+		storyPointCoefficientLabel.setBounds(10, 83, 155, 25);
 		teamAdminPanel.add(storyPointCoefficientLabel);
 		
 		storyPointCoefficientTextField = new JTextField();
 		storyPointCoefficientTextField.setColumns(10);
-		storyPointCoefficientTextField.setBounds(10, 136, 155, 25);
+		storyPointCoefficientTextField.setBounds(10, 119, 155, 25);
 		teamAdminPanel.add(storyPointCoefficientTextField);
 		
 		JLabel progressPerStoryPointLabel = new JLabel("Progress Per Story Point");
 		progressPerStoryPointLabel.setEnabled(false);
 		progressPerStoryPointLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		progressPerStoryPointLabel.setBounds(10, 203, 155, 25);
+		progressPerStoryPointLabel.setBounds(10, 155, 155, 25);
 		teamAdminPanel.add(progressPerStoryPointLabel);
 		
 		progressPerStoryPointTextField = new JTextField();
 		progressPerStoryPointTextField.setColumns(10);
-		progressPerStoryPointTextField.setBounds(10, 239, 155, 25);
+		progressPerStoryPointTextField.setBounds(10, 191, 155, 25);
 		teamAdminPanel.add(progressPerStoryPointTextField);
 		
 		JLabel lowExpertiseLabel = new JLabel("Low Expertise ");
@@ -537,12 +541,12 @@ public class MainWindow {
 		JLabel hoursToSystemTimeCoefLabel = new JLabel("Model to System Time Coefficient");
 		hoursToSystemTimeCoefLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		hoursToSystemTimeCoefLabel.setEnabled(false);
-		hoursToSystemTimeCoefLabel.setBounds(10, 296, 208, 25);
+		hoursToSystemTimeCoefLabel.setBounds(10, 239, 208, 25);
 		teamAdminPanel.add(hoursToSystemTimeCoefLabel);
 		
 		TCTtoSystemCoefTextField = new JTextField();
 		TCTtoSystemCoefTextField.setColumns(10);
-		TCTtoSystemCoefTextField.setBounds(10, 332, 155, 25);
+		TCTtoSystemCoefTextField.setBounds(10, 275, 155, 25);
 		teamAdminPanel.add(TCTtoSystemCoefTextField);
 		
 		stopAfterEachSprintLabel = new JLabel("Stop After Each Sprint");
@@ -558,10 +562,10 @@ public class MainWindow {
 		
 		
 		JButton saveSystemButton = new JButton("Save System");
-		saveSystemButton.setBounds(694, 374, 155, 48);
+		saveSystemButton.setBounds(746, 374, 119, 48);
 		teamAdminPanel.add(saveSystemButton);
 		
-		JButton saveAsSystemDefaultsButton = new JButton("Save As System Defaults");
+		JButton saveAsSystemDefaultsButton = new JButton("Save As Defaults");
 		saveAsSystemDefaultsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -569,17 +573,17 @@ public class MainWindow {
 			}
 		});
 		
-		saveAsSystemDefaultsButton.setBounds(482, 374, 182, 48);
+		saveAsSystemDefaultsButton.setBounds(568, 374, 144, 48);
 		teamAdminPanel.add(saveAsSystemDefaultsButton);
 		
-		JButton loadSystemDefaultsButton = new JButton("Load System Defaults");
+		JButton loadSystemDefaultsButton = new JButton("Load Defaults");
 		loadSystemDefaultsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				loadSystemDefaults();
 			}
 		});
-		loadSystemDefaultsButton.setBounds(258, 374, 182, 48);
+		loadSystemDefaultsButton.setBounds(408, 374, 119, 48);
 		teamAdminPanel.add(loadSystemDefaultsButton);
 		
 		JLabel hoursPerSpringLabel = new JLabel("Hours per Sprint");
@@ -603,6 +607,39 @@ public class MainWindow {
 		sprintsPerProjectTextField.setColumns(10);
 		sprintsPerProjectTextField.setBounds(465, 332, 155, 25);
 		teamAdminPanel.add(sprintsPerProjectTextField);
+		
+		scenarioSpinner = new JSpinner();
+		scenarioSpinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		scenarioSpinner.setBounds(10, 353, 64, 42);
+		teamAdminPanel.add(scenarioSpinner);
+		
+		permutationSpinner = new JSpinner();
+		permutationSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		permutationSpinner.setBounds(143, 353, 64, 42);
+		teamAdminPanel.add(permutationSpinner);
+		
+		JLabel permutationLabel = new JLabel("Permutation");
+		permutationLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		permutationLabel.setEnabled(false);
+		permutationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		permutationLabel.setBounds(133, 311, 88, 36);
+		teamAdminPanel.add(permutationLabel);
+		
+		JLabel lblScenario = new JLabel("Scenario");
+		lblScenario.setEnabled(false);
+		lblScenario.setHorizontalAlignment(SwingConstants.CENTER);
+		lblScenario.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblScenario.setBounds(10, 311, 64, 42);
+		teamAdminPanel.add(lblScenario);
+		
+		JButton applyButton = new JButton("Apply");
+		applyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				applyTeamSettings();
+			}
+		});
+		applyButton.setBounds(248, 374, 119, 48);
+		teamAdminPanel.add(applyButton);
 		saveSystemButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -691,6 +728,13 @@ public class MainWindow {
 	
 	private void applyTeamSettings(){
 		Team team = Team.getTeam();
+		
+		Integer permutation = (Integer) permutationSpinner.getValue();
+		team.setPermutationNumber(permutation);
+		
+		Integer scenario = (Integer) scenarioSpinner.getValue();
+		team.setScenarioNumber(scenario);
+		
 		String strategy = (String) allocationStrategyComboBoxModel.getSelectedItem();
 		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased.toString()))
 			team.setTaskAllocationStrategy(TaskAllocationStrategy.ExpertiseBased);
