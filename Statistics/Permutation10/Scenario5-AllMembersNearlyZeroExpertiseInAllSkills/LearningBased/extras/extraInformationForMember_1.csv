@@ -1,0 +1,175 @@
+sep=,
+sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description
+1,7,0,397,7,PICKED,picked for inspection
+1,7,0,397,7,ACCEPTED,accepted for execution
+1,21015,56,209,9,PICKED,picked for inspection
+1,21015,56,209,9,REJECTED,Mostafa cannot finish task within the remaining time
+1,21015,56,253,9,PICKED,picked for inspection
+1,21015,56,253,9,REJECTED,Mostafa cannot finish task within the remaining time
+1,21015,56,299,8,PICKED,picked for inspection
+1,21015,56,299,8,REJECTED,Mostafa cannot finish task within the remaining time
+1,21015,56,209,9,PICKED,no other tasks could be accepted-trying to break this task
+1,21015,56,209,9,REJECTED,could not break this task-Mostafa finished for this sprint
+2,2,80,209,7,PICKED,picked for inspection
+2,2,80,209,7,ACCEPTED,accepted for execution
+3,1,160,397,7,PICKED,picked for inspection
+3,1,160,397,7,ACCEPTED,accepted for execution
+4,6,240,23,10,PICKED,picked for inspection
+4,6,240,23,10,ACCEPTED,accepted for execution
+5,14,320,47,10,PICKED,picked for inspection
+5,14,320,47,10,ACCEPTED,accepted for execution
+6,8,400,234,3,PICKED,picked for inspection
+6,8,400,234,3,ACCEPTED,accepted for execution
+7,11,480,124,7,PICKED,picked for inspection
+7,11,480,124,7,ACCEPTED,accepted for execution
+8,13,560,174,7,PICKED,picked for inspection
+8,13,560,174,7,ACCEPTED,accepted for execution
+9,15,640,295,7,PICKED,picked for inspection
+9,15,640,295,7,ACCEPTED,accepted for execution
+10,41,720,368,1,PICKED,picked for inspection
+10,41,720,368,1,ACCEPTED,accepted for execution
+10,1549,724,322,1,PICKED,picked for inspection
+10,1549,724,322,1,ACCEPTED,accepted for execution
+10,3053,728,400,1,PICKED,picked for inspection
+10,3053,728,400,1,ACCEPTED,accepted for execution
+10,4557,732,30,7,PICKED,picked for inspection
+10,4557,732,30,7,ACCEPTED,accepted for execution
+11,12,800,25,4,PICKED,picked for inspection
+11,12,800,25,4,ACCEPTED,accepted for execution
+11,3766,810,200,5,PICKED,picked for inspection
+11,3766,810,200,5,ACCEPTED,accepted for execution
+11,8644,823,212,3,PICKED,picked for inspection
+11,8644,823,212,3,ACCEPTED,accepted for execution
+12,7,880,320,6,PICKED,picked for inspection
+12,7,880,320,6,ACCEPTED,accepted for execution
+13,9,960,96,7,PICKED,picked for inspection
+13,9,960,96,7,ACCEPTED,accepted for execution
+13,12396,993,16,9,PICKED,picked for inspection
+13,12396,993,16,9,ACCEPTED,accepted for execution
+14,20,1040,380,9,PICKED,picked for inspection
+14,20,1040,380,9,ACCEPTED,accepted for execution
+14,9028,1064,85,2,PICKED,picked for inspection
+14,9028,1064,85,2,ACCEPTED,accepted for execution
+14,10909,1069,111,4,PICKED,picked for inspection
+14,10909,1069,111,4,ACCEPTED,accepted for execution
+14,14662,1079,36,3,PICKED,picked for inspection
+14,14662,1079,36,3,ACCEPTED,accepted for execution
+14,17670,1087,66,10,PICKED,picked for inspection
+14,17670,1087,66,10,ACCEPTED,accepted for execution
+15,41,1120,126,2,PICKED,picked for inspection
+15,41,1120,126,2,ACCEPTED,accepted for execution
+15,2302,1126,166,7,PICKED,picked for inspection
+15,2302,1126,166,7,ACCEPTED,accepted for execution
+15,9056,1144,360,3,PICKED,picked for inspection
+15,9056,1144,360,3,ACCEPTED,accepted for execution
+15,12060,1152,265,6,PICKED,picked for inspection
+15,12060,1152,265,6,ACCEPTED,accepted for execution
+15,18063,1168,41,6,PICKED,picked for inspection
+15,18063,1168,41,6,ACCEPTED,accepted for execution
+16,12,1200,108,10,PICKED,picked for inspection
+16,12,1200,108,10,ACCEPTED,accepted for execution
+16,12765,1234,43,4,PICKED,picked for inspection
+16,12765,1234,43,4,ACCEPTED,accepted for execution
+16,16519,1244,229,10,PICKED,picked for inspection
+16,16519,1244,229,10,ACCEPTED,accepted for execution
+16,22522,1260,296,9,PICKED,picked for inspection
+16,22522,1260,296,9,ACCEPTED,accepted for execution
+17,29692,1359,52,1,PICKED,picked for inspection
+17,29692,1359,52,1,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,251,8,PICKED,picked for inspection
+17,29692,1359,251,8,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,34,8,PICKED,picked for inspection
+17,29692,1359,34,8,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,281,3,PICKED,picked for inspection
+17,29692,1359,281,3,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,387,2,PICKED,picked for inspection
+17,29692,1359,387,2,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,223,9,PICKED,picked for inspection
+17,29692,1359,223,9,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,199,8,PICKED,picked for inspection
+17,29692,1359,199,8,REJECTED,Mostafa cannot finish task within the remaining time
+17,29692,1359,104,7,PICKED,picked for inspection
+17,29692,1359,104,7,REJECTED,Mostafa cannot finish task within the remaining time
+17,0,1280,371,1,PICKED,picked for inspection
+17,0,1280,371,1,ACCEPTED,accepted for execution
+17,0,1280,371,1,ACCEPTED,accepted for execution
+17,762,1282,359,2,PICKED,picked for inspection
+17,762,1282,359,2,ACCEPTED,accepted for execution
+17,2264,1286,337,3,PICKED,picked for inspection
+17,2264,1286,337,3,ACCEPTED,accepted for execution
+17,4518,1292,301,6,PICKED,picked for inspection
+17,4518,1292,301,6,ACCEPTED,accepted for execution
+17,9023,1304,104,7,PICKED,picked for inspection
+17,9023,1304,104,7,ACCEPTED,accepted for execution
+17,14276,1318,33,8,PICKED,picked for inspection
+17,14276,1318,33,8,ACCEPTED,accepted for execution
+18,18,1360,9,6,PICKED,picked for inspection
+18,18,1360,9,6,ACCEPTED,accepted for execution
+18,4895,1373,327,1,PICKED,picked for inspection
+18,4895,1373,327,1,ACCEPTED,accepted for execution
+18,5649,1375,49,9,PICKED,picked for inspection
+18,5649,1375,49,9,ACCEPTED,accepted for execution
+18,12417,1393,171,6,PICKED,picked for inspection
+18,12417,1393,171,6,ACCEPTED,accepted for execution
+18,15797,1402,59,1,PICKED,picked for inspection
+18,15797,1402,59,1,ACCEPTED,accepted for execution
+18,16178,1403,196,1,PICKED,picked for inspection
+18,16178,1403,196,1,ACCEPTED,accepted for execution
+18,16560,1404,24,1,PICKED,picked for inspection
+18,16560,1404,24,1,ACCEPTED,accepted for execution
+18,17313,1406,65,4,PICKED,picked for inspection
+18,17313,1406,65,4,ACCEPTED,accepted for execution
+19,34,1440,122,1,PICKED,picked for inspection
+19,34,1440,122,1,ACCEPTED,accepted for execution
+19,420,1441,335,1,PICKED,picked for inspection
+19,420,1441,335,1,ACCEPTED,accepted for execution
+19,1173,1443,73,10,PICKED,picked for inspection
+19,1173,1443,73,10,ACCEPTED,accepted for execution
+19,8677,1463,13,1,PICKED,picked for inspection
+19,8677,1463,13,1,ACCEPTED,accepted for execution
+19,9056,1464,255,7,PICKED,picked for inspection
+19,9056,1464,255,7,ACCEPTED,accepted for execution
+19,13187,1475,136,3,PICKED,picked for inspection
+19,13187,1475,136,3,ACCEPTED,accepted for execution
+19,14694,1479,244,10,PICKED,picked for inspection
+19,14694,1479,244,10,ACCEPTED,accepted for execution
+19,20697,1495,7,6,PICKED,picked for inspection
+19,20697,1495,7,6,ACCEPTED,accepted for execution
+19,26703,1511,357,5,PICKED,picked for inspection
+19,26703,1511,357,5,REJECTED,Mostafa cannot finish task within the remaining time
+19,26703,1511,303,10,PICKED,picked for inspection
+19,26703,1511,303,10,REJECTED,Mostafa cannot finish task within the remaining time
+19,26703,1511,357,5,PICKED,no other tasks could be accepted-trying to break this task
+19,26703,1511,357,3,ACCEPTED,broke task into smaller parts-accepted for execution
+19,26703,1511,357,3,ACCEPTED,accepted for execution
+19,29710,1519,303,7,PICKED,picked for inspection
+19,29710,1519,303,7,REJECTED,Mostafa cannot finish task within the remaining time
+19,29710,1519,303,7,PICKED,no other tasks could be accepted-trying to break this task
+19,29710,1519,303,7,REJECTED,could not break this task-Mostafa finished for this sprint
+20,6,1520,284,10,PICKED,picked for inspection
+20,6,1520,284,10,ACCEPTED,accepted for execution
+20,6765,1538,213,4,PICKED,picked for inspection
+20,6765,1538,213,4,ACCEPTED,accepted for execution
+20,9773,1546,44,10,PICKED,picked for inspection
+20,9773,1546,44,10,ACCEPTED,accepted for execution
+20,17277,1566,143,8,PICKED,picked for inspection
+20,17277,1566,143,8,ACCEPTED,accepted for execution
+20,25158,1587,92,8,PICKED,picked for inspection
+20,25158,1587,92,8,REJECTED,Mostafa cannot finish task within the remaining time
+20,25158,1587,208,2,PICKED,picked for inspection
+20,25158,1587,208,2,ACCEPTED,accepted for execution
+20,25158,1587,208,2,ACCEPTED,accepted for execution
+20,27036,1592,92,8,PICKED,picked for inspection
+20,27036,1592,92,8,REJECTED,Mostafa cannot finish task within the remaining time
+20,27036,1592,92,8,PICKED,no other tasks could be accepted-trying to break this task
+20,27036,1592,92,8,REJECTED,could not break this task-Mostafa finished for this sprint
+21,12,1600,231,7,PICKED,picked for inspection
+21,12,1600,231,7,ACCEPTED,accepted for execution
+21,4521,1612,290,9,PICKED,picked for inspection
+21,4521,1612,290,9,ACCEPTED,accepted for execution
+21,10523,1628,38,6,PICKED,picked for inspection
+21,10523,1628,38,6,ACCEPTED,accepted for execution
+21,15027,1640,372,10,PICKED,picked for inspection
+21,15027,1640,372,10,ACCEPTED,accepted for execution
+21,22534,1660,168,6,PICKED,picked for inspection
+21,22534,1660,168,6,ACCEPTED,accepted for execution

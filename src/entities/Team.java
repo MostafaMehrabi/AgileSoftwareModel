@@ -518,6 +518,9 @@ public class Team {
 				startNewSprint();
 			}else {
 				Main.enableStartButton(true);
+				projectFinished = false;
+				lastSprintVelocity = 0d;
+				setCurrentSprint(1);
 			}
 		}else {
 			Main.enableStartButton(true);
@@ -526,6 +529,8 @@ public class Team {
 	
 	public void startProcess() {
 		Main.enableStartButton(false);
+		getPerformedTasks().clear();
+		Statistics.getStatRecorder().createBaseFiles();
 		Thread motherThread = new Thread(new Runnable() {			
 			@Override
 			public void run() {
@@ -536,6 +541,7 @@ public class Team {
 	}
 	
 	private void startNewSprint(){
+		Statistics.getStatRecorder().logSprintTaskLog(getToDoTasks(), getCurrentSprint());
 		latch = new CountDownLatch(teamPersonnel.size());
 		setTeamWorking(true);
 

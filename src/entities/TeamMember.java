@@ -22,6 +22,10 @@ public class TeamMember {
 	private Map<SkillArea, Double> expertiseInSkillAreas;
 	private MemberRole role;
 	private Random breakTask;
+	private List<String> standardLog;
+	private List<String> extraInfoLog;
+	private String PICKED, ACCEPTED, REJECTED;
+	private String PICKED_MESSAGE, ACCEPTED_MESSAGE, REJECTED_MESSAGE;
 		
 	public TeamMember(int id, String firstName, String lastName, MemberRole role){
 		this.id = id;
@@ -33,7 +37,13 @@ public class TeamMember {
 		expertiseInSkillAreas.put(SkillArea.BackEnd, 0d);
 		expertiseInSkillAreas.put(SkillArea.FrontEnd, 0d);
 		expertiseInSkillAreas.put(SkillArea.Design, 0d);
+		standardLog = new ArrayList<>();
+		extraInfoLog = new ArrayList<>();
 		breakTask = new Random();
+		PICKED = "PICKED"; ACCEPTED = "ACCEPTED"; REJECTED = "REJECTED";
+		PICKED_MESSAGE = "picked for inspection";
+		ACCEPTED_MESSAGE = "accepted for execution";
+		REJECTED_MESSAGE = " cannot finish task within the remaining time";
 	}
 	
 	/*before a member starts performing a task, it checks if it can do the task before the 
@@ -45,6 +55,8 @@ public class TeamMember {
 	 * Once a task is chosen, the member returns all the rejected tasks back to the "toDoTasks", and adds 
 	 * the chosen task to the "tasksInProgress" list, then updates the gui!*/
 	public void startWorking(CountDownLatch latch){
+		standardLog.clear();
+		extraInfoLog.clear();
 		Team team = Team.getTeam();
 		TaskBoard taskBoard = team.getTaskBoard();
 		Task chosenTask = null;
@@ -52,7 +64,9 @@ public class TeamMember {
 		while(team.getTeamWorking() && !memberFinishedForThisSprint){
 			chosenTask = taskBoard.pollTask(this, false);
 			if(chosenTask != null){
+				logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), PICKED, PICKED_MESSAGE);
 				if(!memberCanPerformTask(chosenTask)){
+					logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), REJECTED, getFirstName() + REJECTED_MESSAGE);
 					boolean foundTask = false; 
 					List<Task> rejectedTasks = new ArrayList<>();
 					rejectedTasks.add(chosenTask);
@@ -60,23 +74,29 @@ public class TeamMember {
 					while(!taskBoard.toDoTasksListIsEmpty()){//whilst there are tasks in the toDoTasks list to poll
 						//keep in mind, that this worker has yet not released the lock!
 						Task tempTask = taskBoard.pollTask(this, true);
+						logExtraInfo(tempTask.getTaskID(), tempTask.getStoryPoints(), PICKED, PICKED_MESSAGE);
 						if(memberCanPerformTask(tempTask)){
 							returnRejectedTasks(rejectedTasks, taskBoard);
+							logExtraInfo(tempTask.getTaskID(), tempTask.getStoryPoints(), ACCEPTED, ACCEPTED_MESSAGE);
 							chosenTask = tempTask;
 							foundTask = true;
 							break;
 						}else{
+							logExtraInfo(tempTask.getTaskID(), tempTask.getStoryPoints(), REJECTED, getFirstName() + REJECTED_MESSAGE);
 							rejectedTasks.add(tempTask);
 						}
 					}
 					if(!foundTask){
+						logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), PICKED, "no other tasks could be accepted-trying to break this task");
 						//if worker went through all tasks, and could not find a task,
 						//gets the first chosen task and breaks it into smaller tasks.
 						Task spareTask = breakTask(chosenTask);
 						if(spareTask.getStoryPoints() == 0) {
+							logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), REJECTED, "could not break this task-" + getFirstName() + " finished for this sprint"); 
 							memberFinishedForThisSprint = true;
 						}
 						else if(spareTask.getStoryPoints() != 0) {
+							logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), ACCEPTED, "broke task into smaller parts-" + ACCEPTED_MESSAGE);
 							rejectedTasks.remove(chosenTask);//replace chosen task with the spare task.
 							rejectedTasks.add(0, spareTask);
 						}
@@ -84,11 +104,12 @@ public class TeamMember {
 					}
 				}
 				if(!memberFinishedForThisSprint) {
+					logExtraInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), ACCEPTED, ACCEPTED_MESSAGE);
 					chosenTask.setPerformerID(getID());
 					taskBoard.addToTasksInProgress(chosenTask);
 					taskBoard.releaseTaskLock(this);
 					logInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), true);
-					execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)));					
+					execute(team.convertTctToSystemTime(calculateTaskCompletionTime(chosenTask)), chosenTask);					
 					adjustExpertiseLevels(chosenTask);
 					logInfo(chosenTask.getTaskID(), chosenTask.getStoryPoints(), false);
 					taskBoard.submitPerformedTaskToBoard(chosenTask);
@@ -100,15 +121,18 @@ public class TeamMember {
 				taskBoard.releaseTaskLock(this);
 			}		
 		}
+		Statistics.getStatRecorder().logPersonnelInfo(this, standardLog);
+		Statistics.getStatRecorder().logExtraPersonnelInfo(this, extraInfoLog);
 		latch.countDown();
 		System.out.println(getFirstName() + " with ID " + getID() + " is done for this sprint");
 	}
 	
-	private void execute(long time){
+	private void execute(long time, Task task){
 		try{
 			Thread.sleep(time);
 		}catch(Exception e){
-			Main.issueErrorMessage("Worker encountered probelm\n" + e.getMessage());
+			logExtraInfo(task.getTaskID(), task.getStoryPoints(), "EXCEPTION", getFirstName() + " encountered exception while performing task");
+			Main.issueErrorMessage("Worker " + getFirstName() + " encountered probelm\n" + e.getMessage());
 		}
 	}
 	
@@ -192,10 +216,31 @@ public class TeamMember {
 	}
 	
 	private void logInfo(int taskID, int storyPoints, boolean started) {
-		long startTime = Team.getTeam().getSprintStartTime();
-		long time = System.currentTimeMillis() - startTime;
-		int sprintNo = Team.getTeam().getCurrentSprint();
-		Statistics.getStatRecorder().logPersonnelInfo(this, sprintNo, taskID, storyPoints, started, time);
+		//sprint,systemTime,modelTime,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp
+		Team team = Team.getTeam();
+		long startTime = team.getSprintStartTime();
+		long systemTime = System.currentTimeMillis() - startTime;
+		int sprintNo = team.getCurrentSprint();
+		int systemToModelTimeCoef = team.getSystemToModelTimeCoefficient();
+		String startEnd = (started) ? "start" : "end";
+		long mt = systemTime / systemToModelTimeCoef;
+		int modelTime = (int) mt + ((sprintNo-1)*team.getHoursPerSpring());
+		String record = sprintNo + "," + systemTime + "," + modelTime + "," + taskID + "," + storyPoints + "," + startEnd + ","	+ getExpertiseAtSkillArea(SkillArea.BackEnd) 
+				+ "," + getExpertiseAtSkillArea(SkillArea.FrontEnd) + "," + getExpertiseAtSkillArea(SkillArea.Design);
+		standardLog.add(record);
+	}
+	
+	private void logExtraInfo(int taskID, int storyPoints, String status, String description) {
+		//sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description
+		Team team = Team.getTeam();
+		long startTime = team.getSprintStartTime();
+		long systemTime = System.currentTimeMillis() - startTime;
+		int sprintNo = team.getCurrentSprint();
+		int systemToModelTimeCoef = team.getSystemToModelTimeCoefficient();
+		long mt = systemTime / systemToModelTimeCoef;
+		int modelTime = (int) mt + ((sprintNo-1)*team.getHoursPerSpring());
+		String record = sprintNo + "," + systemTime + "," + modelTime + "," + taskID + "," + storyPoints + "," + status + "," + description;
+		extraInfoLog.add(record);
 	}
 	
 	/*

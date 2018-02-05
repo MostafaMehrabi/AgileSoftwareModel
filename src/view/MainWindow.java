@@ -90,11 +90,14 @@ public class MainWindow {
 	private JTabbedPane tabbedPane;
 	private JSpinner scenarioSpinner;
 	private JSpinner permutationSpinner;
+	
+	private boolean settingsApplied;
 
 	/**
 	 * Create the application.
 	 */
 	public MainWindow() {
+		settingsApplied = false;
 		initialize();
 		loadGUI();
 	}	
@@ -235,6 +238,9 @@ public class MainWindow {
 						automaticTaskMoveToFirstSprint();
 						repopulateBackLogTable();
 						repopulateToDoTasksTable();
+						//this is here for the cases that experiments are run consecutively.
+						Team.getTeam().getPerformedTasks().clear();
+						repopulateCompletedTasksTable();
 						tabbedPane.setSelectedIndex(1);
 					}
 				}				
@@ -242,6 +248,9 @@ public class MainWindow {
 					Team.getTeam().moveToSprintBackLog(selectedIndices);	
 					repopulateBackLogTable();
 					repopulateToDoTasksTable();
+					//this is here for the cases that experiments are run consecutively.
+					Team.getTeam().getPerformedTasks().clear();
+					repopulateCompletedTasksTable();
 					tabbedPane.setSelectedIndex(1);
 				}
 			
@@ -345,7 +354,12 @@ public class MainWindow {
 		startSprintButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				applyTeamSettings();
+				//the start button only applies settings if it is not already applied by other
+				//options. 
+				if(!settingsApplied) {
+					applyTeamSettings();
+				}
+				settingsApplied = false; //make sure it is false for applying settings in next rounds.
 				Team.getTeam().startProcess();
 			}
 		});
@@ -635,7 +649,10 @@ public class MainWindow {
 		JButton applyButton = new JButton("Apply");
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//apply button applies settings how ever many times the user wants, but every
+				//time sets the flag to true, so that the start button doesn't apply it again.
 				applyTeamSettings();
+				settingsApplied = true;				
 			}
 		});
 		applyButton.setBounds(248, 374, 119, 48);
@@ -869,6 +886,7 @@ public class MainWindow {
 	
 	private void saveSystem(){
 		applyTeamSettings();
+		settingsApplied = true;
 		SystemRecorder.recordSystemStatus();
 	}
 	
@@ -880,6 +898,7 @@ public class MainWindow {
 	
 	private void saveAsDefaultSettings(){
 		applyTeamSettings();
+		settingsApplied = true;
 		SystemRecorder.recordAsSystemDefault();
 	}
 	

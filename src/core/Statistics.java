@@ -19,26 +19,23 @@ public class Statistics {
 	private static Statistics stats = null;
 	private String expertiseBasedFolderName = null;
 	private String learningBasedFolderName = null;
+	private String extrasFolderName = null;
 	private int hoursPerSprint = 0;
 	private int systemToModelTimeCoef = 0;
 	
 	private Statistics() {
 		expertiseBasedFolderName = "ExpertiseBased";
 		learningBasedFolderName = "LearningBased";
+		extrasFolderName = "extras";
 		hoursPerSprint = Team.getTeam().getHoursPerSpring();
 		systemToModelTimeCoef = Team.getTeam().getSystemToModelTimeCoefficient();
-		createFolders();
-			
-		int currentSprint = Team.getTeam().getCurrentSprint();
-		if(currentSprint == 1) {
-			createTeamStatsFile();
-			createPersonnelStatsFiles();
-		}
 	}
 	
 	public static Statistics getStatRecorder() {
 		if(stats == null) {
 			stats = new Statistics();
+			stats.createFolders();		
+
 		}
 		return stats;
 	}
@@ -54,19 +51,19 @@ public class Statistics {
 			}
 			
 			for(int scenarioIndex = 1; scenarioIndex <= team.getTotalNumberOfScenarios(); scenarioIndex++) {
-				String scenarioFolderName = Main.getScenarioFolderName(scenarioIndex);
+				String scenarioFolderName = Main.getScenarioDirectoryName(scenarioIndex);
 				String scenarioFolderPath = permutationFolderPath + File.separator + scenarioFolderName;
 				File scenarioFolder = new File(scenarioFolderPath);
 				if(!scenarioFolder.exists()) {
 					scenarioFolder.mkdirs();
 				}
-				
-				String expertiseBasedFolderPath = scenarioFolderPath + File.separator + expertiseBasedFolderName + File.separator + "extras";
+				//extras is where additional information regarding the task log of a sprint, and each and every task tried by an employee goes.
+				String expertiseBasedFolderPath = scenarioFolderPath + File.separator + expertiseBasedFolderName + File.separator + extrasFolderName;
 				File expertiseBasedFolder = new File(expertiseBasedFolderPath);
 				if(!expertiseBasedFolder.exists())
 					expertiseBasedFolder.mkdirs();
 				
-				String learningBasedFolderPath = scenarioFolderPath + File.separator + learningBasedFolderName + File.separator + "extras";
+				String learningBasedFolderPath = scenarioFolderPath + File.separator + learningBasedFolderName + File.separator + extrasFolderName;
 				File learningBasedFolder = new File(learningBasedFolderPath);
 				if(!learningBasedFolder.exists())
 					learningBasedFolder.mkdirs();
@@ -75,37 +72,39 @@ public class Statistics {
 		}
 	}
 	
-	private String getTeamStatsFileName(){
+	//returns the statistic folder for a specific permutation and scenario
+	private String getStatsFolder() {
 		Team team = Team.getTeam();
+		String permutationFolderName = Main.getStatisticsDirectoryPath() + File.separator + Main.getPermutationFileName() + team.getPermutationNumber();
+		String scenarioFolderName = Main.getScenarioDirectoryName(team.getScenarioNumber());
+		String scenarioPath = permutationFolderName + File.separator + scenarioFolderName;
 		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
 		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "TeamStats.csv";
+			return scenarioPath + File.separator + expertiseBasedFolderName;
 		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "TeamStats.csv";
+			return scenarioPath + File.separator + learningBasedFolderName;
 		}			
 		return null;
+	}
+	
+	private String getTeamStatsFileName(){
+		return getStatsFolder() + File.separator + "TeamStats.csv";
 	}
 	
 	private String getPersonnelFilePrefix(){
-		Team team = Team.getTeam();
-		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
-		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "Personnel_";
-		}else if (strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "Personnel_";
-		}			
-		return null;
+		return getStatsFolder() + File.separator + "Personnel_";
 	}
 	
 	private String getPerformedTasksFilePrefix(){
-		Team team = Team.getTeam();
-		TaskAllocationStrategy strategy = team.getTaskAllocationStrategy();
-		if(strategy.equals(TaskAllocationStrategy.ExpertiseBased)){
-			return 	Main.getStatisticsDirectoryPath() + File.separator + expertiseBasedFolderName + File.separator + "tasksPeformedForSprint_";
-		}else if(strategy.equals(TaskAllocationStrategy.LearningBased)){
-			return 	Main.getStatisticsDirectoryPath() + File.separator + learningBasedFolderName + File.separator + "tasksPeformedForSprint_";
-		}
-		return null;
+		return getStatsFolder() + File.separator + "tasksPeformedForSprint_";
+	}
+	
+	private String getSprintTaskLogPrefix() {
+		return getStatsFolder() + File.separator + extrasFolderName + File.separator + "taskLogForSprint_"; 
+	}
+	
+	private String getPersonnelExtraInfoPrefix() {
+		return getStatsFolder() + File.separator + extrasFolderName + File.separator + "extraInformationForMember_";
 	}
 	
 	private void createTeamStatsFile(){
@@ -115,7 +114,6 @@ public class Statistics {
 			String title = "sprint,velocity,storyPoints,duration,idlePeriod";
 			writer.println("sep=,");
 			writer.println(title);
-			writer.flush();
 		}catch(Exception e) {
 			Main.issueErrorMessage("ERROR INCURED WHEN CREATING LOG FILE FOR TEAM");
 			e.printStackTrace();
@@ -138,6 +136,7 @@ public class Statistics {
 		
 	private void createPersonnelStatsFiles() {
 		List<TeamMember> personnel = Team.getTeam().getPersonnel();
+		//create csv file for logging standard information of personnel for each scenario...
 		try {
 			for(TeamMember member : personnel) {
 				String fileName = getPersonnelFilePrefix() + member.getID() + ".csv";
@@ -152,6 +151,21 @@ public class Statistics {
 			Main.issueErrorMessage("ERROR INCURED WHILE TRYING TO CREATE CSV FILES FOR PERSONNEL");
 			e.printStackTrace();
 		}		
+		// create csv file for logging extra information of personnel for each scenario...
+		try {
+			for(TeamMember member : personnel) {
+				String fileName = getPersonnelExtraInfoPrefix() + member.getID() + ".csv";
+				PrintWriter writer = new PrintWriter(fileName);
+				String title = "sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description";
+				writer.println("sep=,");
+				writer.println(title);
+				writer.flush();
+				writer.close();
+			}
+		}catch(Exception e) {
+			Main.issueErrorMessage("ERROR INCURED WHILE TRYING TO CREATE EXTRA CSV FILES FOR PERSONNEL");
+			e.printStackTrace();
+		}
 	}
 	
 	private PrintWriter loadPersonnelFile(int id) {
@@ -202,6 +216,11 @@ public class Statistics {
 		return totalStoryPoints;
 	}
 	
+	public void createBaseFiles() {
+		createTeamStatsFile();
+		createPersonnelStatsFiles();
+	}
+	
 	public void logSprintInfo(ConcurrentLinkedQueue<Task> finishedTasks, double sprintVelocity, int sprintNo, long duration) {
 		//sprint,velocity,storyPoints,duration,idlePeriod
 		int accomplishedStoryPoints = logPerformedTasksForSprint(finishedTasks, sprintNo);
@@ -217,21 +236,56 @@ public class Statistics {
 		teamStatsLogger.close();
 	}
 	
-	public void logPersonnelInfo(TeamMember member, int sprintNo, int taskID, int storyPoints, boolean started, long systemTime) {
+	public void logPersonnelInfo(TeamMember member, List<String> log) {
 		//sprint,systemTime,modelTime,taskID,storyPoints,start/end,BackEnd Exp,FrontEnd Exp,Design Exp
 		try {
 			PrintWriter memberLogger = loadPersonnelFile(member.getID());
-			String startEnd = (started) ? "start" : "end";
-			long mt = systemTime / systemToModelTimeCoef;
-			int modelTime = (int) mt + ((sprintNo-1)*hoursPerSprint);
-			String record = sprintNo + "," + systemTime + "," + modelTime + "," + taskID + "," + storyPoints + "," + startEnd + ","	+ member.getExpertiseAtSkillArea(SkillArea.BackEnd) 
-					+ "," + member.getExpertiseAtSkillArea(SkillArea.FrontEnd) + "," + member.getExpertiseAtSkillArea(SkillArea.Design);
-			memberLogger.println(record);
-			memberLogger.flush();
+			for(String record : log) {
+				memberLogger.println(record);
+				memberLogger.flush();
+			}
 			memberLogger.close();
 		}catch(Exception e) {
 			Main.issueErrorMessage("ERROR INCURED WHILE LOGGING SPRINT INFORMATION FOR MEMBER WITH ID: " + member.getID());
 			e.printStackTrace();
+		}
+	}
+	
+	//this method logs every task that has been taken at the beginning of each sprint
+	public void logSprintTaskLog(ConcurrentLinkedQueue<Task> finishedTasks, int sprintNo) {
+		String fileName = getSprintTaskLogPrefix() + sprintNo + ".csv";
+		try {
+			PrintWriter taskLogger = new PrintWriter(fileName);
+			String title = "TaskName,TaskID,Priority,StoryPoints,RequiredSkills";
+			taskLogger.println("sep=,");
+			taskLogger.println(title);
+			for(Task task : finishedTasks) {
+				String record = task.getTaskName() + "," + task.getTaskID() + "," + task.getPriority() + "," + task.getStoryPoints() 
+						+ "," + listAllSkills(task);
+				taskLogger.println(record);
+			}
+			taskLogger.flush();
+			taskLogger.close();
+		}catch(Exception e) {
+			Main.issueErrorMessage("ERROR INCURED WHEN CREATING A LOG FILE FOR RECORDING THE TASKS PERFORMED IN SPRINT NO. " + sprintNo);
+			e.printStackTrace();
+		}
+	}
+	
+	public void logExtraPersonnelInfo(TeamMember member, List<String> infoLog) {
+		String personnelFileName = getPersonnelExtraInfoPrefix() + member.getID() + ".csv";
+		PrintWriter logWriter = null;
+		try {
+			logWriter = new PrintWriter(new BufferedWriter(new FileWriter(personnelFileName, true)));
+			for(String record : infoLog) {
+				logWriter.println(record);
+			}
+			logWriter.flush();
+		}catch(Exception e) {
+			Main.issueErrorMessage("ERROR INCURED WHEN LOGGING EXTRA INFORMATION FOR MEMBER " + member.getFirstName() + " ID: " + member.getID());
+			e.printStackTrace();
+		}finally {
+			logWriter.close();
 		}
 	}
 }

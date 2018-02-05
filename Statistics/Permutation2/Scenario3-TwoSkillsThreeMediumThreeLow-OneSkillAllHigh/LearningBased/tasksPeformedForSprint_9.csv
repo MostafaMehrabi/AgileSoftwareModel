@@ -1,0 +1,41 @@
+sep=,
+TaskName,TaskID,Priority,StoryPoints,PerformerID,RequiredSkills
+RandomTask_301,301,1,6,1,BackEnd FrontEnd
+RandomTask_5,5,1,6,2,FrontEnd
+RandomTask_268,268,1,7,3,BackEnd Design FrontEnd
+RandomTask_9,9,1,6,7,BackEnd Design FrontEnd
+RandomTask_278,278,1,9,4,BackEnd Design FrontEnd
+RandomTask_308,308,1,10,6,BackEnd Design FrontEnd
+RandomTask_293,293,1,5,1,BackEnd FrontEnd
+RandomTask_134,134,1,3,7,BackEnd FrontEnd
+RandomTask_336,336,1,3,6,BackEnd FrontEnd
+RandomTask_275,275,1,3,1,BackEnd
+RandomTask_298,298,1,2,7,BackEnd FrontEnd
+RandomTask_73,73,1,10,2,Design FrontEnd
+RandomTask_154,154,1,3,7,FrontEnd
+RandomTask_135,135,1,10,3,BackEnd Design
+RandomTask_392,392,1,9,4,FrontEnd
+RandomTask_204,204,1,1,4,BackEnd Design
+RandomTask_337,337,1,3,7,BackEnd FrontEnd
+RandomTask_101,101,1,6,1,BackEnd
+RandomTask_125,125,1,3,3,BackEnd
+RandomTask_229,229,1,10,6,BackEnd
+RandomTask_11,11,1,10,2,BackEnd FrontEnd
+RandomTask_181,181,1,8,4,BackEnd
+RandomTask_352,352,1,1,4,BackEnd Design
+RandomTask_334,334,1,10,7,BackEnd FrontEnd
+RandomTask_222,222,1,10,1,BackEnd
+RandomTask_86,86,1,10,3,BackEnd
+RandomTask_202,202,1,2,1,BackEnd
+RandomTask_88,88,1,5,4,Design
+RandomTask_288,288,1,10,6,BackEnd
+RandomTask_25,25,1,4,1,BackEnd
+RandomTask_388,388,1,1,1,BackEnd
+RandomTask_116,116,1,10,2,FrontEnd
+RandomTask_170,170,1,4,6,BackEnd Design
+RandomTask_157,157,1,8,3,BackEnd
+RandomTask_228,228,1,2,1,Design FrontEnd
+RandomTask_261,261,1,6,4,Design
+RandomTask_16,16,1,9,7,BackEnd FrontEnd
+RandomTask_391,391,1,2,2,Design
+RandomTask_191,191,1,8,6,Design

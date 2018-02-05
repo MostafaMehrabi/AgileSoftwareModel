@@ -40,7 +40,6 @@ public class Main {
 	
 	
 	public static void main(String[] args){
-		
 		try {
 			EventQueue.invokeAndWait(new Runnable() {
 				
@@ -117,7 +116,7 @@ public class Main {
 		});
 	}	
 	
-	public static String getScenarioFolderName(int scenarioNumber) {
+	public static String getScenarioDirectoryName(int scenarioNumber) {
 		switch (scenarioNumber) {
 			case 1:
 				return getFirstScenarioFolderName();
