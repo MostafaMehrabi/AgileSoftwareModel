@@ -85,7 +85,7 @@ public class Team {
 		latch = null;		
 		permutationNo = 1;
 		scenarioNo = 1;
-		totalNumberOfScenarios = 5;
+		totalNumberOfScenarios = 10;
 		totalNumberOfPermutations = 10;
 	}
 	

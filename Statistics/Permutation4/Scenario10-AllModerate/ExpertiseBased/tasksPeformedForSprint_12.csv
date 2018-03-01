@@ -1,0 +1,48 @@
+sep=,
+TaskName,TaskID,Priority,StoryPoints,PerformerID,RequiredSkills
+RandomTask_76,76,1,1,6,FrontEnd
+RandomTask_285,285,1,1,3,Design
+RandomTask_292,292,1,1,7,BackEnd Design FrontEnd
+RandomTask_180,180,1,2,2,BackEnd
+RandomTask_185,185,1,3,4,FrontEnd
+RandomTask_97,97,1,3,1,Design
+RandomTask_354,354,1,3,3,Design FrontEnd
+RandomTask_232,232,1,3,7,BackEnd Design FrontEnd
+RandomTask_90,90,1,4,6,FrontEnd
+RandomTask_111,111,1,4,2,FrontEnd
+RandomTask_32,32,1,4,4,Design
+RandomTask_363,363,1,4,7,BackEnd Design FrontEnd
+RandomTask_103,103,1,5,1,Design
+RandomTask_274,274,1,4,6,BackEnd
+RandomTask_366,366,1,5,3,Design FrontEnd
+RandomTask_206,206,1,4,2,BackEnd
+RandomTask_153,153,1,4,7,BackEnd Design
+RandomTask_355,355,1,5,4,Design
+RandomTask_200,200,1,5,6,BackEnd
+RandomTask_146,146,1,6,1,Design
+RandomTask_198,198,1,6,3,Design FrontEnd
+RandomTask_227,227,1,5,2,BackEnd FrontEnd
+RandomTask_241,241,1,4,7,BackEnd Design
+RandomTask_171,171,1,6,4,FrontEnd
+RandomTask_318,318,1,6,6,BackEnd FrontEnd
+RandomTask_339,339,1,6,3,Design FrontEnd
+RandomTask_81,81,1,5,7,BackEnd Design FrontEnd
+RandomTask_299,299,1,8,1,Design
+RandomTask_124,124,1,7,2,BackEnd
+RandomTask_262,262,1,7,4,Design FrontEnd
+RandomTask_271,271,1,5,7,BackEnd Design
+RandomTask_132,132,1,7,6,BackEnd FrontEnd
+RandomTask_147,147,1,8,3,Design
+RandomTask_143,143,1,8,1,Design
+RandomTask_382,382,1,7,2,BackEnd
+RandomTask_15,15,1,8,7,BackEnd Design
+RandomTask_160,160,1,9,4,Design
+RandomTask_14,14,1,8,6,BackEnd
+RandomTask_372,372,1,10,3,Design FrontEnd
+RandomTask_209,209,1,9,2,BackEnd
+RandomTask_239,239,1,10,1,Design
+RandomTask_230,230,1,9,7,BackEnd FrontEnd
+RandomTask_172,172,1,10,4,Design FrontEnd
+RandomTask_244,244,1,10,6,FrontEnd
+RandomTask_73,73,1,10,3,Design FrontEnd
+RandomTask_330,330,1,10,2,BackEnd Design FrontEnd

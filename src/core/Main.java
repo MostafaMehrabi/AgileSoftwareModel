@@ -23,7 +23,12 @@ public class Main {
 	private static String secondScenarioFolderName = "Scenario2-TwoSkillsThreeHighThreeLow-OneSkillAllMedium";
 	private static String thirdScenarioFolderName = "Scenario3-TwoSkillsThreeMediumThreeLow-OneSkillAllHigh";
 	private static String fourthScenarioFolderName = "Scenario4-TwoSkillsThreeMediumThreeHigh-OneSkillAllLow";
-	private static String fifthScenarioFolderName = "Scenario5-AllMembersNearlyZeroExpertiseInAllSkills";
+	private static String fifthScenarioFolderName = "Scenario5-AllNovice";
+	private static String sixthScenarioFolderName = "Scenario6-AllExperts";
+	private static String seventhScenarioFolderName = "Scenario7-WideGap";
+	private static String eighthScenarioFolderName = "Scenario8-TwoExtremes";
+	private static String ninthScenarioFolderName = "Scenario9-AllSpread";
+	private static String tenthScenarioFolderName = "Scenario10-AllModerate";
 	private static String mainFileName = "Main";
 	private static String personnelFileName = "Personnel";
 	private static String teamFileName = "Team";
@@ -126,8 +131,18 @@ public class Main {
 				return getThridScenarioFolderName();
 			case 4:
 				return getFourthScenarioFolderName();
-			default:
+			case 5:
 				return getFifthScenarioFolderName();
+			case 6:
+				return getSixthScenarioFolderName();
+			case 7:
+				return getSeventhScenarioFolderName();
+			case 8:
+				return getEighthScenarioFolderName();
+			case 9:
+				return getNinthScenarioFolderName();
+			default:
+				return getTenthScenarioFolderName();
 		}
 	}
 	
@@ -149,6 +164,26 @@ public class Main {
 	
 	public static String getFifthScenarioFolderName() {
 		return Main.fifthScenarioFolderName;
+	}
+	
+	public static String getSixthScenarioFolderName() {
+		return Main.sixthScenarioFolderName;
+	}
+	
+	public static String getSeventhScenarioFolderName() {
+		return Main.seventhScenarioFolderName;
+	}
+	
+	public static String getEighthScenarioFolderName() {
+		return Main.eighthScenarioFolderName;
+	}
+	
+	public static String getNinthScenarioFolderName() {
+		return Main.ninthScenarioFolderName;
+	}
+	
+	public static String getTenthScenarioFolderName() {
+		return Main.tenthScenarioFolderName;
 	}
 	
 	public static void setScenarioDirectoryName(String name) {

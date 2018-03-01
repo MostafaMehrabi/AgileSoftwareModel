@@ -623,7 +623,7 @@ public class MainWindow {
 		teamAdminPanel.add(sprintsPerProjectTextField);
 		
 		scenarioSpinner = new JSpinner();
-		scenarioSpinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		scenarioSpinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 		scenarioSpinner.setBounds(10, 353, 64, 42);
 		teamAdminPanel.add(scenarioSpinner);
 		
