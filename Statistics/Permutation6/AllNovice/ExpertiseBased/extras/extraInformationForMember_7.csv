@@ -1,0 +1,154 @@
+sep=,
+sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description
+1,37,0,146,6,PICKED,picked for inspection
+1,37,0,146,6,ACCEPTED,accepted for execution
+1,18041,48,399,8,PICKED,picked for inspection
+1,18041,48,399,8,REJECTED,Tiffany cannot finish task within the remaining time
+1,18041,48,49,9,PICKED,picked for inspection
+1,18041,48,49,9,REJECTED,Tiffany cannot finish task within the remaining time
+1,18041,48,344,10,PICKED,picked for inspection
+1,18041,48,344,10,REJECTED,Tiffany cannot finish task within the remaining time
+1,18041,48,393,10,PICKED,picked for inspection
+1,18041,48,393,10,REJECTED,Tiffany cannot finish task within the remaining time
+1,18041,48,399,8,PICKED,no other tasks could be accepted-trying to break this task
+1,18041,48,399,8,REJECTED,could not break this task-Tiffany finished for this sprint
+3,0,160,76,1,PICKED,picked for inspection
+3,0,160,76,1,ACCEPTED,accepted for execution
+3,3005,168,309,7,PICKED,picked for inspection
+3,3005,168,309,7,ACCEPTED,accepted for execution
+4,13,240,186,7,PICKED,picked for inspection
+4,13,240,186,7,ACCEPTED,accepted for execution
+5,8,320,394,3,PICKED,picked for inspection
+5,8,320,394,3,ACCEPTED,accepted for execution
+6,6,400,160,9,PICKED,picked for inspection
+6,6,400,160,9,ACCEPTED,accepted for execution
+7,5,480,79,2,PICKED,picked for inspection
+7,5,480,79,2,ACCEPTED,accepted for execution
+8,12,560,118,9,PICKED,picked for inspection
+8,12,560,118,9,ACCEPTED,accepted for execution
+9,0,640,19,2,PICKED,picked for inspection
+9,0,640,19,2,ACCEPTED,accepted for execution
+10,30029,800,202,2,PICKED,picked for inspection
+10,30029,800,202,2,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,332,5,PICKED,picked for inspection
+10,30029,800,332,5,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,148,4,PICKED,picked for inspection
+10,30029,800,148,4,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,193,4,PICKED,picked for inspection
+10,30029,800,193,4,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,310,4,PICKED,picked for inspection
+10,30029,800,310,4,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,377,5,PICKED,picked for inspection
+10,30029,800,377,5,REJECTED,Tiffany cannot finish task within the remaining time
+10,30029,800,202,2,PICKED,no other tasks could be accepted-trying to break this task
+10,30029,800,202,2,REJECTED,could not break this task-Tiffany finished for this sprint
+11,7,800,211,2,PICKED,picked for inspection
+11,7,800,211,2,ACCEPTED,accepted for execution
+12,8,880,173,3,PICKED,picked for inspection
+12,8,880,173,3,ACCEPTED,accepted for execution
+13,24026,1024,305,1,PICKED,picked for inspection
+13,24027,1024,305,1,ACCEPTED,accepted for execution
+13,1509,964,261,6,PICKED,picked for inspection
+13,1509,964,261,6,ACCEPTED,accepted for execution
+13,7511,980,82,2,PICKED,picked for inspection
+13,7511,980,82,2,ACCEPTED,accepted for execution
+14,0,1040,371,1,PICKED,picked for inspection
+14,0,1040,371,1,ACCEPTED,accepted for execution
+14,1506,1044,299,8,PICKED,picked for inspection
+14,1506,1044,299,8,ACCEPTED,accepted for execution
+15,7,1120,289,2,PICKED,picked for inspection
+15,7,1120,289,2,ACCEPTED,accepted for execution
+15,6011,1136,40,6,PICKED,picked for inspection
+15,6011,1136,40,6,ACCEPTED,accepted for execution
+16,9,1200,292,1,PICKED,picked for inspection
+16,9,1200,292,1,ACCEPTED,accepted for execution
+16,1138,1203,210,3,PICKED,picked for inspection
+16,1138,1203,210,3,ACCEPTED,accepted for execution
+16,5641,1215,339,6,PICKED,picked for inspection
+16,5641,1215,339,6,ACCEPTED,accepted for execution
+17,25,1280,65,4,PICKED,picked for inspection
+17,25,1280,65,4,ACCEPTED,accepted for execution
+17,3786,1290,94,8,PICKED,picked for inspection
+17,3786,1290,94,8,ACCEPTED,accepted for execution
+17,11665,1311,176,10,PICKED,picked for inspection
+17,11665,1311,176,10,ACCEPTED,accepted for execution
+18,25582,1428,327,1,PICKED,picked for inspection
+18,25582,1428,327,1,ACCEPTED,accepted for execution
+18,1509,1364,10,8,PICKED,picked for inspection
+18,1509,1364,10,8,ACCEPTED,accepted for execution
+18,9389,1385,239,10,PICKED,picked for inspection
+18,9389,1385,239,10,ACCEPTED,accepted for execution
+18,19144,1411,276,2,PICKED,picked for inspection
+18,19144,1411,276,2,ACCEPTED,accepted for execution
+18,21025,1416,17,10,PICKED,picked for inspection
+18,21025,1416,17,10,REJECTED,Tiffany cannot finish task within the remaining time
+18,21025,1416,17,10,PICKED,no other tasks could be accepted-trying to break this task
+18,21025,1416,17,10,REJECTED,could not break this task-Tiffany finished for this sprint
+19,14,1440,111,4,PICKED,picked for inspection
+19,14,1440,111,4,ACCEPTED,accepted for execution
+19,3774,1450,72,5,PICKED,picked for inspection
+19,3774,1450,72,5,ACCEPTED,accepted for execution
+19,8653,1463,133,6,PICKED,picked for inspection
+19,8653,1463,133,6,ACCEPTED,accepted for execution
+19,14658,1479,268,7,PICKED,picked for inspection
+19,14658,1479,268,7,ACCEPTED,accepted for execution
+20,12,1520,122,1,PICKED,picked for inspection
+20,12,1520,122,1,ACCEPTED,accepted for execution
+20,780,1522,260,3,PICKED,picked for inspection
+20,780,1522,260,3,ACCEPTED,accepted for execution
+20,3790,1530,366,5,PICKED,picked for inspection
+20,3790,1530,366,5,ACCEPTED,accepted for execution
+20,8671,1543,188,7,PICKED,picked for inspection
+20,8671,1543,188,7,ACCEPTED,accepted for execution
+20,15424,1561,128,6,PICKED,picked for inspection
+20,15424,1561,128,6,ACCEPTED,accepted for execution
+21,9,1600,95,2,PICKED,picked for inspection
+21,9,1600,95,2,ACCEPTED,accepted for execution
+21,1137,1603,286,5,PICKED,picked for inspection
+21,1137,1603,286,5,ACCEPTED,accepted for execution
+21,4140,1611,213,4,PICKED,picked for inspection
+21,4140,1611,213,4,ACCEPTED,accepted for execution
+21,7144,1619,87,9,PICKED,picked for inspection
+21,7144,1619,87,9,ACCEPTED,accepted for execution
+21,12399,1633,340,10,PICKED,picked for inspection
+21,12399,1633,340,10,ACCEPTED,accepted for execution
+22,33,1680,219,1,PICKED,picked for inspection
+22,33,1680,219,1,ACCEPTED,accepted for execution
+22,793,1682,113,2,PICKED,picked for inspection
+22,793,1682,113,2,ACCEPTED,accepted for execution
+22,2301,1686,103,5,PICKED,picked for inspection
+22,2301,1686,103,5,ACCEPTED,accepted for execution
+22,5305,1694,265,6,PICKED,picked for inspection
+22,5305,1694,265,6,ACCEPTED,accepted for execution
+22,11312,1710,158,10,PICKED,picked for inspection
+22,11312,1710,158,10,ACCEPTED,accepted for execution
+22,17317,1726,105,8,PICKED,picked for inspection
+22,17317,1726,105,8,ACCEPTED,accepted for execution
+23,14,1760,269,3,PICKED,picked for inspection
+23,14,1760,269,3,ACCEPTED,accepted for execution
+23,1524,1764,97,3,PICKED,picked for inspection
+23,1524,1764,97,3,ACCEPTED,accepted for execution
+23,3028,1768,355,5,PICKED,picked for inspection
+23,3028,1768,355,5,ACCEPTED,accepted for execution
+23,6031,1776,2,6,PICKED,picked for inspection
+23,6031,1776,2,6,ACCEPTED,accepted for execution
+23,9413,1785,236,5,PICKED,picked for inspection
+23,9413,1785,236,5,ACCEPTED,accepted for execution
+23,13166,1795,291,4,PICKED,picked for inspection
+23,13166,1795,291,4,ACCEPTED,accepted for execution
+23,16173,1803,242,7,PICKED,picked for inspection
+23,16173,1803,242,7,ACCEPTED,accepted for execution
+23,21433,1817,250,9,PICKED,picked for inspection
+23,21433,1817,250,9,ACCEPTED,accepted for execution
+24,0,1840,258,1,PICKED,picked for inspection
+24,0,1840,258,1,ACCEPTED,accepted for execution
+24,384,1841,88,5,PICKED,picked for inspection
+24,384,1841,88,5,ACCEPTED,accepted for execution
+24,3388,1849,141,8,PICKED,picked for inspection
+24,3388,1849,141,8,ACCEPTED,accepted for execution
+24,7892,1861,60,10,PICKED,picked for inspection
+24,7892,1861,60,10,ACCEPTED,accepted for execution
+24,13899,1877,23,10,PICKED,picked for inspection
+24,13899,1877,23,10,ACCEPTED,accepted for execution
+24,19906,1893,294,10,PICKED,picked for inspection
+24,19906,1893,294,10,ACCEPTED,accepted for execution

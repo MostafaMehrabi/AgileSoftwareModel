@@ -1,0 +1,17 @@
+sep=,
+TaskName,TaskID,Priority,StoryPoints,PerformerID,RequiredSkills
+RandomTask_352,352,1,1,2,BackEnd Design
+RandomTask_400,400,1,1,6,BackEnd FrontEnd
+RandomTask_324,324,1,1,2,BackEnd
+RandomTask_114,114,1,2,4,Design FrontEnd
+RandomTask_289,289,1,2,2,BackEnd
+RandomTask_390,390,1,4,7,Design FrontEnd
+RandomTask_349,349,1,6,3,BackEnd Design
+RandomTask_86,86,1,10,1,BackEnd
+RandomTask_198,198,1,6,6,Design FrontEnd
+RandomTask_159,159,1,7,7,Design
+RandomTask_245,245,1,6,3,Design
+RandomTask_17,17,1,10,4,Design FrontEnd
+RandomTask_366,366,1,5,2,Design FrontEnd
+RandomTask_347,347,1,5,1,FrontEnd
+RandomTask_2,2,1,6,6,Design

@@ -1,9 +1,0 @@
-sep=,
-TaskName,TaskID,Priority,StoryPoints,RequiredSkills
-RandomTask_362,362,1,5,Design
-RandomTask_367,367,1,8,Design FrontEnd
-RandomTask_297,297,1,8,Design FrontEnd
-RandomTask_357,357,1,9,Design
-RandomTask_195,195,1,9,FrontEnd
-RandomTask_179,179,1,4,Design
-RandomTask_367,367,1,8,Design FrontEnd

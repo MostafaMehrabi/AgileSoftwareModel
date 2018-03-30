@@ -1,0 +1,147 @@
+sep=,
+sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description
+1,0,0,284,10,PICKED,picked for inspection
+1,0,0,284,10,ACCEPTED,accepted for execution
+1,6008,16,25,4,PICKED,picked for inspection
+1,6008,16,25,4,ACCEPTED,accepted for execution
+2,43,80,166,7,PICKED,picked for inspection
+2,43,80,166,7,ACCEPTED,accepted for execution
+2,4177,91,151,6,PICKED,picked for inspection
+2,4177,91,151,6,ACCEPTED,accepted for execution
+2,7557,100,317,6,PICKED,picked for inspection
+2,7557,100,317,6,ACCEPTED,accepted for execution
+2,10946,109,297,8,PICKED,picked for inspection
+2,10946,109,297,8,ACCEPTED,accepted for execution
+2,15454,121,353,3,PICKED,picked for inspection
+2,15454,121,353,3,ACCEPTED,accepted for execution
+2,16961,125,333,6,PICKED,picked for inspection
+2,16961,125,333,6,ACCEPTED,accepted for execution
+2,20342,134,237,3,PICKED,picked for inspection
+2,20342,134,237,3,ACCEPTED,accepted for execution
+2,21849,138,206,4,PICKED,picked for inspection
+2,21849,138,206,4,ACCEPTED,accepted for execution
+3,0,160,330,10,PICKED,picked for inspection
+3,0,160,330,10,ACCEPTED,accepted for execution
+3,6012,176,294,10,PICKED,picked for inspection
+3,6012,176,294,10,ACCEPTED,accepted for execution
+3,12021,192,146,6,PICKED,picked for inspection
+3,12021,192,146,6,ACCEPTED,accepted for execution
+3,15401,201,60,10,PICKED,picked for inspection
+3,15401,201,60,10,ACCEPTED,accepted for execution
+3,21408,217,78,9,PICKED,picked for inspection
+3,21408,217,78,9,ACCEPTED,accepted for execution
+3,26666,231,145,9,PICKED,picked for inspection
+3,26666,231,145,9,REJECTED,Mohan cannot finish task within the remaining time
+3,26666,231,145,9,PICKED,no other tasks could be accepted-trying to break this task
+3,26666,231,145,5,ACCEPTED,broke task into smaller parts-accepted for execution
+3,26666,231,145,5,ACCEPTED,accepted for execution
+4,40,240,83,3,PICKED,picked for inspection
+4,40,240,83,3,ACCEPTED,accepted for execution
+4,1548,244,249,9,PICKED,picked for inspection
+4,1548,244,249,9,ACCEPTED,accepted for execution
+4,6802,258,348,6,PICKED,picked for inspection
+4,6802,258,348,6,ACCEPTED,accepted for execution
+4,10192,267,47,10,PICKED,picked for inspection
+4,10192,267,47,10,ACCEPTED,accepted for execution
+4,16203,283,94,8,PICKED,picked for inspection
+4,16203,283,94,8,ACCEPTED,accepted for execution
+4,20707,295,329,4,PICKED,picked for inspection
+4,20707,295,329,4,ACCEPTED,accepted for execution
+4,22965,301,123,10,PICKED,picked for inspection
+4,22965,301,123,10,ACCEPTED,accepted for execution
+5,22,320,201,5,PICKED,picked for inspection
+5,22,320,201,5,ACCEPTED,accepted for execution
+5,3033,328,68,7,PICKED,picked for inspection
+5,3033,328,68,7,ACCEPTED,accepted for execution
+5,7163,339,57,4,PICKED,picked for inspection
+5,7163,339,57,4,ACCEPTED,accepted for execution
+5,9421,345,177,5,PICKED,picked for inspection
+5,9421,345,177,5,ACCEPTED,accepted for execution
+5,12429,353,324,1,PICKED,picked for inspection
+5,12429,353,324,1,ACCEPTED,accepted for execution
+5,12821,354,124,7,PICKED,picked for inspection
+5,12821,354,124,7,ACCEPTED,accepted for execution
+5,16956,365,355,5,PICKED,picked for inspection
+5,16956,365,355,5,ACCEPTED,accepted for execution
+5,19961,373,129,3,PICKED,picked for inspection
+5,19961,373,129,3,ACCEPTED,accepted for execution
+5,21466,377,77,7,PICKED,picked for inspection
+5,21466,377,77,7,ACCEPTED,accepted for execution
+5,25599,388,224,10,PICKED,picked for inspection
+5,25599,388,224,10,REJECTED,Mohan cannot finish task within the remaining time
+5,25599,388,224,10,PICKED,no other tasks could be accepted-trying to break this task
+5,25599,388,224,10,REJECTED,could not break this task-Mohan finished for this sprint
+6,41,400,205,9,PICKED,picked for inspection
+6,41,400,205,9,ACCEPTED,accepted for execution
+6,5299,414,263,2,PICKED,picked for inspection
+6,5299,414,263,2,ACCEPTED,accepted for execution
+6,6431,417,209,9,PICKED,picked for inspection
+6,6431,417,209,9,ACCEPTED,accepted for execution
+6,11690,431,73,10,PICKED,picked for inspection
+6,11690,431,73,10,ACCEPTED,accepted for execution
+6,17698,447,187,3,PICKED,picked for inspection
+6,17698,447,187,3,ACCEPTED,accepted for execution
+6,19203,451,382,7,PICKED,picked for inspection
+6,19203,451,382,7,ACCEPTED,accepted for execution
+6,23333,462,63,5,PICKED,picked for inspection
+6,23333,462,63,5,ACCEPTED,accepted for execution
+6,26339,470,160,9,PICKED,picked for inspection
+6,26339,470,160,9,REJECTED,Mohan cannot finish task within the remaining time
+6,26339,470,160,9,PICKED,no other tasks could be accepted-trying to break this task
+6,26339,470,160,6,ACCEPTED,broke task into smaller parts-accepted for execution
+6,26339,470,160,6,ACCEPTED,accepted for execution
+7,41,480,198,6,PICKED,picked for inspection
+7,41,480,198,6,ACCEPTED,accepted for execution
+7,3427,489,308,10,PICKED,picked for inspection
+7,3427,489,308,10,ACCEPTED,accepted for execution
+7,9436,505,265,6,PICKED,picked for inspection
+7,9436,505,265,6,ACCEPTED,accepted for execution
+7,12816,514,310,4,PICKED,picked for inspection
+7,12816,514,310,4,ACCEPTED,accepted for execution
+7,15079,520,316,4,PICKED,picked for inspection
+7,15079,520,316,4,ACCEPTED,accepted for execution
+7,17339,526,325,5,PICKED,picked for inspection
+7,17339,526,325,5,ACCEPTED,accepted for execution
+7,20344,534,199,8,PICKED,picked for inspection
+7,20344,534,199,8,ACCEPTED,accepted for execution
+7,24849,546,44,10,PICKED,picked for inspection
+7,24849,546,44,10,REJECTED,Mohan cannot finish task within the remaining time
+7,24849,546,191,8,PICKED,picked for inspection
+7,24849,546,191,8,ACCEPTED,accepted for execution
+7,24849,546,191,8,ACCEPTED,accepted for execution
+8,39,560,384,1,PICKED,picked for inspection
+8,39,560,384,1,ACCEPTED,accepted for execution
+8,423,561,38,6,PICKED,picked for inspection
+8,423,561,38,6,ACCEPTED,accepted for execution
+8,3807,570,140,10,PICKED,picked for inspection
+8,3807,570,140,10,ACCEPTED,accepted for execution
+8,9812,586,195,9,PICKED,picked for inspection
+8,9812,586,195,9,ACCEPTED,accepted for execution
+8,15069,600,28,6,PICKED,picked for inspection
+8,15069,600,28,6,ACCEPTED,accepted for execution
+8,18448,609,218,1,PICKED,picked for inspection
+8,18448,609,218,1,ACCEPTED,accepted for execution
+8,18828,610,4,3,PICKED,picked for inspection
+8,18828,610,4,3,ACCEPTED,accepted for execution
+8,20335,614,114,2,PICKED,picked for inspection
+8,20335,614,114,2,ACCEPTED,accepted for execution
+8,21465,617,268,7,PICKED,picked for inspection
+8,21465,617,268,7,ACCEPTED,accepted for execution
+8,25600,628,346,1,PICKED,picked for inspection
+8,25600,628,346,1,ACCEPTED,accepted for execution
+8,25979,629,118,9,PICKED,picked for inspection
+8,25979,629,118,9,REJECTED,Mohan cannot finish task within the remaining time
+8,25979,629,118,9,PICKED,no other tasks could be accepted-trying to break this task
+8,25979,629,118,9,REJECTED,could not break this task-Mohan finished for this sprint
+9,13,640,134,3,PICKED,picked for inspection
+9,13,640,134,3,ACCEPTED,accepted for execution
+9,1518,644,300,3,PICKED,picked for inspection
+9,1518,644,300,3,ACCEPTED,accepted for execution
+9,3021,648,175,4,PICKED,picked for inspection
+9,3021,648,175,4,ACCEPTED,accepted for execution
+9,5274,654,273,1,PICKED,picked for inspection
+9,5274,654,273,1,ACCEPTED,accepted for execution
+9,5655,655,238,3,PICKED,picked for inspection
+9,5655,655,238,3,ACCEPTED,accepted for execution
+9,7161,659,327,1,PICKED,picked for inspection
+9,7161,659,327,1,ACCEPTED,accepted for execution

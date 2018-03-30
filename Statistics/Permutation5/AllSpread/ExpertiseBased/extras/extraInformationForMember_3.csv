@@ -1,0 +1,152 @@
+sep=,
+sprint,systemTime,modelTime,task,storyPoints,picked/accepted/rejected,description
+1,13,0,57,4,PICKED,picked for inspection
+1,13,0,57,4,ACCEPTED,accepted for execution
+1,3768,10,223,9,PICKED,picked for inspection
+1,3768,10,223,9,ACCEPTED,accepted for execution
+2,0,80,324,1,PICKED,picked for inspection
+2,0,80,324,1,ACCEPTED,accepted for execution
+2,762,82,8,2,PICKED,picked for inspection
+2,762,82,8,2,ACCEPTED,accepted for execution
+2,2640,87,7,6,PICKED,picked for inspection
+2,2640,87,7,6,ACCEPTED,accepted for execution
+2,6019,96,325,5,PICKED,picked for inspection
+2,6019,96,325,5,ACCEPTED,accepted for execution
+2,9774,106,214,6,PICKED,picked for inspection
+2,9774,106,214,6,ACCEPTED,accepted for execution
+2,14277,118,270,8,PICKED,picked for inspection
+2,14277,118,270,8,ACCEPTED,accepted for execution
+2,20281,134,256,10,PICKED,picked for inspection
+2,20281,134,256,10,ACCEPTED,accepted for execution
+3,22,160,119,5,PICKED,picked for inspection
+3,22,160,119,5,ACCEPTED,accepted for execution
+3,3023,168,165,7,PICKED,picked for inspection
+3,3023,168,165,7,ACCEPTED,accepted for execution
+3,7151,179,82,10,PICKED,picked for inspection
+3,7151,179,82,10,ACCEPTED,accepted for execution
+3,13155,195,9,6,PICKED,picked for inspection
+3,13155,195,9,6,ACCEPTED,accepted for execution
+3,19159,211,272,9,PICKED,picked for inspection
+3,19159,211,272,9,ACCEPTED,accepted for execution
+4,15,240,285,1,PICKED,picked for inspection
+4,15,240,285,1,ACCEPTED,accepted for execution
+4,402,241,24,1,PICKED,picked for inspection
+4,402,241,24,1,ACCEPTED,accepted for execution
+4,780,242,383,6,PICKED,picked for inspection
+4,780,242,383,6,ACCEPTED,accepted for execution
+4,4158,251,193,4,PICKED,picked for inspection
+4,4158,251,193,4,ACCEPTED,accepted for execution
+4,7912,261,198,6,PICKED,picked for inspection
+4,7912,261,198,6,ACCEPTED,accepted for execution
+4,13917,277,1,8,PICKED,picked for inspection
+4,13917,277,1,8,ACCEPTED,accepted for execution
+4,19921,293,393,10,PICKED,picked for inspection
+4,19921,293,393,10,ACCEPTED,accepted for execution
+4,27426,313,330,2,PICKED,picked for inspection
+4,27426,313,330,2,ACCEPTED,accepted for execution
+5,10,320,342,1,PICKED,picked for inspection
+5,10,320,342,1,ACCEPTED,accepted for execution
+5,389,321,95,2,PICKED,picked for inspection
+5,389,321,95,2,ACCEPTED,accepted for execution
+5,1520,324,260,3,PICKED,picked for inspection
+5,1520,324,260,3,ACCEPTED,accepted for execution
+5,3022,328,179,4,PICKED,picked for inspection
+5,3022,328,179,4,ACCEPTED,accepted for execution
+5,5276,334,23,10,PICKED,picked for inspection
+5,5276,334,23,10,ACCEPTED,accepted for execution
+5,11279,350,232,3,PICKED,picked for inspection
+5,11279,350,232,3,ACCEPTED,accepted for execution
+5,13534,356,225,8,PICKED,picked for inspection
+5,13534,356,225,8,ACCEPTED,accepted for execution
+5,19536,372,308,10,PICKED,picked for inspection
+5,19536,372,308,10,ACCEPTED,accepted for execution
+6,11,400,143,8,PICKED,picked for inspection
+6,11,400,143,8,ACCEPTED,accepted for execution
+6,4516,412,62,10,PICKED,picked for inspection
+6,4516,412,62,10,ACCEPTED,accepted for execution
+6,10520,428,158,10,PICKED,picked for inspection
+6,10520,428,158,10,ACCEPTED,accepted for execution
+6,16524,444,340,10,PICKED,picked for inspection
+6,16524,444,340,10,ACCEPTED,accepted for execution
+7,10,480,97,3,PICKED,picked for inspection
+7,10,480,97,3,ACCEPTED,accepted for execution
+7,1514,484,373,5,PICKED,picked for inspection
+7,1514,484,373,5,ACCEPTED,accepted for execution
+7,4521,492,146,6,PICKED,picked for inspection
+7,4521,492,146,6,ACCEPTED,accepted for execution
+7,7906,501,257,9,PICKED,picked for inspection
+7,7906,501,257,9,ACCEPTED,accepted for execution
+7,13159,515,224,10,PICKED,picked for inspection
+7,13159,515,224,10,ACCEPTED,accepted for execution
+7,19162,531,376,8,PICKED,picked for inspection
+7,19162,531,376,8,ACCEPTED,accepted for execution
+8,21,560,129,3,PICKED,picked for inspection
+8,21,560,129,3,ACCEPTED,accepted for execution
+8,1524,564,141,8,PICKED,picked for inspection
+8,1524,564,141,8,ACCEPTED,accepted for execution
+8,6027,576,303,10,PICKED,picked for inspection
+8,6027,576,303,10,ACCEPTED,accepted for execution
+8,12030,592,310,4,PICKED,picked for inspection
+8,12030,592,310,4,ACCEPTED,accepted for execution
+8,15034,600,163,7,PICKED,picked for inspection
+8,15034,600,163,7,ACCEPTED,accepted for execution
+8,20287,614,361,10,PICKED,picked for inspection
+8,20287,614,361,10,ACCEPTED,accepted for execution
+9,1,640,273,1,PICKED,picked for inspection
+9,1,640,273,1,ACCEPTED,accepted for execution
+9,379,641,280,3,PICKED,picked for inspection
+9,379,641,280,3,ACCEPTED,accepted for execution
+9,1881,645,3,7,PICKED,picked for inspection
+9,1881,645,3,7,ACCEPTED,accepted for execution
+9,6009,656,102,9,PICKED,picked for inspection
+9,6009,656,102,9,ACCEPTED,accepted for execution
+9,11263,670,114,2,PICKED,picked for inspection
+9,11263,670,114,2,ACCEPTED,accepted for execution
+9,12766,674,4,3,PICKED,picked for inspection
+9,12766,674,4,3,ACCEPTED,accepted for execution
+9,14270,678,169,5,PICKED,picked for inspection
+9,14270,678,169,5,ACCEPTED,accepted for execution
+9,18023,688,313,5,PICKED,picked for inspection
+9,18023,688,313,5,ACCEPTED,accepted for execution
+9,21402,697,109,9,PICKED,picked for inspection
+9,21402,697,109,9,ACCEPTED,accepted for execution
+10,14,720,65,4,PICKED,picked for inspection
+10,14,720,65,4,ACCEPTED,accepted for execution
+10,2266,726,103,5,PICKED,picked for inspection
+10,2266,726,103,5,ACCEPTED,accepted for execution
+10,5270,734,309,7,PICKED,picked for inspection
+10,5270,734,309,7,ACCEPTED,accepted for execution
+10,9398,745,87,9,PICKED,picked for inspection
+10,9398,745,87,9,ACCEPTED,accepted for execution
+10,14652,759,220,3,PICKED,picked for inspection
+10,14652,759,220,3,ACCEPTED,accepted for execution
+10,16155,763,271,5,PICKED,picked for inspection
+10,16155,763,271,5,ACCEPTED,accepted for execution
+10,19159,771,128,6,PICKED,picked for inspection
+10,19159,771,128,6,ACCEPTED,accepted for execution
+11,28942,877,160,9,PICKED,picked for inspection
+11,28942,877,160,9,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,180,2,PICKED,picked for inspection
+11,28942,877,180,2,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,283,2,PICKED,picked for inspection
+11,28942,877,283,2,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,326,2,PICKED,picked for inspection
+11,28942,877,326,2,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,353,3,PICKED,picked for inspection
+11,28942,877,353,3,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,89,2,PICKED,picked for inspection
+11,28942,877,89,2,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,274,4,PICKED,picked for inspection
+11,28942,877,274,4,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,246,5,PICKED,picked for inspection
+11,28942,877,246,5,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,207,7,PICKED,picked for inspection
+11,28942,877,207,7,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,398,7,PICKED,picked for inspection
+11,28942,877,398,7,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,276,10,PICKED,picked for inspection
+11,28942,877,276,10,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,375,9,PICKED,picked for inspection
+11,28942,877,375,9,REJECTED,Rashina cannot finish task within the remaining time
+11,28942,877,160,9,PICKED,no other tasks could be accepted-trying to break this task
+11,28942,877,160,9,REJECTED,could not break this task-Rashina finished for this sprint
